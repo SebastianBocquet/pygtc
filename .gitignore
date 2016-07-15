@@ -1,0 +1,12 @@
+# Mac OS X
+*.DS_Store
+
+# Python build
+*.pyc
+
+# Temp files
+*~
+.ipynb_checkpoints
+
+#Data for editing notebooks
+/ExampleData
