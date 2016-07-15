@@ -4,14 +4,57 @@ import scipy.ndimage
 from matplotlib.ticker import MaxNLocator
 from scipy.stats import norm
 
-def plotGTC(chains, param_names=None, truths=None, priors=None, have_weight=False, plotname=None, figuresize=None, chainlabels=None, confidencelevels=2, smoothing_kernel=1):
-    
+def plotGTC(chains, **kwargs):
+
+    assert np.shape(chains) in [2,3], "Your chains' all fucked up, brah!"
+
+    #increase dimensionality by 1 if user only supplies one chain
+    if len(np.shape(chains)) == 2:
+        chains = [chains]
+
+    #set defaults
+    param_names=None
+    truths=None
+    priors=None
+    have_weight=False
+    plotname=None
+    figuresize=None
+    chainlabels=None
+    confidencelevels=2
+    smoothing_kernel=1
+
+    #Read in column names from Pandas DataFrame if exists
+    if hasattr(chains[0], 'columns'):
+        param_names = chains[0].columns.values
+
+    #parse kwargs
+    if kwargs is not None:
+        for key, val in kwargs.iteritems():
+            if key == 'param_names':
+                param_names = val
+            if key == 'truths':
+                truths = val
+            if key == 'priors':
+                priors = val
+            if key == 'have_weight':
+                have_weight = val
+            if key == 'plotname':
+                plotname = val
+            if key == 'figuresize':
+                figuresize = val
+            if key == 'chainlabels':
+                chainlabels = val
+            if key == 'confidencelevels':
+                assert confidencelevels in [1,2,3], "ERROR, confidencelevels must be 1, 2, or 3"
+                confidencelevels = val
+            if key == 'smoothing_kernel':
+                smoothing_kernel = val
+
+
     ##########
-    conflevels = .3173, .0455, .0027
-    if confidencelevels not in [1,2,3]:
-        print "ERROR, confidencelevels must be 1, 2, or 3"
-        return
-        
+    #Magic numbers defining 2D Gaussian confidence levels
+    conflevels = (.3173, .0455, .0027)
+
     ##########
     # Setup figure and colors
 
@@ -28,13 +71,15 @@ def plotGTC(chains, param_names=None, truths=None, priors=None, have_weight=Fals
         ['#c44e52','#f78185','#ffb4b8'],
         ['#8172b2','#b4a5e5','#37d8ff'],
         ['#000000','#333333','#666666']]
-    
+
     lightblack = '#333333'
+
+    #TODO: Add arbitrary number of truths
     truthcolor = '#666666'
-    
+
 
     ########## Get number of chains and dimensions and take care of sample weights (optional)
-    
+
     # Number of chains
     Nchains = len(chains)
     if Nchains>6:
@@ -49,8 +94,8 @@ def plotGTC(chains, param_names=None, truths=None, priors=None, have_weight=Fals
             chains[i] = np.insert(chains[i], 0, np.ones(Nsamples), axis=1)
     else:
         ndim = len(chains[0][0,1:])
-    
-    
+
+
     ##########
     # These are needed to compute the confidence levels
     Nbins = 30.
@@ -58,8 +103,8 @@ def plotGTC(chains, param_names=None, truths=None, priors=None, have_weight=Fals
 
     # Left and right panel boundaries
     xmin, xmax = np.empty(ndim), np.empty(ndim)
-    
-    
+
+
     ########## Define the figure size
     # If no size if given, choose something nice
     if figuresize is None:
@@ -81,16 +126,16 @@ def plotGTC(chains, param_names=None, truths=None, priors=None, have_weight=Fals
                 return
 
     fig = plt.figure(figsize=(fig_width,fig_width))
-    
 
-    
+
+
 
     ########## 2D contour plots
     for i in range(ndim): # row
         for j in range(ndim): # column
             if j<i:
                 ax = fig.add_subplot(ndim,ndim,(i*ndim)+j+1)
-            
+
                 ##### The actual contour plots
                 data, extent, chainlevels = [], [], []
 
@@ -105,7 +150,7 @@ def plotGTC(chains, param_names=None, truths=None, priors=None, have_weight=Fals
                     # Computed cumulative 1d distribution
                     histogram_ordered = np.sort(plotdata.flat)
                     histogram_cumulative = np.cumsum(histogram_ordered)
-                    
+
                     # Compute confidence levels (from low to high for technical reasons)
                     templist = []
                     for l in reversed(range(confidencelevels)):
@@ -114,26 +159,26 @@ def plotGTC(chains, param_names=None, truths=None, priors=None, have_weight=Fals
                         # Find "height" of confidence level
                         templist.append( np.interp(temp, xaxis, histogram_ordered) )
                     templist.append(1)
-                    
+
                     # Get bin center of histogram edges
                     xbins = np.delete(xedges+.5*(xedges[1]-xedges[0]), -1)
                     ybins = np.delete(yedges+.5*(yedges[1]-yedges[0]), -1)
-                    
+
                     # Apply Gaussian smoothing and plot
                     tempdata = scipy.ndimage.gaussian_filter(plotdata.T, sigma=smoothing_kernel)
                     ax.contourf(xbins, ybins, tempdata, levels=templist, colors=colors[k][:confidencelevels][::-1])
-                    
+
                     # Store for next step (contour line)
                     data.append(tempdata)
                     chainlevels.append(templist[:-1])
-                    
-                
+
+
                 # Draw contour lines in order to see contours lying on top of each other
                 for k in range(Nchains):
                     for l in range(confidencelevels):
                         ax.contour(data[Nchains-1-k], [chainlevels[k][l]], extent=extent[Nchains-1-k], origin='lower', colors=colors[k][confidencelevels-1-l])
-                
-                
+
+
                 # Truth lines
                 if truths is not None:
                     if i < len(truths):
@@ -146,8 +191,8 @@ def plotGTC(chains, param_names=None, truths=None, priors=None, have_weight=Fals
                             if lo>truths[j]: lo = truths[j]-.05*(hi-lo)
                             if hi<truths[j]: hi = truths[j]+.05*(hi-lo)
                             ax.set_xlim(lo, hi)
-                            
-                        
+
+
                 # Labels and ticklables
                 if i!=ndim-1:
                     ax.get_xaxis().set_ticklabels([])
@@ -159,22 +204,22 @@ def plotGTC(chains, param_names=None, truths=None, priors=None, have_weight=Fals
                 else:
                     if param_names is not None:
                         ax.set_ylabel(param_names[i])
-            
+
                 # No more than 5 ticks per panel
                 my_locator = MaxNLocator(5)
                 ax.xaxis.set_major_locator(my_locator)
                 my_locator = MaxNLocator(5)
                 ax.yaxis.set_major_locator(my_locator)
-                
+
                 # Limits to be applied to 1d histograms
                 xmin[j], xmax[j] = ax.get_xlim()
-            
+
 
 
     ########## 1D histograms
     for i in range(ndim):
         ax = fig.add_subplot(ndim,ndim,(i*ndim)+i+1)
-    
+
         # 1D histogram
         for k in reversed(range(Nchains)):
             # create 1d histogram
@@ -187,15 +232,15 @@ def plotGTC(chains, param_names=None, truths=None, priors=None, have_weight=Fals
             plt.fill_between(data[0],data[1],0, color=colors[k][1])
             # Dotted line for hidden histogram
             plt.plot(data[0],data[1], ls=':', color=colors[k][1])
-            
-        
+
+
         # Truth line
         if truths is not None:
             if i < len(truths):
                 if truths[i] is not None:
                     ax.axvline(truths[i], color=truthcolor, ls='--')
-                
-                    
+
+
         # Gaussian prior
         if priors is not None:
             if i < len(priors):
@@ -211,9 +256,9 @@ def plotGTC(chains, param_names=None, truths=None, priors=None, have_weight=Fals
 
         ########## Ticks, labels, range
         # No labels on y-axes, lower limit 0
-        ax.get_yaxis().set_ticklabels([])    
+        ax.get_yaxis().set_ticklabels([])
         ax.set_ylim(bottom=0)
-    
+
         # Panels in middle of triangle have no x label
         if i!=ndim-1:
             ax.set_xlim(xmin[i],xmax[i])
@@ -226,13 +271,13 @@ def plotGTC(chains, param_names=None, truths=None, priors=None, have_weight=Fals
         if i==0:
             if param_names is not None:
                 ax.set_ylabel(param_names[i])
-        
+
         # No more than 5 ticks per panel
         my_locator = MaxNLocator(5)
         ax.xaxis.set_major_locator(my_locator)
         my_locator = MaxNLocator(5)
         ax.yaxis.set_major_locator(my_locator)
-    
+
 
 
     ########## Legend
@@ -240,7 +285,7 @@ def plotGTC(chains, param_names=None, truths=None, priors=None, have_weight=Fals
         # Dummy plot for label line color
         labelcolors = []
         ax = fig.add_subplot(ndim,ndim,ndim)
-        
+
         # Label for each chain
         for k in range(Nchains):
             ax.plot(0,0, color=colors[k][0], label=chainlabels[k])
@@ -252,9 +297,9 @@ def plotGTC(chains, param_names=None, truths=None, priors=None, have_weight=Fals
         leg.get_frame().set_alpha(0.)
         for color,text in zip(labelcolors,leg.get_texts()):
             text.set_color(color)
-    
-    
-    
+
+
+
     ##########
 
     # No space between panels
@@ -264,5 +309,5 @@ def plotGTC(chains, param_names=None, truths=None, priors=None, have_weight=Fals
     # Save figure
     if plotname is not None:
         plt.savefig(plotname, bbox_inches='tight')
-    
+
     return fig
