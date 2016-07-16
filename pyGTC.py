@@ -5,7 +5,20 @@ from matplotlib.ticker import MaxNLocator
 from scipy.stats import norm
 
 def plotGTC(chains, **kwargs):
+    """Create a beautiful triangle plot - aka Giant Triangle Confusogram (GTC).
+    
+    Parameters:
+    -----------
+    chains: 2d array or list of 2d arrays
+        Sample points (Npoints x ndim) drawn from a distribution
+    kwargs:
+        See below for all arguments.
 
+    Returns:
+    --------
+    fig: matplotlib.figure
+        the GTC in all its glory
+    """
     assert len(np.shape(chains)) in [2,3], "Your chains' all fucked up, brah!"
 
     #increase dimensionality by 1 if user only supplies one chain
@@ -16,10 +29,11 @@ def plotGTC(chains, **kwargs):
     ParamNames=None
     truths=None
     priors=None
-    have_weight=False
+    UseWeights=False
     PlotName=None
     FigureSize=None
     ChainLabels=None
+    TruthLabels=None
     NConfidenceLevels=2
     SmoothingKernel=1
 
@@ -36,14 +50,16 @@ def plotGTC(chains, **kwargs):
                 truths = val
             if key == 'priors':
                 priors = val
-            if key == 'have_weight':
-                have_weight = val
+            if key == 'UseWeights':
+                UseWeights = val
             if key == 'PlotName':
                 PlotName = val
             if key == 'FigureSize':
                 FigureSize = val
             if key == 'ChainLabels':
                 ChainLabels = val
+            if key == 'TruthLabels':
+                TruthLabels = val
             if key == 'NConfidenceLevels':
                 assert NConfidenceLevels in [1,2,3], "ERROR, NConfidenceLevels must be 1, 2, or 3"
                 NConfidenceLevels = val
@@ -55,6 +71,7 @@ def plotGTC(chains, **kwargs):
     ##########
     #Magic numbers defining Gaussian confidence levels
     GaussConfLevels = [.3173, .0455, .0027]
+
 
     ##########
     # Setup figure and colors
@@ -75,7 +92,7 @@ def plotGTC(chains, **kwargs):
 
     LightBlack = '#333333'
 
-    TruthColor = ['r','g','b','c','m']
+    TruthColor = ['r','c','g','b','m']
 
 
     ##########
@@ -86,7 +103,7 @@ def plotGTC(chains, **kwargs):
         else:
             assert len(truths)<len(TruthColor), "ERROR: Currently only supported up to "+str(len(TruthColor))+" truths"
             
-            
+    
     ########## Get number of chains and dimensions and take care of sample weights (optional)
 
     # Number of chains
@@ -94,7 +111,7 @@ def plotGTC(chains, **kwargs):
     assert Nchains<len(colors), "ERROR: Currently only supported up to "+str(len(colors))+" chains"
 
     # Number of dimensions
-    if not have_weight:
+    if not UseWeights:
         ndim = len(chains[0][0,:])
         for i in range(Nchains):
             Nsamples = len(chains[i][:,0])
@@ -287,16 +304,25 @@ def plotGTC(chains, **kwargs):
 
 
     ########## Legend
-    if ChainLabels is not None:
+    if (ChainLabels is not None) or (TruthLabels is not None):
         # Dummy plot for label line color
         LabelColors = []
         ax = fig.add_subplot(ndim,ndim,ndim)
-
-        # Label for each chain
-        for k in range(Nchains):
-            ax.plot(0,0, color=colors[k][0], label=ChainLabels[k])
-            LabelColors.append(colors[k][0])
         ax.axis('off')
+    
+        # Label the data sets
+        if ChainLabels is not None:
+            # Label for each chain
+            for k in range(Nchains):
+                ax.plot(0,0, color=colors[k][0], label=ChainLabels[k])
+                LabelColors.append(colors[k][0])
+        
+        # Label the truth lines
+        if TruthLabels is not None:
+            # Label for each truth
+            for k in range(len(TruthLabels)):
+                ax.plot(0,0, color=TruthColor[k], label=TruthLabels[k])
+                LabelColors.append(TruthColor[k])
 
         # Legend and label colors according to plot
         leg = plt.legend(loc='upper right', fancybox=True)
