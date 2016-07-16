@@ -6,54 +6,55 @@ from scipy.stats import norm
 
 def plotGTC(chains, **kwargs):
 
-    assert np.shape(chains) in [2,3], "Your chains' all fucked up, brah!"
+    assert len(np.shape(chains)) in [2,3], "Your chains' all fucked up, brah!"
 
     #increase dimensionality by 1 if user only supplies one chain
     if len(np.shape(chains)) == 2:
         chains = [chains]
 
     #set defaults
-    param_names=None
+    ParamNames=None
     truths=None
     priors=None
     have_weight=False
-    plotname=None
-    figuresize=None
-    chainlabels=None
-    confidencelevels=2
-    smoothing_kernel=1
+    PlotName=None
+    FigureSize=None
+    ChainLabels=None
+    ConfidenceLevels=2
+    SmoothingKernel=1
 
     #Read in column names from Pandas DataFrame if exists
     if hasattr(chains[0], 'columns'):
-        param_names = chains[0].columns.values
+        ParamNames = chains[0].columns.values
 
     #parse kwargs
     if kwargs is not None:
         for key, val in kwargs.iteritems():
-            if key == 'param_names':
-                param_names = val
+            if key == 'ParamNames':
+                ParamNames = val
             if key == 'truths':
                 truths = val
             if key == 'priors':
                 priors = val
             if key == 'have_weight':
                 have_weight = val
-            if key == 'plotname':
-                plotname = val
-            if key == 'figuresize':
-                figuresize = val
-            if key == 'chainlabels':
-                chainlabels = val
-            if key == 'confidencelevels':
-                assert confidencelevels in [1,2,3], "ERROR, confidencelevels must be 1, 2, or 3"
-                confidencelevels = val
-            if key == 'smoothing_kernel':
-                smoothing_kernel = val
-
+            if key == 'PlotName':
+                PlotName = val
+            if key == 'FigureSize':
+                FigureSize = val
+            if key == 'ChainLabels':
+                ChainLabels = val
+            if key == 'ConfidenceLevels':
+                assert ConfidenceLevels in [1,2,3], "ERROR, ConfidenceLevels must be 1, 2, or 3"
+                ConfidenceLevels = val
+            if key == 'SmoothingKernel':
+                SmoothingKernel = val
+        
+    
 
     ##########
     #Magic numbers defining 2D Gaussian confidence levels
-    conflevels = (.3173, .0455, .0027)
+    conflevels = [.3173, .0455, .0027]
 
     ##########
     # Setup figure and colors
@@ -62,7 +63,7 @@ def plotGTC(chains, **kwargs):
     plt.rcParams['axes.labelsize'] = 9
     plt.rcParams['xtick.labelsize'] = 5
     plt.rcParams['ytick.labelsize'] = 5
-    plt.rcParams['text.usetex']=True
+    plt.rcParams['text.usetex'] = True
     plt.rcParams['text.latex.preamble'] = [r'\usepackage{sansmath}', r'\sansmath']
 
     colors = [['#4c72b0','#7fa5e3','#b2d8ff'],
@@ -72,19 +73,25 @@ def plotGTC(chains, **kwargs):
         ['#8172b2','#b4a5e5','#37d8ff'],
         ['#000000','#333333','#666666']]
 
-    lightblack = '#333333'
+    LightBlack = '#333333'
 
-    #TODO: Add arbitrary number of truths
-    truthcolor = '#666666'
+    TruthColor = ['r','g','b','c','m']
 
 
+    ##########
+    # Increase dimensionality of truth list by one if single list
+    if truths is not None:
+        if not isinstance(truths[0], list):
+            truths = [truths]
+        else:
+            assert len(truths)<len(TruthColor), "ERROR: Currently only supported up to "+str(len(TruthColor))+" truths"
+            
+            
     ########## Get number of chains and dimensions and take care of sample weights (optional)
 
     # Number of chains
     Nchains = len(chains)
-    if Nchains>6:
-        print "ERROR: Currently only supported up to 6 chains"
-        return
+    assert Nchains<len(colors), "ERROR: Currently only supported up to "+str(len(colors))+" chains"
 
     # Number of dimensions
     if not have_weight:
@@ -107,22 +114,22 @@ def plotGTC(chains, **kwargs):
 
     ########## Define the figure size
     # If no size if given, choose something nice
-    if figuresize is None:
+    if FigureSize is None:
         fig_width = ndim*70. / 72.27
     else:
-        if not type(figuresize=='str'):
-            fig_width = figuresize
+        if not type(FigureSize=='str'):
+            fig_width = FigureSize
         else:
-            if figuresize=='APJ_column':
+            if FigureSize=='APJ_column':
                 fig_width = 245.26653 / 72.27
-            elif figuresize=='APT_page':
+            elif FigureSize=='APT_page':
                 fig_width = 513.11743 / 72.27 # TO DO!
-            elif figuresize=='MNRAS_column':
+            elif FigureSize=='MNRAS_column':
                 fig_width = 240. / 72.27
-            elif figuresize=='MNRAS_page':
+            elif FigureSize=='MNRAS_page':
                 fig_width = 504. / 72.27
             else:
-                print "ERROR: Figuresize",figuresize,"not known!"
+                print "ERROR: Figuresize",FigureSize,"not known!"
                 return
 
     fig = plt.figure(figsize=(fig_width,fig_width))
@@ -142,68 +149,69 @@ def plotGTC(chains, **kwargs):
                 # Draw filled contours in reversed order to have first chain in list on top
                 for k in reversed(range(Nchains)):
                     # Create 2d histogram
-                    plotdata, xedges, yedges = np.histogram2d(chains[k][:,j+1], chains[k][:,i+1], weights=chains[k][:,0], bins=Nbins)
+                    PlotData, xedges, yedges = np.histogram2d(chains[k][:,j+1], chains[k][:,i+1], weights=chains[k][:,0], bins=Nbins)
                     # image extent
                     extent.append([xedges[0], xedges[-1], yedges[0], yedges[-1]])
                     # Normalize
-                    plotdata = plotdata/np.sum(plotdata)
+                    PlotData = PlotData/np.sum(PlotData)
                     # Computed cumulative 1d distribution
-                    histogram_ordered = np.sort(plotdata.flat)
-                    histogram_cumulative = np.cumsum(histogram_ordered)
+                    HistogramOrdered = np.sort(PlotData.flat)
+                    HistogramCumulative = np.cumsum(HistogramOrdered)
 
                     # Compute confidence levels (from low to high for technical reasons)
-                    templist = []
-                    for l in reversed(range(confidencelevels)):
-                        # Find location of confidence level in 1d histogram_cumulative
-                        temp = np.interp(conflevels[l], histogram_cumulative, xaxis)
+                    TempList = []
+                    for l in reversed(range(ConfidenceLevels)):
+                        # Find location of confidence level in 1d HistogramCumulative
+                        temp = np.interp(conflevels[l], HistogramCumulative, xaxis)
                         # Find "height" of confidence level
-                        templist.append( np.interp(temp, xaxis, histogram_ordered) )
-                    templist.append(1)
+                        TempList.append( np.interp(temp, xaxis, HistogramOrdered) )
+                    TempList.append(1)
 
                     # Get bin center of histogram edges
                     xbins = np.delete(xedges+.5*(xedges[1]-xedges[0]), -1)
                     ybins = np.delete(yedges+.5*(yedges[1]-yedges[0]), -1)
 
                     # Apply Gaussian smoothing and plot
-                    tempdata = scipy.ndimage.gaussian_filter(plotdata.T, sigma=smoothing_kernel)
-                    ax.contourf(xbins, ybins, tempdata, levels=templist, colors=colors[k][:confidencelevels][::-1])
+                    tempdata = scipy.ndimage.gaussian_filter(PlotData.T, sigma=SmoothingKernel)
+                    ax.contourf(xbins, ybins, tempdata, levels=TempList, colors=colors[k][:ConfidenceLevels][::-1])
 
                     # Store for next step (contour line)
                     data.append(tempdata)
-                    chainlevels.append(templist[:-1])
+                    chainlevels.append(TempList[:-1])
 
 
                 # Draw contour lines in order to see contours lying on top of each other
                 for k in range(Nchains):
-                    for l in range(confidencelevels):
-                        ax.contour(data[Nchains-1-k], [chainlevels[k][l]], extent=extent[Nchains-1-k], origin='lower', colors=colors[k][confidencelevels-1-l])
+                    for l in range(ConfidenceLevels):
+                        ax.contour(data[Nchains-1-k], [chainlevels[k][l]], extent=extent[Nchains-1-k], origin='lower', colors=colors[k][ConfidenceLevels-1-l])
 
 
                 # Truth lines
                 if truths is not None:
-                    if i < len(truths):
-                        if truths[i] is not None:
-                            ax.axhline(truths[i], color=truthcolor, ls='--')
-                    if j < len(truths):
-                        if truths[j] is not None:
-                            ax.axvline(truths[j], color=truthcolor, ls='--')
-                            lo, hi = ax.get_xlim()
-                            if lo>truths[j]: lo = truths[j]-.05*(hi-lo)
-                            if hi<truths[j]: hi = truths[j]+.05*(hi-lo)
-                            ax.set_xlim(lo, hi)
+                    for k in range(len(truths)):
+                        if i < len(truths[k]):
+                            if truths[k][i] is not None:
+                                ax.axhline(truths[k][i], color=TruthColor[k])
+                        if j < len(truths[k]):
+                            if truths[k][j] is not None:
+                                ax.axvline(truths[k][j], color=TruthColor[k])
+                                lo, hi = ax.get_xlim()
+                                if lo>truths[k][j]: lo = truths[k][j]-.05*(hi-lo)
+                                if hi<truths[k][j]: hi = truths[k][j]+.05*(hi-lo)
+                                ax.set_xlim(lo, hi)
 
 
                 # Labels and ticklables
                 if i!=ndim-1:
                     ax.get_xaxis().set_ticklabels([])
                 else:
-                    if param_names is not None:
-                        ax.set_xlabel(param_names[j])
+                    if ParamNames is not None:
+                        ax.set_xlabel(ParamNames[j])
                 if j!=0:
                     ax.get_yaxis().set_ticklabels([])
                 else:
-                    if param_names is not None:
-                        ax.set_ylabel(param_names[i])
+                    if ParamNames is not None:
+                        ax.set_ylabel(ParamNames[i])
 
                 # No more than 5 ticks per panel
                 my_locator = MaxNLocator(5)
@@ -227,7 +235,7 @@ def plotGTC(chains, **kwargs):
             # Get bin center of histogram edges
             centers = np.delete(edges+.5*(edges[1]-edges[0]), -1)
             # Gaussian smoothing
-            data = scipy.ndimage.gaussian_filter1d((centers,hist1d), sigma=smoothing_kernel)
+            data = scipy.ndimage.gaussian_filter1d((centers,hist1d), sigma=SmoothingKernel)
             # Filled histogram
             plt.fill_between(data[0],data[1],0, color=colors[k][1])
             # Dotted line for hidden histogram
@@ -236,9 +244,10 @@ def plotGTC(chains, **kwargs):
 
         # Truth line
         if truths is not None:
-            if i < len(truths):
-                if truths[i] is not None:
-                    ax.axvline(truths[i], color=truthcolor, ls='--')
+            for k in range(len(truths)):
+                if i < len(truths[k]):
+                    if truths[k][i] is not None:
+                        ax.axvline(truths[k][i], color=TruthColor[k])
 
 
         # Gaussian prior
@@ -248,10 +257,10 @@ def plotGTC(chains, **kwargs):
                     if priors[i][1]>0:
                         if i==ndim-1:
                             arr = np.linspace(ax.get_xlim()[0],ax.get_xlim()[1],40)
-                            plt.plot(arr,norm.pdf(arr,priors[i][0],priors[i][1]), color=lightblack)
+                            plt.plot(arr,norm.pdf(arr,priors[i][0],priors[i][1]), color=LightBlack)
                         else:
                             arr = np.linspace(xmin[i],xmax[i],40)
-                            plt.plot(arr,norm.pdf(arr,priors[i][0],priors[i][1]), color=lightblack)
+                            plt.plot(arr,norm.pdf(arr,priors[i][0],priors[i][1]), color=LightBlack)
 
 
         ########## Ticks, labels, range
@@ -265,12 +274,12 @@ def plotGTC(chains, **kwargs):
             ax.get_xaxis().set_ticklabels([])
         # x label for last panel
         else:
-            if param_names is not None:
-                ax.set_xlabel(param_names[i])
+            if ParamNames is not None:
+                ax.set_xlabel(ParamNames[i])
         # y label for first panel
         if i==0:
-            if param_names is not None:
-                ax.set_ylabel(param_names[i])
+            if ParamNames is not None:
+                ax.set_ylabel(ParamNames[i])
 
         # No more than 5 ticks per panel
         my_locator = MaxNLocator(5)
@@ -281,21 +290,21 @@ def plotGTC(chains, **kwargs):
 
 
     ########## Legend
-    if chainlabels is not None:
+    if ChainLabels is not None:
         # Dummy plot for label line color
-        labelcolors = []
+        LabelColors = []
         ax = fig.add_subplot(ndim,ndim,ndim)
 
         # Label for each chain
         for k in range(Nchains):
-            ax.plot(0,0, color=colors[k][0], label=chainlabels[k])
-            labelcolors.append(colors[k][0])
+            ax.plot(0,0, color=colors[k][0], label=ChainLabels[k])
+            LabelColors.append(colors[k][0])
         ax.axis('off')
 
         # Legend and label colors according to plot
         leg = plt.legend(loc='upper right', fancybox=True)
         leg.get_frame().set_alpha(0.)
-        for color,text in zip(labelcolors,leg.get_texts()):
+        for color,text in zip(LabelColors,leg.get_texts()):
             text.set_color(color)
 
 
@@ -307,7 +316,7 @@ def plotGTC(chains, **kwargs):
     fig.subplots_adjust(wspace=0)
 
     # Save figure
-    if plotname is not None:
-        plt.savefig(plotname, bbox_inches='tight')
+    if PlotName is not None:
+        plt.savefig(PlotName, bbox_inches='tight')
 
     return fig
