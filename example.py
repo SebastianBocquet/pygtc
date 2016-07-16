@@ -2,28 +2,46 @@ from matplotlib import pyplot as plt
 import numpy as np
 import pyGTC
 
-# List of parameter names, latex-enabled
-names = ['text', '$B_\mathrm{X}$', '$C_\mathrm{X}$', '$D_\mathrm{X}$', '$A_\mathrm{SZ}$', '$B_\mathrm{SZ}$', '$C_\mathrm{SZ}$', '$D_\mathrm{SZ}$', '$\\rho_\mathrm{SZ-X}$', '$\mathsf{\Omega}_\mathrm{m}$']
+
+# List of parameter names, supports latex
+names = ['param name', '$B_\mathrm{\lambda}$', '$C$', '$\\lambda$', 'C', 'D', 'M', '$\\gamma$']
+
 
 # List of priors: mean, width
 # List can be shorter than number of parameters
-priors = [[6,38, .61], [.57, .03], [], [.12, .08], [], []]
+priors = [[2, 1], [.5, 2], [], [0, .4], [], []]
+
 
 # List of truth value
 # NOT a python array because of different lengths
-#truths = [6, .57, None, .12, None, None, None, None, 0]
-truths = [[6, .57, None, .12, None, None, None, None, 0], [None, None, .3, .15]]
+#truths = [4, .5, None, .1, None, None, None, None, 0]
+truths = [[4, .5, None, .1, None, None, None, None, 0], [None, None, .3, 1]]
 
-# Load chain
-chain1 = np.loadtxt("samples.txt")
-chain2 = np.loadtxt("samples2.txt")
+
+# Create two sets of sample points with 8 parameters
+ndim = 8
+
+means = np.random.rand(ndim)
+cov = .5 - np.random.rand(ndim**2).reshape((ndim,ndim))
+cov = np.triu(cov)
+cov += cov.T - np.diag(cov.diagonal())
+cov = np.dot(cov,cov)
+samples1 = np.random.multivariate_normal(means, cov, 50000)
+
+means = np.random.rand(ndim) + 1
+cov = .5 - np.random.rand(ndim**2).reshape((ndim,ndim))
+cov = np.triu(cov)
+cov += cov.T - np.diag(cov.diagonal())
+cov = np.dot(cov,cov)
+samples2 = np.random.multivariate_normal(means, cov, 50000)
+
 
 # Labels for the different chains
-ChainLabels = ["data1 $\lambda$", "chain 2"]
+ChainLabels = ["data1 $\lambda$", "data 2"]
 
 # Do the magic
-# Unused arguments: confidencelevels, figuresize
-GTC = pyGTC.plotGTC(chains=[chain1,chain2], ParamNames=names, truths=truths, priors=priors, ChainLabels=ChainLabels)
+# Unused arguments: NConfidenceLevels, figuresize
+GTC = pyGTC.plotGTC(chains=[samples1,samples2], ParamNames=names, truths=truths, priors=priors, ChainLabels=ChainLabels)
 
 #plt.show()
 plt.savefig('GTC.pdf', bbox_inches='tight')

@@ -20,7 +20,7 @@ def plotGTC(chains, **kwargs):
     PlotName=None
     FigureSize=None
     ChainLabels=None
-    ConfidenceLevels=2
+    NConfidenceLevels=2
     SmoothingKernel=1
 
     #Read in column names from Pandas DataFrame if exists
@@ -44,17 +44,17 @@ def plotGTC(chains, **kwargs):
                 FigureSize = val
             if key == 'ChainLabels':
                 ChainLabels = val
-            if key == 'ConfidenceLevels':
-                assert ConfidenceLevels in [1,2,3], "ERROR, ConfidenceLevels must be 1, 2, or 3"
-                ConfidenceLevels = val
+            if key == 'NConfidenceLevels':
+                assert NConfidenceLevels in [1,2,3], "ERROR, NConfidenceLevels must be 1, 2, or 3"
+                NConfidenceLevels = val
             if key == 'SmoothingKernel':
                 SmoothingKernel = val
         
     
 
     ##########
-    #Magic numbers defining 2D Gaussian confidence levels
-    conflevels = [.3173, .0455, .0027]
+    #Magic numbers defining Gaussian confidence levels
+    GaussConfLevels = [.3173, .0455, .0027]
 
     ##########
     # Setup figure and colors
@@ -106,7 +106,7 @@ def plotGTC(chains, **kwargs):
     ##########
     # These are needed to compute the confidence levels
     Nbins = 30.
-    xaxis = np.linspace(0., Nbins**2, Nbins**2)
+    NbinsFlat = np.linspace(0., Nbins**2, Nbins**2)
 
     # Left and right panel boundaries
     xmin, xmax = np.empty(ndim), np.empty(ndim)
@@ -138,52 +138,49 @@ def plotGTC(chains, **kwargs):
 
 
     ########## 2D contour plots
+    ChainLevels = np.ones((Nchains,NConfidenceLevels+1))
+    extents = np.empty((Nchains,4))
+    
     for i in range(ndim): # row
         for j in range(ndim): # column
             if j<i:
                 ax = fig.add_subplot(ndim,ndim,(i*ndim)+j+1)
 
                 ##### The actual contour plots
-                data, extent, chainlevels = [], [], []
-
+                SmoothData = []
+                
                 # Draw filled contours in reversed order to have first chain in list on top
                 for k in reversed(range(Nchains)):
                     # Create 2d histogram
-                    PlotData, xedges, yedges = np.histogram2d(chains[k][:,j+1], chains[k][:,i+1], weights=chains[k][:,0], bins=Nbins)
-                    # image extent
-                    extent.append([xedges[0], xedges[-1], yedges[0], yedges[-1]])
+                    hist2d, xedges, yedges = np.histogram2d(chains[k][:,j+1], chains[k][:,i+1], weights=chains[k][:,0], bins=Nbins)
+                    # image extent, needed below for contour lines
+                    extents[k] = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
                     # Normalize
-                    PlotData = PlotData/np.sum(PlotData)
-                    # Computed cumulative 1d distribution
-                    HistogramOrdered = np.sort(PlotData.flat)
+                    hist2d = hist2d/np.sum(hist2d)
+                    # Cumulative 1d distribution
+                    HistogramOrdered = np.sort(hist2d.flat)
                     HistogramCumulative = np.cumsum(HistogramOrdered)
-
+                    
                     # Compute confidence levels (from low to high for technical reasons)
-                    TempList = []
-                    for l in reversed(range(ConfidenceLevels)):
+                    for l in range(NConfidenceLevels):
                         # Find location of confidence level in 1d HistogramCumulative
-                        temp = np.interp(conflevels[l], HistogramCumulative, xaxis)
+                        temp = np.interp(GaussConfLevels[l], HistogramCumulative, NbinsFlat)
                         # Find "height" of confidence level
-                        TempList.append( np.interp(temp, xaxis, HistogramOrdered) )
-                    TempList.append(1)
-
+                        ChainLevels[k][NConfidenceLevels-1-l] = np.interp(temp, NbinsFlat, HistogramOrdered)
+                    
                     # Get bin center of histogram edges
                     xbins = np.delete(xedges+.5*(xedges[1]-xedges[0]), -1)
                     ybins = np.delete(yedges+.5*(yedges[1]-yedges[0]), -1)
-
+                    
                     # Apply Gaussian smoothing and plot
-                    tempdata = scipy.ndimage.gaussian_filter(PlotData.T, sigma=SmoothingKernel)
-                    ax.contourf(xbins, ybins, tempdata, levels=TempList, colors=colors[k][:ConfidenceLevels][::-1])
-
-                    # Store for next step (contour line)
-                    data.append(tempdata)
-                    chainlevels.append(TempList[:-1])
+                    SmoothData.append( scipy.ndimage.gaussian_filter(hist2d.T, sigma=SmoothingKernel) )
+                    ax.contourf(xbins, ybins, SmoothData[-1], levels=ChainLevels[k], colors=colors[k][:NConfidenceLevels][::-1])
 
 
                 # Draw contour lines in order to see contours lying on top of each other
                 for k in range(Nchains):
-                    for l in range(ConfidenceLevels):
-                        ax.contour(data[Nchains-1-k], [chainlevels[k][l]], extent=extent[Nchains-1-k], origin='lower', colors=colors[k][ConfidenceLevels-1-l])
+                    for l in range(NConfidenceLevels):
+                        ax.contour(SmoothData[Nchains-1-k], [ChainLevels[k][NConfidenceLevels-1-l]], extent=extents[k], origin='lower', colors=colors[k][l])
 
 
                 # Truth lines
@@ -232,14 +229,14 @@ def plotGTC(chains, **kwargs):
         for k in reversed(range(Nchains)):
             # create 1d histogram
             hist1d, edges = np.histogram(chains[k][:,i+1], weights = chains[k][:,0], normed=True, bins=Nbins)
-            # Get bin center of histogram edges
+            # Bin center between histogram edges
             centers = np.delete(edges+.5*(edges[1]-edges[0]), -1)
             # Gaussian smoothing
-            data = scipy.ndimage.gaussian_filter1d((centers,hist1d), sigma=SmoothingKernel)
+            PlotData = scipy.ndimage.gaussian_filter1d((centers,hist1d), sigma=SmoothingKernel)
             # Filled histogram
-            plt.fill_between(data[0],data[1],0, color=colors[k][1])
+            plt.fill_between(PlotData[0], PlotData[1], 0, color=colors[k][1])
             # Dotted line for hidden histogram
-            plt.plot(data[0],data[1], ls=':', color=colors[k][1])
+            plt.plot(PlotData[0], PlotData[1], ls=':', color=colors[k][1])
 
 
         # Truth line
