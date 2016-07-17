@@ -34,7 +34,7 @@ def plotGTC(chains, **kwargs):
     SmoothingKernel=1 # Gaussian smoothing kernel (in pixels)
     TruthColors = ['r','c','g','b','m'] #Default colors for plotting truths
 
-    assert np.shape(chains) in [2,3], "chains shape unexpected"
+    assert len(np.shape(chains)) in [2,3], "chains shape unexpected"
 
     #increase dimensionality by 1 if user only supplies one chain
     if len(np.shape(chains)) == 2:
