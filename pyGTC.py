@@ -6,7 +6,7 @@ from scipy.stats import norm
 
 def plotGTC(chains, **kwargs):
 
-    assert np.shape(chains) in [2,3], "Your chains' all fucked up, brah!"
+    assert np.shape(chains) in [2,3], "chains shape unexpected"
 
     #increase dimensionality by 1 if user only supplies one chain
     if len(np.shape(chains)) == 2:
@@ -25,13 +25,19 @@ def plotGTC(chains, **kwargs):
 
     #Read in column names from Pandas DataFrame if exists
     if hasattr(chains[0], 'columns'):
-        param_names = chains[0].columns.values
+        param_names = list(chains[0].columns.values)
 
     #parse kwargs
     if kwargs is not None:
         for key, val in kwargs.iteritems():
             if key == 'param_names':
-                param_names = val
+                if all(isinstance(s, basestring) for s in val):
+                    if len(val) == chains[0][0,:]
+                        param_names = list(val)
+                    else:
+                        raise ValueError("param_names length must match number of parameters in chains")
+                else:
+                    raise TypeError("param_names must be a list of strings")
             if key == 'truths':
                 truths = val
             if key == 'priors':
@@ -82,9 +88,7 @@ def plotGTC(chains, **kwargs):
 
     # Number of chains
     Nchains = len(chains)
-    if Nchains>6:
-        print "ERROR: Currently only supported up to 6 chains"
-        return
+    assert Nchains <= 6, "Currently only supports up to 6 chains"
 
     # Number of dimensions
     if not have_weight:
