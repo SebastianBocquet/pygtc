@@ -32,6 +32,7 @@ def plotGTC(chains, **kwargs):
     TruthLabels=None # Label the truth lines in the legend
     NConfidenceLevels=2 # Draw 2d contours out to the NConfidenceLevels level, support 1, 2, 3
     SmoothingKernel=1 # Gaussian smoothing kernel (in pixels)
+    TruthColors = ['r','c','g','b','m'] #Default colors for plotting truths
 
     # Read in column names from Pandas DataFrame if exists
     if hasattr(chains[0], 'columns'):
@@ -74,6 +75,8 @@ def plotGTC(chains, **kwargs):
                 NConfidenceLevels = val
             if key == 'SmoothingKernel':
                 SmoothingKernel = val
+            if key == 'TruthColors':
+                TruthColors = val
 
     # Setup figure and colors
     plt.rcParams['legend.fontsize'] = 9
@@ -89,7 +92,6 @@ def plotGTC(chains, **kwargs):
         ['#8172b2','#b4a5e5','#37d8ff'],
         ['#000000','#333333','#666666']]
     LightBlack = '#333333'
-    TruthColor = ['r','c','g','b','m']
 
     # Increase dimensionality of chains by 1 if user only supplies one chain
     if len(np.shape(chains)) == 2:
@@ -98,11 +100,11 @@ def plotGTC(chains, **kwargs):
     # Number of chains
     Nchains = len(chains)
 
-    assert Nchains<len(colors), "ERROR: Currently only supported up to "+str(len(colors))+" chains"
+    assert Nchains<len(colors), "currently only supports up to "+str(len(colors))+" chains"
 
     # Check that chains are 2d arrays
     for i in range(Nchains):
-        assert len(np.shape(chains[i]))==2, "cain "+str(i)+" has unexpected shape"
+        assert len(np.shape(chains[i]))==2, "chain "+str(i)+" has unexpected shape"
 
     # Number of dimensions
     ndim = len(chains[0][0,:])
@@ -128,7 +130,7 @@ def plotGTC(chains, **kwargs):
         if not isinstance(truths[0], list):
             truths = [truths]
         else:
-            assert len(truths)<len(TruthColor), "ERROR: Currently only supported up to "+str(len(TruthColor))+" truths"
+            assert len(truths)<len(TruthColors), "More truths than available colors. Set colors with TruthColors = [colors...]"
 
     # These are needed to compute the confidence levels
     Nbins = 30.
@@ -214,11 +216,11 @@ def plotGTC(chains, **kwargs):
                         # horizontal line
                         if i < len(truths[k]):
                             if truths[k][i] is not None:
-                                ax.axhline(truths[k][i], color=TruthColor[k])
+                                ax.axhline(truths[k][i], color=TruthColors[k])
                         # vertical line
                         if j < len(truths[k]):
                             if truths[k][j] is not None:
-                                ax.axvline(truths[k][j], color=TruthColor[k])
+                                ax.axvline(truths[k][j], color=TruthColors[k])
                                 # If needed, readjust limits of x_axis
                                 lo, hi = ax.get_xlim()
                                 if lo>truths[k][j]: lo = truths[k][j]-.05*(hi-lo)
@@ -276,7 +278,7 @@ def plotGTC(chains, **kwargs):
             for k in range(len(truths)):
                 if i < len(truths[k]):
                     if truths[k][i] is not None:
-                        ax.axvline(truths[k][i], color=TruthColor[k])
+                        ax.axvline(truths[k][i], color=TruthColors[k])
 
 
         ##### Gaussian prior
@@ -337,8 +339,8 @@ def plotGTC(chains, **kwargs):
         if TruthLabels is not None:
             # Label for each truth
             for k in range(len(TruthLabels)):
-                ax.plot(0,0, color=TruthColor[k], label=TruthLabels[k])
-                LabelColors.append(TruthColor[k])
+                ax.plot(0,0, color=TruthColors[k], label=TruthLabels[k])
+                LabelColors.append(TruthColors[k])
 
         ##### Legend and label colors according to plot
         leg = plt.legend(loc='upper right', fancybox=True)
