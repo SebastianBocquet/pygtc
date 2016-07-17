@@ -2,26 +2,54 @@ from matplotlib import pyplot as plt
 import numpy as np
 import pyGTC
 
-# List of parameter names, latex-enabled
-names = ['normalization', '$B_\mathrm{X}$', '$C_\mathrm{X}$', '$D_\mathrm{X}$', '$A_\mathrm{SZ}$', '$B_\mathrm{SZ}$', '$C_\mathrm{SZ}$', '$D_\mathrm{SZ}$', '$\\rho_\mathrm{SZ-X}$', '$\mathsf{\Omega}_\mathrm{m}$']
 
-# List of priors: mean, width
-# List can be shorter than number of parameters
-priors = [[6,38, .61], [.57, .03], [], [.12, .08], [], []]
+def create_random_samples(ndim, Npoints):
+    """Return samples drawn from random multivariate Gaussian.
 
-# List of truth value
-truths = [6, .57, None, .12, None, None, None, None, 0]
+    Parameters:
+    -----------
+    ndim: int
+        number of dimensions (parameters)
+    Npoints: int
+        number of random points to draw
 
-# Load chain
-chain1 = np.loadtxt("samples.txt")
-chain2 = np.loadtxt("samples2.txt")
+    Returns:
+    --------
+    samples: array
+        samples of points drawn from the distribution
+    """
+    means = np.random.rand(ndim)
+    cov = .5 - np.random.rand(ndim**2).reshape((ndim,ndim))
+    cov = np.triu(cov)
+    cov += cov.T - np.diag(cov.diagonal())
+    cov = np.dot(cov,cov)
+    samples =  np.random.multivariate_normal(means, cov, Npoints)
+    return samples
+
+
+# Create two sets of sample points with 8 parameters and 50000 points
+samples1 = create_random_samples(8, 50000)
+samples2 = 1+create_random_samples(8, 50000)
+
+# List of parameter names, supports latex
+names = ['param name', '$B_\mathrm{\lambda}$', '$C$', '$\\lambda$', 'C', 'D', 'M', '$\\gamma$']
 
 # Labels for the different chains
-chainlabels = ["data1 $\lambda$", "chain 2"]
+ChainLabels = ["data1 $\lambda$", "data 2"]
+
+# List of Gaussian curves to plot (to represent priors): mean, width
+# List can be shorter than number of parameters
+priors = [[2, 1], [.5, 2], [], [0, .4], [], []]
+
+# List of truth values, to mark best-fit or input values
+# NOT a python array because of different lengths
+truths = [[4, .5, None, .1, None, None, None, None, 0], [None, None, .3, 1]]
+
+# Labels for the different truths
+TruthLabels = ['the truth', 'alternative truth']
 
 # Do the magic
-# Unused arguments: confidencelevels, figuresize
-GTC = pyGTC.plotGTC(chains=[chain1, chain2], param_names=names, truths=truths, priors=priors, chainlabels=chainlabels)
+GTC = pyGTC.plotGTC(chains=[samples1,samples2], ParamNames=names, truths=truths, priors=priors, ChainLabels=ChainLabels, TruthLabels=TruthLabels)
 
 #plt.show()
 plt.savefig('GTC.pdf', bbox_inches='tight')
