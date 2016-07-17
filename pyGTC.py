@@ -120,7 +120,7 @@ def plotGTC(chains, **kwargs):
             if len(weights[i])!=len(chains[i]):
                 raise ValueError("missmatch in chain/weights #%d: len(chain) %d, len(weights) %d"%(i,len(chains[i]),len(weights[i])))
 
-    #Magic numbers defining Gaussian confidence levels
+    # Use the 68%, 95%, 99% confidence levels
     GaussConfLevels = [.3173, .0455, .0027]
 
     # Increase dimensionality of truth list by one if single list
