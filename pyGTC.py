@@ -11,6 +11,7 @@ def plotGTC(chains, **kwargs):
     -----------
     chains: 2d array or list of 2d arrays
         Sample points (length x Ndim) or multiple sets of samples points
+        Note: If you are using emcee (http://dan.iel.fm/emcee/current/) - and you should! - you need to pass the EnsembleSampler.flatchain object.
     kwargs:
         See below for all arguments.
 
