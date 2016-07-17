@@ -34,16 +34,15 @@ def plotGTC(chains, **kwargs):
     SmoothingKernel=1 # Gaussian smoothing kernel (in pixels)
     TruthColors = ['r','c','g','b','m'] #Default colors for plotting truths
 
-    # Read in column names from Pandas DataFrame if exists
-    if hasattr(chains[0], 'columns'):
-        ParamNames = list(chains[0].columns.values)
-
     assert np.shape(chains) in [2,3], "chains shape unexpected"
 
     #increase dimensionality by 1 if user only supplies one chain
     if len(np.shape(chains)) == 2:
         chains = [chains]
 
+    # Read in column names from Pandas DataFrame if exists
+    if hasattr(chains[0], 'columns'):
+        ParamNames = list(chains[0].columns.values)
 
     # Parse kwargs
     if kwargs is not None:
