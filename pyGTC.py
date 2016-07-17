@@ -50,7 +50,7 @@ def plotGTC(chains, **kwargs):
         for key, val in kwargs.iteritems():
             if key == 'ParamNames':
                 if all(isinstance(s, basestring) for s in val):
-                    if len(val) == chains[0][0,:]
+                    if len(val) == chains[0][0,:]:
                         ParamNames = list(val)
                     else:
                         raise ValueError("ParamNames length must match number of parameters in chains")
