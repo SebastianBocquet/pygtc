@@ -20,7 +20,6 @@ def plotGTC(chains, **kwargs):
     fig: matplotlib.figure
         the GTC in all its glory
     """
-
     # Set defaults
     ParamNames=None # label the x and y axes, supports latex
     truths=None # Highlight a point (or several) in parameter space by lines
@@ -41,8 +40,10 @@ def plotGTC(chains, **kwargs):
         chains = [chains]
 
     # Read in column names from Pandas DataFrame if exists
+    #Also convert DataFrame to simple numpy array to avoid later conflicts
     if hasattr(chains[0], 'columns'):
         ParamNames = list(chains[0].columns.values)
+        chains = [df.values for df in chains]
 
     # Parse kwargs
     if kwargs is not None:
@@ -91,10 +92,6 @@ def plotGTC(chains, **kwargs):
         ['#8172b2','#b4a5e5','#37d8ff'],
         ['#000000','#333333','#666666']]
     LightBlack = '#333333'
-
-    # Increase dimensionality of chains by 1 if user only supplies one chain
-    if len(np.shape(chains)) == 2:
-        chains = [chains]
 
     # Number of chains
     Nchains = len(chains)
