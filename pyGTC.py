@@ -22,7 +22,7 @@ def plotGTC(chains, **kwargs):
     """
     # Set defaults
     #TODO: make default labels be 1, 2, 3, etc...
-    
+
     ParamNames=None # label the x and y axes, supports latex
     truths=None # Highlight a point (or several) in parameter space by lines
     priors=None # Draw a Gaussian distribution (or several) in the 1d panels
@@ -63,7 +63,7 @@ def plotGTC(chains, **kwargs):
         for key, val in kwargs.iteritems():
             if key == 'ParamNames':
                 if all(isinstance(s, basestring) for s in val):
-                    if len(val) == chains[0][0,:]:
+                    if len(val) == len(chains[0][0,:]):
                         ParamNames = list(val)
                     else:
                         raise ValueError("ParamNames length must match number of parameters in chains")
