@@ -21,6 +21,8 @@ def plotGTC(chains, **kwargs):
         the GTC in all its glory
     """
     # Set defaults
+    #TODO: make default labels be 1, 2, 3, etc...
+    
     ParamNames=None # label the x and y axes, supports latex
     truths=None # Highlight a point (or several) in parameter space by lines
     priors=None # Draw a Gaussian distribution (or several) in the 1d panels
@@ -33,17 +35,28 @@ def plotGTC(chains, **kwargs):
     SmoothingKernel=1 # Gaussian smoothing kernel (in pixels)
     TruthColors = ['r','c','g','b','m'] #Default colors for plotting truths
 
-    assert len(np.shape(chains)) in [2,3], "chains shape unexpected"
+    #Numpy really doesn't like lists of Pandas DataFrame objects
+    #so if it gets one, extract array vals and throw away the rest
+    try: #Not a list of DFs, but might be a single DF
+        shape_length = len(np.shape(chains))
+        assert shape_length in [2,3], "unexpected chains shape"
+        if shape_length == 2:
+            chains = [chains]
 
-    #increase dimensionality by 1 if user only supplies one chain
-    if len(np.shape(chains)) == 2:
-        chains = [chains]
+        # Read in column names from Pandas DataFrame if exists
+        #Also convert DataFrame to simple numpy array to avoid later conflicts
+        if hasattr(chains[0], 'columns'):
+            ParamNames = list(chains[0].columns.values)
+            chains = [df.values for df in chains]
 
-    # Read in column names from Pandas DataFrame if exists
-    #Also convert DataFrame to simple numpy array to avoid later conflicts
-    if hasattr(chains[0], 'columns'):
-        ParamNames = list(chains[0].columns.values)
-        chains = [df.values for df in chains]
+    except ValueError: #Probably a list of pandas DFs
+        if hasattr(chains[0], 'columns') and hasattr(chains[0], 'values'):
+            ParamNames = list(chains[0].columns.values)
+            chains = [df.values for df in chains]
+
+        #If not a DF but something else, this will fail again, which is good
+        shape_length = len(np.shape(chains))
+        assert shape_length in [2,3], "unexpected chains shape"
 
     # Parse kwargs
     if kwargs is not None:
