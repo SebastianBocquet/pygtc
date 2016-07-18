@@ -84,7 +84,7 @@ def plotGTC(chains, **kwargs):
 
     #Get number of chains
     nChains = len(chains)
-    assert nChains<len(colors), "currently only supports up to "+str(len(colors))+" chains"
+    assert nChains<=len(colors), "currently only supports up to "+str(len(colors))+" chains"
 
     # Check that chains are 2d arrays
     for i in range(nChains):
@@ -96,7 +96,8 @@ def plotGTC(chains, **kwargs):
 
     #Process kwargs and set defaults
     chainLabels = kwargs.pop('chainLabels', None) #Labels for multiple chains, goes in plot legend
-    assert len(chainLabels) == nChains, "chainLabels mismatch with number of chains"
+    if chainLabels is not None:
+        assert len(chainLabels) == nChains, "chainLabels mismatch with number of chains"
 
     paramNames = kwargs.pop('paramNames', None) # label the x and y axes, supports latex
     if paramNames is not None:
