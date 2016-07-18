@@ -120,7 +120,8 @@ def plotGTC(chains, **kwargs):
             truths = [truths]
 
     truthLabels = kwargs.pop('truthLabels', None) #Labels for multiple truths, goes in plot legend
-    assert len(truthLabels) == len(truths), "truthLabels mismatch with number of truths"
+    if truthLabels is not None:
+        assert len(truthLabels) == len(truths), "truthLabels mismatch with number of truths"
 
     priors = kwargs.pop('priors', None) #Show priors on plots (assuming flat priors)
 
