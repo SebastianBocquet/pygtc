@@ -413,7 +413,8 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, colors, tru
 
     ##### Gaussian prior
     if prior1d is not None:
-        arr = np.linspace(ax.get_xlim()[0],ax.get_xlim()[1],40)        
+        # Plot prior in -4 to +4 sigma range
+        arr = np.linspace(prior1d[0]-4*prior1d[1], prior1d[0]+4*prior1d[1], 40)
         plt.plot(arr,norm.pdf(arr,prior1d[0],prior1d[1]), color=lightBlack)
     
     return ax
