@@ -38,13 +38,16 @@ def plotGTC(chains, **kwargs):
     plt.rcParams['text.usetex'] = True
     plt.rcParams['text.latex.preamble'] = [r'\usepackage{sansmath}', r'\sansmath']
 
-    #Define some colors TODO: allow user to submit own color list
-    colors = [['#4c72b0','#7fa5e3','#b2d8ff'],
-        ['#55a868','#88db9b','#bbffce'],
-        ['#f5964f','#ffc982','#fffcb5'],
-        ['#c44e52','#f78185','#ffb4b8'],
-        ['#8172b2','#b4a5e5','#37d8ff'],
-        ['#000000','#333333','#666666']]
+    colorsDict = { 'blues' : ('#4c72b0','#7fa5e3','#b2d8ff'),
+                    'greens' : ('#55a868','#88db9b','#bbffce'),
+                    'yellows' : ('#f5964f','#ffc982','#fffcb5'),
+                    'reds' : ('#c44e52','#f78185','#ffb4b8'),
+                    'purples' : ('#8172b2','#b4a5e5','#37d8ff')}
+
+    colorsOrder = ['blues', 'greens', 'yellows', 'reds', 'purples']
+
+    colors = [colorsDict[cs] for cs in colorsOrder]
+
     lightBlack = '#333333'
 
     #Dictionary of size types or whatever:
