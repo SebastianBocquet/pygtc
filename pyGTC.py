@@ -69,27 +69,29 @@ def plotGTC(chains, **kwargs):
                         raise ValueError("ParamNames length must match number of parameters in chains")
                 else:
                     raise TypeError("ParamNames must be a list of strings")
-            if key == 'truths':
+            elif key == 'truths':
                 truths = val
-            if key == 'priors':
+            elif key == 'priors':
                 priors = val
-            if key == 'weights':
+            elif key == 'weights':
                 weights = val
-            if key == 'PlotName':
+            elif key == 'PlotName':
                 PlotName = val
-            if key == 'FigureSize':
+            elif key == 'FigureSize':
                 FigureSize = val
-            if key == 'ChainLabels':
+            elif key == 'ChainLabels':
                 ChainLabels = val
-            if key == 'TruthLabels':
+            elif key == 'TruthLabels':
                 TruthLabels = val
-            if key == 'NConfidenceLevels':
-                assert NConfidenceLevels in [1,2,3], "ERROR, NConfidenceLevels must be 1, 2, or 3"
+            elif key == 'NConfidenceLevels':
+                assert NConfidenceLevels in [1,2,3], "NConfidenceLevels must be 1, 2, or 3"
                 NConfidenceLevels = val
-            if key == 'SmoothingKernel':
+            elif key == 'SmoothingKernel':
                 SmoothingKernel = val
-            if key == 'TruthColors':
+            elif key == 'TruthColors':
                 TruthColors = val
+            else:
+                raise NameError("illegal keyword argument: " + key)
 
     # Setup figure and colors
     plt.rcParams['legend.fontsize'] = 9
@@ -135,11 +137,17 @@ def plotGTC(chains, **kwargs):
     GaussConfLevels = [.3173, .0455, .0027]
 
     # Increase dimensionality of truth list by one if single list
-    if truths is not None:
-        if not isinstance(truths[0], list):
-            truths = [truths]
-        else:
-            assert len(truths)<len(TruthColors), "More truths than available colors. Set colors with TruthColors = [colors...]"
+    try: #calling len(scalar) will raise a TypeError
+        for ts in truths:
+            if len(ts)<len(TruthColors):
+                raise ValueError("More truths than available colors. Set colors with TruthColors = [colors...]")
+    except TypeError: #Probably a single list, so raise dimensionality
+        truths = [truths]
+
+    #Now if this raises a TypeError it's for a good reason
+    for ts in truths:
+        if len(ts)<len(TruthColors):
+            raise ValueError("More truths than available colors. Set colors with TruthColors = [colors...]")
 
     # These are needed to compute the confidence levels
     Nbins = 30.
@@ -154,7 +162,7 @@ def plotGTC(chains, **kwargs):
         fig_width = ndim*70. / 72.27
     else:
         # User-defined width=height in inches
-        if not type(FigureSize=='str'):
+        if not isinstance(FigureSize, basestring):
             fig_width = FigureSize
         else:
             # Choose from a couple of presets to fit your publication
