@@ -4,6 +4,9 @@ import scipy.ndimage
 from matplotlib.ticker import MaxNLocator
 from scipy.stats import norm
 
+
+#################### Create a full GTC
+
 def plotGTC(chains, **kwargs):
     """Create a beautiful triangle plot - aka Giant Triangle Confusogram (GTC).
 
@@ -101,6 +104,8 @@ def plotGTC(chains, **kwargs):
     #Process kwargs and set defaults
     chainLabels = kwargs.pop('chainLabels', None) #Labels for multiple chains, goes in plot legend
     if chainLabels is not None:
+        if not (isinstance(chainLabels, tuple) or isinstance(chainLabels, list)):
+            chainLabels = [chainLabels]
         assert len(chainLabels) == nChains, "chainLabels mismatch with number of chains"
 
     paramNames = kwargs.pop('paramNames', None) # label the x and y axes, supports latex
@@ -123,15 +128,34 @@ def plotGTC(chains, **kwargs):
     truthColors = kwargs.pop('truthColors', ['r','c','g','b','m']) #Default supports up to five truths TODO: prettier colors
     truths = kwargs.pop('truths', None) # Highlight a point (or several) in parameter space by lines
     if truths is not None:
-        try: #calling len(scalar) will raise a TypeError
+        if not (isinstance(truths[0], tuple) or isinstance(truths[0], list)):
+            truths = [truths]
+        else:
             if len(truths)>len(truthColors):
                 raise ValueError("More truths than available colors. Set colors with truthColors = [colors...]")
-        except TypeError: #Probably a single list, so raise dimensionality
-            truths = [truths]
-
+    
+    # Fill up truths lists with None for missing entries
+    if truths is not None:
+        truthsTemp = []
+        for k in range(len(truths)):
+            tempList = []
+            for i in range(nDim):
+                if i<len(truths[k]):
+                    temp = truths[k][i] if truths[k][i] is not None else None
+                else:
+                    temp = None
+                tempList.append( temp )
+            truthsTemp.append(tempList)
+        truths = np.array(truthsTemp)
+    
+    
+    # Labels for the different truth lines
     truthLabels = kwargs.pop('truthLabels', None) #Labels for multiple truths, goes in plot legend
     if truthLabels is not None:
+        if not (isinstance(truthLabels, tuple) or isinstance(truthLabels, list)):
+            truthLabels = [truthLabels]
         assert len(truthLabels) == len(truths), "truthLabels mismatch with number of truths"
+
 
     priors = kwargs.pop('priors', None) #Show priors on plots (assuming flat priors)
 
@@ -152,8 +176,7 @@ def plotGTC(chains, **kwargs):
     if plotName is not None:
         assert isinstance(plotName, basestring), "plotName must be a string type"
 
-    # Use the 68%, 95%, and 99% confidence levels, which look different in 2D
-    gaussConfLevels = [.3173, .0455, .0027]
+    # Define which confidence levels to show
     nConfidenceLevels = kwargs.pop('nConfidenceLevels', 2) #How many of the above confidence levels to show
     assert nConfidenceLevels in [1,2,3], "nConfidenceLevels must be 1, 2, or 3"
 
@@ -193,73 +216,26 @@ def plotGTC(chains, **kwargs):
 
     ########## 2D contour plots
 
-    chainLevels = np.ones((nChains,nConfidenceLevels+1))
-    extents = np.empty((nChains,4))
-
     for i in range(nDim): # row
         for j in range(nDim): # column
             if j<i:
+                ##### Create subplot
                 ax = fig.add_subplot(nDim,nDim,(i*nDim)+j+1)
 
-                ####TODO: Sub function starts here###################################
-                #generateLabels defaults to True for standalone plotting
-                #pltGTC sets generateLabels=False and handles its own
+                ##### Draw contours and truths
+                # Extract 2d chains
+                chainsForPlot2D = [[chains[k][:,j], chains[k][:,i]] for k in range(nChains)]
 
-                ##### The filled contour plots
-                smoothData = []
-                # Draw filled contours in reversed order to have first chain in list on top
-                for k in reversed(range(nChains)):
-                    # Create 2d histogram
-                    hist2d, xedges, yedges = np.histogram2d(chains[k][:,j], chains[k][:,i], weights=weights[k], bins=nBins)
-                    # image extent, needed below for contour lines
-                    extents[k] = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
-                    # Normalize
-                    hist2d = hist2d/np.sum(hist2d)
-                    # Cumulative 1d distribution
-                    histOrdered = np.sort(hist2d.flat)
-                    histCumulative = np.cumsum(histOrdered)
-
-                    # Compute confidence levels (from low to high for technical reasons)
-                    for l in range(nConfidenceLevels):
-                        # Find location of confidence level in 1d histCumulative
-                        temp = np.interp(gaussConfLevels[l], histCumulative, nBinsFlat)
-                        # Find "height" of confidence level
-                        chainLevels[k][nConfidenceLevels-1-l] = np.interp(temp, nBinsFlat, histOrdered)
-
-                    # Get bin center of histogram edges
-                    xbins = np.delete(xedges+.5*(xedges[1]-xedges[0]), -1)
-                    ybins = np.delete(yedges+.5*(yedges[1]-yedges[0]), -1)
-
-                    # Apply Gaussian smoothing and plot
-                    smoothData.append( scipy.ndimage.gaussian_filter(hist2d.T, sigma=smoothingKernel) )
-                    ax.contourf(xbins, ybins, smoothData[-1], levels=chainLevels[k], colors=colors[k][:nConfidenceLevels][::-1])
-
-
-                ###### Draw contour lines in order to see contours lying on top of each other
-                for k in range(nChains):
-                    for l in range(nConfidenceLevels):
-                        ax.contour(smoothData[nChains-1-k], [chainLevels[k][nConfidenceLevels-1-l]], extent=extents[k], origin='lower', colors=colors[k][l])
-
-
-                ##### Truth lines
+                # Extract 2d truths
                 if truths is not None:
-                    for k in range(len(truths)):
-                        # horizontal line
-                        if i < len(truths[k]):
-                            if truths[k][i] is not None:
-                                ax.axhline(truths[k][i], color=truthColors[k])
-                        # vertical line
-                        if j < len(truths[k]):
-                            if truths[k][j] is not None:
-                                ax.axvline(truths[k][j], color=truthColors[k])
-                                # If needed, readjust limits of x_axis
-                                lo, hi = ax.get_xlim()
-                                if lo>truths[k][j]: lo = truths[k][j]-.05*(hi-lo)
-                                if hi<truths[k][j]: hi = truths[k][j]+.05*(hi-lo)
-                                ax.set_xlim(lo, hi)
-
-                ####TODO: Sub function ends here###################################
-
+                    truthsForPlot2D = [[truths[k,i], truths[k,j]] for k in range(len(truths))]
+                else:
+                    truthsForPlot2D = None
+                
+                # Plot!
+                ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins, nBinsFlat, smoothingKernel, colors, nConfidenceLevels, truthsForPlot2D, truthColors)
+                
+                
                 ##### Range
                 if paramRanges is not None:
                     if j<len(paramRanges):
@@ -267,7 +243,7 @@ def plotGTC(chains, **kwargs):
                             ax.set_xlim(paramRanges[j][0],paramRanges[j][1])
                     if i<len(paramRanges):
                         if paramRanges[i]:
-                            ax.set_xlim(paramRanges[i][0],paramRanges[i][1])
+                            ax.set_ylim(paramRanges[i][0],paramRanges[i][1])
 
                 ##### Ticks & labels
                 ax.get_xaxis().get_major_formatter().set_useOffset(False)
@@ -304,47 +280,35 @@ def plotGTC(chains, **kwargs):
 
                 # Limits to be applied to 1d histograms
                 xmin[j], xmax[j] = ax.get_xlim()
+                
 
 
 
     ########## 1D histograms
     for i in range(nDim):
+        ##### Create subplot
         ax = fig.add_subplot(nDim,nDim,(i*nDim)+i+1)
 
-        ##### 1D histogram
-        for k in reversed(range(nChains)):
-            # create 1d histogram
-            hist1d, edges = np.histogram(chains[k][:,i], weights = weights[k], normed=True, bins=nBins)
-            # Bin center between histogram edges
-            centers = np.delete(edges+.5*(edges[1]-edges[0]), -1)
-            # Gaussian smoothing
-            plotData = scipy.ndimage.gaussian_filter1d((centers,hist1d), sigma=smoothingKernel)
-            # Filled histogram
-            plt.fill_between(plotData[0], plotData[1], 0, color=colors[k][1])
-            # Dotted line for hidden histogram
-            plt.plot(plotData[0], plotData[1], ls=':', color=colors[k][1])
 
+        ##### Plot histograms, truths, Gaussians
+        # Extract 1d chains
+        chainsForPlot1D = [chains[k][:,i] for k in range(nChains)]
 
-        ##### Truth line
+        # Extract 1d truths
         if truths is not None:
-            for k in range(len(truths)):
-                if i < len(truths[k]):
-                    if truths[k][i] is not None:
-                        ax.axvline(truths[k][i], color=truthColors[k])
-
-
-        ##### Gaussian prior
+            truthsForPlot1D = [truths[k,i] for k in range(len(truths))]
+        else:
+            truthsForPlot1D = None
+            
+        # Extract 1d prior
         if priors is not None:
-            if i < len(priors):
-                if priors[i]:
-                    if priors[i][1]>0:
-                        if i==nDim-1:
-                            arr = np.linspace(ax.get_xlim()[0],ax.get_xlim()[1],40)
-                            plt.plot(arr,norm.pdf(arr,priors[i][0],priors[i][1]), color=lightBlack)
-                        else:
-                            arr = np.linspace(xmin[i],xmax[i],40)
-                            plt.plot(arr,norm.pdf(arr,priors[i][0],priors[i][1]), color=lightBlack)
-
+            if i<len(priors):
+                if priors[i] and priors[i][1]>0:
+                    prior1d = priors[i]
+                    
+        # Plot!
+        ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins, smoothingKernel, colors, truthsForPlot1D, truthColors, prior1d, lightBlack)
+        
 
         ##### Ticks, labels, range
         ax.get_xaxis().get_major_formatter().set_useOffset(False)
@@ -419,3 +383,101 @@ def plotGTC(chains, **kwargs):
         plt.savefig(plotName, bbox_inches='tight')
 
     return fig
+    
+
+
+#################### Create single 1d panel
+
+def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, colors, truths1d, truthColors, prior1d, lightBlack):
+
+    ##### 1D histogram
+    for k in reversed(range(nChains)):
+        # create 1d histogram
+        hist1d, edges = np.histogram(chains1d[k], weights = weights[k], normed=True, bins=nBins)
+        # Bin center between histogram edges
+        centers = np.delete(edges+.5*(edges[1]-edges[0]), -1)
+        # Gaussian smoothing
+        plotData = scipy.ndimage.gaussian_filter1d((centers,hist1d), sigma=smoothingKernel)
+        # Filled histogram
+        plt.fill_between(plotData[0], plotData[1], 0, color=colors[k][1])
+        # Dotted line for hidden histogram
+        plt.plot(plotData[0], plotData[1], ls=':', color=colors[k][1])
+
+
+    ##### Truth line
+    if truths1d is not None:
+        for k in range(len(truths1d)):
+            if truths1d[k] is not None:
+                ax.axvline(truths1d[k], color=truthColors[k])
+
+
+    ##### Gaussian prior
+    if prior1d is not None:
+        arr = np.linspace(ax.get_xlim()[0],ax.get_xlim()[1],40)        
+        plt.plot(arr,norm.pdf(arr,prior1d[0],prior1d[1]), color=lightBlack)
+    
+    return ax
+    
+    
+    
+#################### Create single 2d panel
+
+def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, colors, nConfidenceLevels, truths2d, truthColors):
+    
+    #generateLabels defaults to True for standalone plotting
+    #pltGTC sets generateLabels=False and handles its own
+    
+    # Use the 68%, 95%, and 99% confidence levels, which look different in 2D
+    gaussConfLevels = [.3173, .0455, .0027]
+    
+    # 
+    chainLevels = np.ones((nChains,nConfidenceLevels+1))
+    extents = np.empty((nChains,4))
+    
+    ##### The filled contour plots
+    smoothData = []
+    # Draw filled contours in reversed order to have first chain in list on top
+    for k in reversed(range(nChains)):
+        # Create 2d histogram
+        hist2d, xedges, yedges = np.histogram2d(chains2d[k][0], chains2d[k][1], weights=weights[k], bins=nBins)
+        # image extent, needed below for contour lines
+        extents[k] = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+        # Normalize
+        hist2d = hist2d/np.sum(hist2d)
+        # Cumulative 1d distribution
+        histOrdered = np.sort(hist2d.flat)
+        histCumulative = np.cumsum(histOrdered)
+
+        # Compute confidence levels (from low to high for technical reasons)
+        for l in range(nConfidenceLevels):
+            # Find location of confidence level in 1d histCumulative
+            temp = np.interp(gaussConfLevels[l], histCumulative, nBinsFlat)
+            # Find "height" of confidence level
+            chainLevels[k][nConfidenceLevels-1-l] = np.interp(temp, nBinsFlat, histOrdered)
+
+        # Get bin center of histogram edges
+        xbins = np.delete(xedges+.5*(xedges[1]-xedges[0]), -1)
+        ybins = np.delete(yedges+.5*(yedges[1]-yedges[0]), -1)
+
+        # Apply Gaussian smoothing and plot
+        smoothData.append( scipy.ndimage.gaussian_filter(hist2d.T, sigma=smoothingKernel) )
+        ax.contourf(xbins, ybins, smoothData[-1], levels=chainLevels[k], colors=colors[k][:nConfidenceLevels][::-1])
+
+
+    ###### Draw contour lines in order to see contours lying on top of each other
+    for k in range(nChains):
+        for l in range(nConfidenceLevels):
+            ax.contour(smoothData[nChains-1-k], [chainLevels[k][nConfidenceLevels-1-l]], extent=extents[k], origin='lower', colors=colors[k][l])
+
+
+    ##### Truth lines
+    if truths2d is not None:
+        for k in range(len(truths2d)):
+            # horizontal line
+            if truths2d[k][0] is not None:
+                ax.axhline(truths2d[k][0], color=truthColors[k])
+            # vertical line
+            if truths2d[k][1] is not None:
+                ax.axvline(truths2d[k][1], color=truthColors[k])
+
+    return ax
