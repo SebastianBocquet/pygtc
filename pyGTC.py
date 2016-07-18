@@ -316,8 +316,9 @@ def plotGTC(chains, **kwargs):
 
         ##### Ticks, labels, range
 
-        # No labels on y-axes, lower limit 0
+        # No ticks or labels on y-axes, lower limit 0
         ax.get_yaxis().set_ticklabels([])
+        ax.yaxis.set_ticks_position('none')
         ax.set_ylim(bottom=0)
 
         # x-label for bottom-right panel only
