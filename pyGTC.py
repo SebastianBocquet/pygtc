@@ -24,6 +24,7 @@ def plotGTC(chains, **kwargs):
         nConfidenceLevels
         smoothingKernel
         figureSize
+        paramRanges
 
     Returns:
     --------
@@ -110,6 +111,10 @@ def plotGTC(chains, **kwargs):
         else:
             raise TypeError("paramNames must be a list of strings")
 
+    # Custom parameter range
+    paramRanges = kwargs.pop('paramRanges', None) 
+    
+    
     truthColors = kwargs.pop('truthColors', ['r','c','g','b','m']) #Default supports up to five truths TODO: prettier colors
     truths = kwargs.pop('truths', None) # Highlight a point (or several) in parameter space by lines
     if truths is not None:
@@ -247,7 +252,15 @@ def plotGTC(chains, **kwargs):
                                 ax.set_xlim(lo, hi)
 
                 ####TODO: Sub function ends here###################################
-
+                
+                ##### Range
+                if paramRanges is not None:
+                    if j<len(paramRanges):
+                        if paramRanges[j]:
+                            ax.set_xlim(paramRanges[j][0],paramRanges[j][1])
+                    if i<len(paramRanges):
+                        if paramRanges[i]:
+                            ax.set_xlim(paramRanges[i][0],paramRanges[i][1])
 
                 ##### Ticks & labels
 
