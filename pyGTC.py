@@ -13,24 +13,41 @@ def plotGTC(chains, **kwargs):
         Sample points (length x Ndim) or multiple sets of samples points
         Note: If you are using emcee (http://dan.iel.fm/emcee/current/) - and you should! - you need to pass the EnsembleSampler.flatchain object.
     kwargs:
-        See below for all arguments.
+        chainLabels
+        paramNames
+        truthColors
+        truths
+        truthLabels
+        priors
+        weights
+        plotName
+        nConfidenceLevels
+        smoothingKernel
+        figureSize
 
     Returns:
     --------
     fig: matplotlib.figure
         the GTC in all its glory
     """
-    # Set defaults
-    #TODO: make default labels be 1, 2, 3, etc...
+    # Setup matplotlb rcParams TODO: make sure this list is exhaustive
+    plt.rcParams['legend.fontsize'] = 9
+    plt.rcParams['axes.labelsize'] = 9
+    plt.rcParams['xtick.labelsize'] = 5
+    plt.rcParams['ytick.labelsize'] = 5
+    plt.rcParams['text.usetex'] = True
+    plt.rcParams['text.latex.preamble'] = [r'\usepackage{sansmath}', r'\sansmath']
 
-    priors=None # Draw a Gaussian distribution (or several) in the 1d panels
-    weights=None # Provide weight factors for your sample points
-    plotName=None # Save plot as plotName, else return matplotlib.figure object
-    figureSize=None # Width=height of figure in inches
-    chainLabels=None # Create legend with names for the plotted data
-    truthLabels=None # Label the truth lines in the legend
-    nConfidenceLevels=2 # Draw 2d contours out to the nConfidenceLevels level, support 1, 2, 3
-    smoothingKernel=1 # Gaussian smoothing kernel (in pixels)
+    #Define some colors TODO: allow user to submit own color list
+    colors = [['#4c72b0','#7fa5e3','#b2d8ff'],
+        ['#55a868','#88db9b','#bbffce'],
+        ['#f5964f','#ffc982','#fffcb5'],
+        ['#c44e52','#f78185','#ffb4b8'],
+        ['#8172b2','#b4a5e5','#37d8ff'],
+        ['#000000','#333333','#666666']]
+    lightBlack = '#333333'
+
+    #Check the validity of the chains argument:
 
     #Numpy really doesn't like lists of Pandas DataFrame objects
     #so if it gets one, extract array vals and throw away the rest
@@ -43,6 +60,7 @@ def plotGTC(chains, **kwargs):
         # Read in column names from Pandas DataFrame if exists
         #Also convert DataFrame to simple numpy array to avoid later conflicts
         if hasattr(chains[0], 'columns'):
+            #Set param names from DataFrame column names, can be overridden later
             paramNames = list(chains[0].columns.values)
             chains = [df.values for df in chains]
 
@@ -54,7 +72,21 @@ def plotGTC(chains, **kwargs):
         #If not a DF but something else, this will fail again, which is good
         assert len(np.shape(chains)) in [2,3], "unexpected chains shape"
 
-    # Parse kwargs
+    #Get number of chains
+    nChains = len(chains)
+    assert nChains<len(colors), "currently only supports up to "+str(len(colors))+" chains"
+
+    # Check that chains are 2d arrays
+    for i in range(nChains):
+        assert len(np.shape(chains[i]))==2, "chain "+str(i)+" has unexpected shape"
+
+    # Number of dimensions
+    nDim = len(chains[0][0,:])
+
+
+    #Process kwargs and set defaults
+    chainLabels = kwargs.pop('chainLabels', None) #Labels for multiple chains, goes in plot legend
+    assert len(chainLabels) == nChains, "chainLabels mismatch with number of chains"
 
     paramNames = kwargs.pop('paramNames', None) # label the x and y axes, supports latex
     if paramNames is not None:
@@ -66,10 +98,8 @@ def plotGTC(chains, **kwargs):
         else:
             raise TypeError("paramNames must be a list of strings")
 
-    truthColors = kwargs.pop('truthColors', ['r','c','g','b','m'])
+    truthColors = kwargs.pop('truthColors', ['r','c','g','b','m']) #Default supports up to five truths
     truths = kwargs.pop('truths', None) # Highlight a point (or several) in parameter space by lines
-
-    # Increase dimensionality of truth list by one if single list
     if truths is not None:
         try: #calling len(scalar) will raise a TypeError
             for ts in truths:
@@ -83,57 +113,12 @@ def plotGTC(chains, **kwargs):
             if len(ts)<len(truthColors):
                 raise ValueError("More truths than available colors. Set colors with truthColors = [colors...]")
 
+    truthLabels = kwargs.pop('truthLabels', None) #Labels for multiple truths, goes in plot legend
+    assert len(truthLabels) == len(truths), "truthLabels mismatch with number of truths"
 
-    if kwargs is not None:
-        for key, val in kwargs.iteritems():
-            if key == 'priors':
-                priors = val
-            elif key == 'weights':
-                weights = val
-            elif key == 'plotName':
-                plotName = val
-            elif key == 'figureSize':
-                figureSize = val
-            elif key == 'chainLabels':
-                chainLabels = val
-            elif key == 'truthLabels':
-                truthLabels = val
-            elif key == 'nConfidenceLevels':
-                assert nConfidenceLevels in [1,2,3], "nConfidenceLevels must be 1, 2, or 3"
-                nConfidenceLevels = val
-            elif key == 'smoothingKernel':
-                smoothingKernel = val
-            else:
-                raise NameError("illegal keyword argument: " + key)
+    priors = kwargs.pop('priors', None) #Show priors on plots (assuming flat priors)
 
-    # Setup figure and colors
-    plt.rcParams['legend.fontsize'] = 9
-    plt.rcParams['axes.labelsize'] = 9
-    plt.rcParams['xtick.labelsize'] = 5
-    plt.rcParams['ytick.labelsize'] = 5
-    plt.rcParams['text.usetex'] = True
-    plt.rcParams['text.latex.preamble'] = [r'\usepackage{sansmath}', r'\sansmath']
-    colors = [['#4c72b0','#7fa5e3','#b2d8ff'],
-        ['#55a868','#88db9b','#bbffce'],
-        ['#f5964f','#ffc982','#fffcb5'],
-        ['#c44e52','#f78185','#ffb4b8'],
-        ['#8172b2','#b4a5e5','#37d8ff'],
-        ['#000000','#333333','#666666']]
-    lightBlack = '#333333'
-
-    # Number of chains
-    nChains = len(chains)
-
-    assert nChains<len(colors), "currently only supports up to "+str(len(colors))+" chains"
-
-    # Check that chains are 2d arrays
-    for i in range(nChains):
-        assert len(np.shape(chains[i]))==2, "chain "+str(i)+" has unexpected shape"
-
-    # Number of dimensions
-    ndim = len(chains[0][0,:])
-
-    # Manage the sample point weights
+    weights = kwargs.pop('weights', None) #Manage the sample point weights
     if weights==None:
         # Set unit weights if no weights are provided
         weights = []
@@ -146,20 +131,20 @@ def plotGTC(chains, **kwargs):
             if len(weights[i])!=len(chains[i]):
                 raise ValueError("missmatch in chain/weights #%d: len(chain) %d, len(weights) %d"%(i,len(chains[i]),len(weights[i])))
 
-    # Use the 68%, 95%, 99% confidence levels
+    plotName = kwargs.pop('plotName', None) #Um... the name of the plot?!
+    assert isinstance(plotName, basestring), "plotName must be a string type"
+
+    # Use the 68%, 95%, and 99% confidence levels, which look different in 2D
     gaussConfLevels = [.3173, .0455, .0027]
+    nConfidenceLevels = kwargs.pop('nConfidenceLevels', 2) #How many of the above confidence levels to show
+    assert nConfidenceLevels in [1,2,3], "nConfidenceLevels must be 1, 2, or 3"
 
-    # These are needed to compute the confidence levels
-    nBins = 30.
-    nBinsFlat = np.linspace(0., nBins**2, nBins**2)
+    smoothingKernel = kwargs.pop('smoothingKernel', 1) #Don't you like smooth data?
 
-    # Left and right panel boundaries
-    xmin, xmax = np.empty(ndim), np.empty(ndim)
-
-    # Figure size (or resolution)
+    figureSize = kwargs.pop('figureSize', None) #Figure size descriptor or figure width=height in inches
     if figureSize is None:
         # If no figure size is given, use resolution of 70 ppp (pixel per panel)
-        figureWidth = ndim*70. / 72.27
+        figureWidth = nDim*70. / 72.27 #TODO: explain this magic number
     else:
         # User-defined width=height in inches
         if not isinstance(figureSize, basestring):
@@ -176,8 +161,20 @@ def plotGTC(chains, **kwargs):
                 figureWidth = 504. / 72.27
             else:
                 raise ValueError("figureSize %s unknown!"%figureSize)
-    fig = plt.figure(figsize=(figureWidth,figureWidth))
 
+    #Check to see if there are any remaining keyword arguments
+    if kwargs:
+        raise NameError("illegal keyword argument: " + key)
+
+    # These are needed to compute the confidence levels TODO: make nBins a kwarg
+    nBins = 30.
+    nBinsFlat = np.linspace(0., nBins**2, nBins**2)
+
+    # Left and right panel boundaries
+    xmin, xmax = np.empty(nDim), np.empty(nDim)
+
+    #Create the figure
+    fig = plt.figure(figsize=(figureWidth,figureWidth))
 
 
     ########## 2D contour plots
@@ -185,10 +182,10 @@ def plotGTC(chains, **kwargs):
     chainLevels = np.ones((nChains,nConfidenceLevels+1))
     extents = np.empty((nChains,4))
 
-    for i in range(ndim): # row
-        for j in range(ndim): # column
+    for i in range(nDim): # row
+        for j in range(nDim): # column
             if j<i:
-                ax = fig.add_subplot(ndim,ndim,(i*ndim)+j+1)
+                ax = fig.add_subplot(nDim,nDim,(i*nDim)+j+1)
 
 
                 ##### The filled contour plots
@@ -248,7 +245,7 @@ def plotGTC(chains, **kwargs):
                 ##### Ticks & labels
 
                 # x-labels at bottom of plot only
-                if i==ndim-1:
+                if i==nDim-1:
                     if paramNames is not None:
                         ax.set_xlabel(paramNames[j])
                 else:
@@ -273,8 +270,8 @@ def plotGTC(chains, **kwargs):
 
 
     ########## 1D histograms
-    for i in range(ndim):
-        ax = fig.add_subplot(ndim,ndim,(i*ndim)+i+1)
+    for i in range(nDim):
+        ax = fig.add_subplot(nDim,nDim,(i*nDim)+i+1)
 
         ##### 1D histogram
         for k in reversed(range(nChains)):
@@ -303,7 +300,7 @@ def plotGTC(chains, **kwargs):
             if i < len(priors):
                 if priors[i]:
                     if priors[i][1]>0:
-                        if i==ndim-1:
+                        if i==nDim-1:
                             arr = np.linspace(ax.get_xlim()[0],ax.get_xlim()[1],40)
                             plt.plot(arr,norm.pdf(arr,priors[i][0],priors[i][1]), color=lightBlack)
                         else:
@@ -318,7 +315,7 @@ def plotGTC(chains, **kwargs):
         ax.set_ylim(bottom=0)
 
         # x-label for bottom-right panel only
-        if i==ndim-1:
+        if i==nDim-1:
             if paramNames is not None:
                 ax.set_xlabel(paramNames[i])
         else:
@@ -342,7 +339,7 @@ def plotGTC(chains, **kwargs):
     if (chainLabels is not None) or (truthLabels is not None):
         ##### Dummy plot for label line color
         labelColors = []
-        ax = fig.add_subplot(ndim,ndim,ndim)
+        ax = fig.add_subplot(nDim,nDim,nDim)
         ax.axis('off')
 
         ##### Label the data sets
