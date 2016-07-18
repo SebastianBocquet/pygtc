@@ -165,7 +165,7 @@ def plotGTC(chains, **kwargs):
         else:
             # Choose from a couple of presets to fit your publication
             if figureSize in figSizeDict.keys():
-                figureWidth = figSizeDict(figureSize)
+                figureWidth = figSizeDict[figureSize]
             else:
                 raise ValueError("figureSize %s unknown!"%figureSize)
 
