@@ -47,6 +47,13 @@ def plotGTC(chains, **kwargs):
         ['#000000','#333333','#666666']]
     lightBlack = '#333333'
 
+    #Dictionary of size types or whatever:
+    mplPPI = 72.27 #Matplotlib default pixels per inch
+    figSizeDict = { 'APJ_column' : 245.26653 / mplPPI,
+                    'APJ_page' : 513.11743 / mplPPI,
+                    'MNRAS_column' : 240. / mplPPI,
+                    'MNRAS_page' : 504. / mplPPI}
+
     #Check the validity of the chains argument:
 
     #Numpy really doesn't like lists of Pandas DataFrame objects
@@ -98,7 +105,7 @@ def plotGTC(chains, **kwargs):
         else:
             raise TypeError("paramNames must be a list of strings")
 
-    truthColors = kwargs.pop('truthColors', ['r','c','g','b','m']) #Default supports up to five truths
+    truthColors = kwargs.pop('truthColors', ['r','c','g','b','m']) #Default supports up to five truths TODO: prettier colors
     truths = kwargs.pop('truths', None) # Highlight a point (or several) in parameter space by lines
     if truths is not None:
         try: #calling len(scalar) will raise a TypeError
@@ -142,23 +149,18 @@ def plotGTC(chains, **kwargs):
     smoothingKernel = kwargs.pop('smoothingKernel', 1) #Don't you like smooth data?
 
     figureSize = kwargs.pop('figureSize', None) #Figure size descriptor or figure width=height in inches
+    #72.27 is matplotlib default pixels per inch
     if figureSize is None:
         # If no figure size is given, use resolution of 70 ppp (pixel per panel)
-        figureWidth = nDim*70. / 72.27 #TODO: explain this magic number
+        figureWidth = nDim*70. / mplPPI
     else:
         # User-defined width=height in inches
         if not isinstance(figureSize, basestring):
             figureWidth = figureSize
         else:
             # Choose from a couple of presets to fit your publication
-            if figureSize=='APJ_column':
-                figureWidth = 245.26653 / 72.27
-            elif figureSize=='APJ_page':
-                figureWidth = 513.11743 / 72.27
-            elif figureSize=='MNRAS_column':
-                figureWidth = 240. / 72.27
-            elif figureSize=='MNRAS_page':
-                figureWidth = 504. / 72.27
+            if figureSize in figSizeDict.keys():
+                figureWidth = figSizeDict(figureSize)
             else:
                 raise ValueError("figureSize %s unknown!"%figureSize)
 
@@ -187,6 +189,9 @@ def plotGTC(chains, **kwargs):
             if j<i:
                 ax = fig.add_subplot(nDim,nDim,(i*nDim)+j+1)
 
+                ####TODO: Sub function starts here###################################
+                #generateLabels defaults to True for standalone plotting
+                #pltGTC sets generateLabels=False and handles its own
 
                 ##### The filled contour plots
                 smoothData = []
@@ -240,6 +245,8 @@ def plotGTC(chains, **kwargs):
                                 if lo>truths[k][j]: lo = truths[k][j]-.05*(hi-lo)
                                 if hi<truths[k][j]: hi = truths[k][j]+.05*(hi-lo)
                                 ax.set_xlim(lo, hi)
+
+                ####TODO: Sub function ends here###################################
 
 
                 ##### Ticks & labels
