@@ -62,6 +62,7 @@ def plotGTC(chains, **kwargs):
 
     #Numpy really doesn't like lists of Pandas DataFrame objects
     #so if it gets one, extract array vals and throw away the rest
+    dfColNames = None
     try: #Not a list of DFs, but might be a single DF
         shapeLength = len(np.shape(chains))
         assert shapeLength in [2,3], "unexpected chains shape"
@@ -72,12 +73,12 @@ def plotGTC(chains, **kwargs):
         #Also convert DataFrame to simple numpy array to avoid later conflicts
         if hasattr(chains[0], 'columns'):
             #Set param names from DataFrame column names, can be overridden later
-            paramNames = list(chains[0].columns.values)
+            dfColNames = list(chains[0].columns.values)
             chains = [df.values for df in chains]
 
     except ValueError: #Probably a list of pandas DFs
         if hasattr(chains[0], 'columns') and hasattr(chains[0], 'values'):
-            paramNames = list(chains[0].columns.values)
+            dfColNames = list(chains[0].columns.values)
             chains = [df.values for df in chains]
 
         #If not a DF but something else, this will fail again, which is good
@@ -110,6 +111,8 @@ def plotGTC(chains, **kwargs):
                 raise ValueError("paramNames length must match number of parameters in chains")
         else:
             raise TypeError("paramNames must be a list of strings")
+    elif dfColNames is not None:
+        paramNames = dfColNames
 
     # Custom parameter range
     paramRanges = kwargs.pop('paramRanges', None)
