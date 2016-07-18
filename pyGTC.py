@@ -270,6 +270,11 @@ def plotGTC(chains, **kwargs):
                             ax.set_xlim(paramRanges[i][0],paramRanges[i][1])
 
                 ##### Ticks & labels
+                ax.get_xaxis().get_major_formatter().set_useOffset(False)
+                ax.get_xaxis().get_major_formatter().set_scientific(False)
+
+                ax.get_yaxis().get_major_formatter().set_useOffset(False)
+                ax.get_yaxis().get_major_formatter().set_scientific(False)
 
                 # x-labels at bottom of plot only
                 if i==nDim-1:
@@ -342,6 +347,8 @@ def plotGTC(chains, **kwargs):
 
 
         ##### Ticks, labels, range
+        ax.get_xaxis().get_major_formatter().set_useOffset(False)
+        ax.get_xaxis().get_major_formatter().set_scientific(False)
 
         # No ticks or labels on y-axes, lower limit 0
         ax.get_yaxis().set_ticklabels([])
