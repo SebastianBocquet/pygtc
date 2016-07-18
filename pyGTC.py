@@ -35,6 +35,8 @@ def plotGTC(chains, **kwargs):
         the GTC in all its glory
     """
     # Setup matplotlb rcParams TODO: make sure this list is exhaustive
+    ipyNotebook = kwargs.pop('paramRanges', None)
+    
     plt.rcParams['legend.fontsize'] = 9
     plt.rcParams['axes.labelsize'] = 9
     plt.rcParams['xtick.labelsize'] = 5
@@ -50,8 +52,6 @@ def plotGTC(chains, **kwargs):
 
     colorsOrder = ['blues', 'greens', 'yellows', 'reds', 'purples']
 
-    colors = [colorsDict[cs] for cs in colorsOrder]
-
     lightBlack = '#333333'
 
     tickAngle = 45 #Angle of tick labels
@@ -63,6 +63,7 @@ def plotGTC(chains, **kwargs):
                     'APJ_page' : 513.11743 / mplPPI,
                     'MNRAS_column' : 240. / mplPPI,
                     'MNRAS_page' : 504. / mplPPI}
+
 
     #Check the validity of the chains argument:
 
@@ -92,7 +93,7 @@ def plotGTC(chains, **kwargs):
 
     #Get number of chains
     nChains = len(chains)
-    assert nChains<=len(colors), "currently only supports up to "+str(len(colors))+" chains"
+    assert nChains<=len(colorsOrder), "currently only supports up to "+str(len(colorsOrder))+" chains"
 
     # Check that chains are 2d arrays
     for i in range(nChains):
@@ -124,7 +125,19 @@ def plotGTC(chains, **kwargs):
 
     # Custom parameter range
     paramRanges = kwargs.pop('paramRanges', None)
-
+    
+    # User-defined color ordering
+    customColorsOrder = kwargs.pop('colorsOrder', None) #Labels for multiple chains, goes in plot legend
+    if customColorsOrder is not None:
+        if not all(color in colorsDict.keys() for color in customColorsOrder):
+            raise ValueError("Bad color name in colorsOrder=%s, pick from %s"%(customColorsOrder,colorsDict.keys()))
+        if not (isinstance(customColorsOrder, tuple) or isinstance(customColorsOrder, list)):
+            customColorsOrder = [customColorsOrder]
+        lencustomColorsOrder = len(customColorsOrder)
+        assert lencustomColorsOrder<=nChains, "colorsOrder mismatch with number of chains"
+        colorsOrder[:lencustomColorsOrder] = customColorsOrder[:lencustomColorsOrder]    
+        colors = [colorsDict[cs] for cs in colorsOrder]
+        
     # Colors of truth lines
     truthColors = kwargs.pop('truthColors', ['r','c','g','b','m']) #Default supports up to five truths TODO: prettier colors
     truths = kwargs.pop('truths', None) # Highlight a point (or several) in parameter space by lines
