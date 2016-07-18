@@ -51,6 +51,8 @@ def plotGTC(chains, **kwargs):
 
     lightBlack = '#333333'
 
+    tickAngle = 45 #Angle of tick labels
+
     #Dictionary of size types or whatever:
     mplPPI = plt.rcParams['figure.dpi'] #Matplotlib dots per inch
     figSizeDict = { 'APJ_column' : 245.26653 / mplPPI,
@@ -276,12 +278,18 @@ def plotGTC(chains, **kwargs):
                 else:
                     ax.get_xaxis().set_ticklabels([])
 
+                for xLabel in ax.get_xticklabels():
+                    xLabel.set_rotation(tickAngle)
+
                 # y-labels for left-most panels only
                 if j==0:
                     if paramNames is not None:
                         ax.set_ylabel(paramNames[i])
                 else:
                     ax.get_yaxis().set_ticklabels([])
+
+                for yLabel in ax.get_yticklabels():
+                    yLabel.set_rotation(tickAngle)
 
                 # No more than 5 ticks per panel
                 myLocator = MaxNLocator(5)
@@ -347,6 +355,9 @@ def plotGTC(chains, **kwargs):
         else:
             ax.set_xlim(xmin[i],xmax[i])
             ax.get_xaxis().set_ticklabels([])
+
+        for xLabel in ax.get_xticklabels():
+            xLabel.set_rotation(tickAngle)
 
         # y label for top-left panel
         if i==0:
