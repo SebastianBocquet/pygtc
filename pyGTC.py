@@ -114,7 +114,7 @@ def plotGTC(chains, **kwargs):
     # Custom parameter range
     paramRanges = kwargs.pop('paramRanges', None)
 
-
+    # Colors of truth lines
     truthColors = kwargs.pop('truthColors', ['r','c','g','b','m']) #Default supports up to five truths TODO: prettier colors
     truths = kwargs.pop('truths', None) # Highlight a point (or several) in parameter space by lines
     if truths is not None:
