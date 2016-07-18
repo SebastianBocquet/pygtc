@@ -51,7 +51,7 @@ def plotGTC(chains, **kwargs):
     lightBlack = '#333333'
 
     #Dictionary of size types or whatever:
-    mplPPI = 72.27 #Matplotlib default pixels per inch
+    mplPPI = plt.rcParams['figure.dpi'] #Matplotlib dots per inch
     figSizeDict = { 'APJ_column' : 245.26653 / mplPPI,
                     'APJ_page' : 513.11743 / mplPPI,
                     'MNRAS_column' : 240. / mplPPI,
@@ -148,7 +148,6 @@ def plotGTC(chains, **kwargs):
     smoothingKernel = kwargs.pop('smoothingKernel', 1) #Don't you like smooth data?
 
     figureSize = kwargs.pop('figureSize', None) #Figure size descriptor or figure width=height in inches
-    #72.27 is matplotlib default pixels per inch
     if figureSize is None:
         # If no figure size is given, use resolution of 70 ppp (pixel per panel)
         figureWidth = nDim*70. / mplPPI
