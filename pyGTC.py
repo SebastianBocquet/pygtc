@@ -101,9 +101,10 @@ def plotGTC(chains, **kwargs):
     paramNames = kwargs.pop('paramNames', None) # label the x and y axes, supports latex
     if paramNames is not None:
         if all(isinstance(s, basestring) for s in paramNames):
-            if len(paramNames) == len(chains[0][0,:]):
-                paramNames = list(val)
-            else:
+            #if len(paramNames) == len(chains[0][0,:]):
+            #    paramNames = list(val)
+            #else:
+            if len(paramNames) != len(chains[0][0,:]):
                 raise ValueError("paramNames length must match number of parameters in chains")
         else:
             raise TypeError("paramNames must be a list of strings")
@@ -112,16 +113,10 @@ def plotGTC(chains, **kwargs):
     truths = kwargs.pop('truths', None) # Highlight a point (or several) in parameter space by lines
     if truths is not None:
         try: #calling len(scalar) will raise a TypeError
-            for ts in truths:
-                if len(ts)<len(truthColors):
-                    raise ValueError("More truths than available colors. Set colors with truthColors = [colors...]")
+            if len(truths)>len(truthColors):
+                raise ValueError("More truths than available colors. Set colors with truthColors = [colors...]")
         except TypeError: #Probably a single list, so raise dimensionality
             truths = [truths]
-
-        #Now if this raises a TypeError it's for a good reason
-        for ts in truths:
-            if len(ts)<len(truthColors):
-                raise ValueError("More truths than available colors. Set colors with truthColors = [colors...]")
 
     truthLabels = kwargs.pop('truthLabels', None) #Labels for multiple truths, goes in plot legend
     assert len(truthLabels) == len(truths), "truthLabels mismatch with number of truths"
@@ -142,7 +137,8 @@ def plotGTC(chains, **kwargs):
                 raise ValueError("missmatch in chain/weights #%d: len(chain) %d, len(weights) %d"%(i,len(chains[i]),len(weights[i])))
 
     plotName = kwargs.pop('plotName', None) #Um... the name of the plot?!
-    assert isinstance(plotName, basestring), "plotName must be a string type"
+    if plotName is not None:
+        assert isinstance(plotName, basestring), "plotName must be a string type"
 
     # Use the 68%, 95%, and 99% confidence levels, which look different in 2D
     gaussConfLevels = [.3173, .0455, .0027]
