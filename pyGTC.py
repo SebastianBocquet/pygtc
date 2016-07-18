@@ -112,9 +112,9 @@ def plotGTC(chains, **kwargs):
             raise TypeError("paramNames must be a list of strings")
 
     # Custom parameter range
-    paramRanges = kwargs.pop('paramRanges', None) 
-    
-    
+    paramRanges = kwargs.pop('paramRanges', None)
+
+
     truthColors = kwargs.pop('truthColors', ['r','c','g','b','m']) #Default supports up to five truths TODO: prettier colors
     truths = kwargs.pop('truths', None) # Highlight a point (or several) in parameter space by lines
     if truths is not None:
@@ -170,8 +170,10 @@ def plotGTC(chains, **kwargs):
                 raise ValueError("figureSize %s unknown!"%figureSize)
 
     #Check to see if there are any remaining keyword arguments
-    if kwargs:
-        raise NameError("illegal keyword argument: " + key)
+    keys = ''
+    for key in kwargs.iterkeys():
+        keys = keys + key + ' '
+        raise NameError("illegal keyword arguments: " + keys)
 
     # These are needed to compute the confidence levels TODO: make nBins a kwarg
     nBins = 30.
@@ -252,7 +254,7 @@ def plotGTC(chains, **kwargs):
                                 ax.set_xlim(lo, hi)
 
                 ####TODO: Sub function ends here###################################
-                
+
                 ##### Range
                 if paramRanges is not None:
                     if j<len(paramRanges):
