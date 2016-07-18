@@ -35,7 +35,7 @@ samples2 = 1+create_random_samples(8, 50000)
 names = ['param name', '$B_\mathrm{\lambda}$', '$C$', '$\\lambda$', 'C', 'D', 'M', '$\\gamma$']
 
 # Labels for the different chains
-ChainLabels = ["data1 $\lambda$", "data 2"]
+chainLabels = ["data1 $\lambda$", "data 2"]
 
 # List of Gaussian curves to plot (to represent priors): mean, width
 # List can be shorter than number of parameters
@@ -46,10 +46,10 @@ priors = [[2, 1], [.5, 2], [], [0, .4], [], []]
 truths = [[4, .5, None, .1, None, None, None, None, 0], [None, None, .3, 1]]
 
 # Labels for the different truths
-TruthLabels = ['the truth', 'alternative truth']
+truthLabels = ['the truth', 'alternative truth']
 
 # Do the magic
-GTC = pyGTC.plotGTC(chains=[samples1,samples2], ParamNames=names, truths=truths, priors=priors, ChainLabels=ChainLabels, TruthLabels=TruthLabels)
+GTC = pyGTC.plotGTC(chains=[samples1,samples2], paramNames=names, truths=truths, priors=priors, chainLabels=chainLabels, truthLabels=truthLabels)
 
 #plt.show()
 plt.savefig('GTC.pdf', bbox_inches='tight')
