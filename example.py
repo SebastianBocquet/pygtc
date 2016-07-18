@@ -39,17 +39,21 @@ chainLabels = ["data1 $\lambda$", "data 2"]
 
 # List of Gaussian curves to plot (to represent priors): mean, width
 # List can be shorter than number of parameters
-priors = [[2, 1], [.5, 2], [], [0, .4], [], []]
+# Empty [] or None if no prior to plot
+priors = [[2, 1], [.5, 2], [], [0, .4], None, []]
 
 # List of truth values, to mark best-fit or input values
 # NOT a python array because of different lengths
 truths = [[4, .5, None, .1, None, None, None, None, 0], [None, None, .3, 1]]
 
+# List of parameter ranges to show, empty [] or None to let pyGTC decide
+paramRanges = [[-3,5],None,[-2,4],[]]
+
 # Labels for the different truths
 truthLabels = ['the truth', 'alternative truth']
 
 # Do the magic
-GTC = pyGTC.plotGTC(chains=[samples1,samples2], paramNames=names, truths=truths, priors=priors, chainLabels=chainLabels, truthLabels=truthLabels)
+GTC = pyGTC.plotGTC(chains=[samples1,samples2], paramNames=names, truths=truths, priors=priors, chainLabels=chainLabels, truthLabels=truthLabels, paramRanges=paramRanges)
 
 #plt.show()
 plt.savefig('GTC.pdf', bbox_inches='tight')
