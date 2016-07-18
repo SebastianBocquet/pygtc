@@ -56,6 +56,7 @@ def plotGTC(chains, **kwargs):
 
     tickAngle = 45 #Angle of tick labels
 
+
     #Dictionary of size types or whatever:
     mplPPI = plt.rcParams['figure.dpi'] #Matplotlib dots per inch
     figSizeDict = { 'APJ_column' : 245.26653 / mplPPI,
@@ -97,9 +98,8 @@ def plotGTC(chains, **kwargs):
     for i in range(nChains):
         assert len(np.shape(chains[i]))==2, "chain "+str(i)+" has unexpected shape"
 
-    # Number of dimensions
+    # Number of dimensions (parameters)
     nDim = len(chains[0][0,:])
-
 
     #Process kwargs and set defaults
     chainLabels = kwargs.pop('chainLabels', None) #Labels for multiple chains, goes in plot legend
@@ -108,7 +108,8 @@ def plotGTC(chains, **kwargs):
             chainLabels = [chainLabels]
         assert len(chainLabels) == nChains, "chainLabels mismatch with number of chains"
 
-    paramNames = kwargs.pop('paramNames', None) # label the x and y axes, supports latex
+    # Label the x and y axes, supports latex
+    paramNames = kwargs.pop('paramNames', None)
     if paramNames is not None:
         if all(isinstance(s, basestring) for s in paramNames):
             #if len(paramNames) == len(chains[0][0,:]):
@@ -148,7 +149,6 @@ def plotGTC(chains, **kwargs):
             truthsTemp.append(tempList)
         truths = np.array(truthsTemp)
     
-    
     # Labels for the different truth lines
     truthLabels = kwargs.pop('truthLabels', None) #Labels for multiple truths, goes in plot legend
     if truthLabels is not None:
@@ -156,10 +156,11 @@ def plotGTC(chains, **kwargs):
             truthLabels = [truthLabels]
         assert len(truthLabels) == len(truths), "truthLabels mismatch with number of truths"
 
+    #Show Gaussian priors on plots (assuming flat priors)
+    priors = kwargs.pop('priors', None)
 
-    priors = kwargs.pop('priors', None) #Show priors on plots (assuming flat priors)
-
-    weights = kwargs.pop('weights', None) #Manage the sample point weights
+    # Manage the sample point weights
+    weights = kwargs.pop('weights', None)
     if weights==None:
         # Set unit weights if no weights are provided
         weights = []
@@ -172,6 +173,7 @@ def plotGTC(chains, **kwargs):
             if len(weights[i])!=len(chains[i]):
                 raise ValueError("missmatch in chain/weights #%d: len(chain) %d, len(weights) %d"%(i,len(chains[i]),len(weights[i])))
 
+    # Set plotName to save the plot to plotName
     plotName = kwargs.pop('plotName', None) #Um... the name of the plot?!
     if plotName is not None:
         assert isinstance(plotName, basestring), "plotName must be a string type"
@@ -180,8 +182,11 @@ def plotGTC(chains, **kwargs):
     nConfidenceLevels = kwargs.pop('nConfidenceLevels', 2) #How many of the above confidence levels to show
     assert nConfidenceLevels in [1,2,3], "nConfidenceLevels must be 1, 2, or 3"
 
+    # Data binning and smoothing
+    nBins = kwargs.pop('nBins', 30) # Number of bins for 1d and 2d histograms. 30 works...
     smoothingKernel = kwargs.pop('smoothingKernel', 1) #Don't you like smooth data?
 
+    # Figure size: choose size to fit journal, use reasonable default, or provide your own
     figureSize = kwargs.pop('figureSize', None) #Figure size descriptor or figure width=height in inches
     if figureSize is None:
         # If no figure size is given, use resolution of 70 ppp (pixel per panel)
@@ -203,8 +208,7 @@ def plotGTC(chains, **kwargs):
         keys = keys + key + ' '
         raise NameError("illegal keyword arguments: " + keys)
 
-    # These are needed to compute the confidence levels TODO: make nBins a kwarg
-    nBins = 30.
+    # These are needed to compute the confidence levels
     nBinsFlat = np.linspace(0., nBins**2, nBins**2)
 
     # Left and right panel boundaries
@@ -318,6 +322,7 @@ def plotGTC(chains, **kwargs):
         ax.get_yaxis().set_ticklabels([])
         ax.yaxis.set_ticks_position('none')
         ax.set_ylim(bottom=0)
+        ax.xaxis.set_ticks_position('bottom')
 
         # x-label for bottom-right panel only
         if i==nDim-1:
