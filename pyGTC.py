@@ -39,7 +39,6 @@ def plotGTC(chains, **kwargs):
         the GTC in all its glory
     """
     # Setup matplotlb rcParams TODO: make sure this list is exhaustive
-
     plt.rcParams['legend.fontsize'] = 9
     plt.rcParams['axes.labelsize'] = 9
     plt.rcParams['xtick.labelsize'] = 6
@@ -352,12 +351,13 @@ def plotGTC(chains, **kwargs):
                 truthsForPlot1D = None
 
             # Extract 1d prior
+            prior1d = None
             if priors is not None:
                 if i<len(priors):
                     if priors[i] and priors[i][1]>0:
                         prior1d = priors[i]
-            else:
-                prior1d = None
+            print i,prior1d
+            
 
             # Plot!
             ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins, smoothingKernel, colors, truthsForPlot1D, truthColors, prior1d, lightBlack)
