@@ -39,12 +39,11 @@ def plotGTC(chains, **kwargs):
         the GTC in all its glory
     """
     # Setup matplotlb rcParams TODO: make sure this list is exhaustive
-    ipyNotebook = kwargs.pop('paramRanges', None)
-    
+
     plt.rcParams['legend.fontsize'] = 9
     plt.rcParams['axes.labelsize'] = 9
-    plt.rcParams['xtick.labelsize'] = 5
-    plt.rcParams['ytick.labelsize'] = 5
+    plt.rcParams['xtick.labelsize'] = 6
+    plt.rcParams['ytick.labelsize'] = 6
     plt.rcParams['text.usetex'] = True
     plt.rcParams['text.latex.preamble'] = [r'\usepackage{sansmath}', r'\sansmath']
 
@@ -55,9 +54,9 @@ def plotGTC(chains, **kwargs):
                     'purples' : ('#8172b2','#b4a5e5','#37d8ff')}
 
     colorsOrder = ['blues', 'greens', 'yellows', 'reds', 'purples']
-    
+
     colors = [colorsDict[cs] for cs in colorsOrder]
-    
+
     lightBlack = '#333333'
 
     tickAngle = 45 #Angle of tick labels
@@ -104,7 +103,7 @@ def plotGTC(chains, **kwargs):
     #Get number of chains
     nChains = len(chains)
     assert nChains<=len(colorsOrder), "currently only supports up to "+str(len(colorsOrder))+" chains"
-    
+
     # Double-check that chains are 2d arrays
     for i in range(nChains):
         assert len(chains[i].shape)==2, "chain "+str(i)+" has unexpected shape"
@@ -137,7 +136,7 @@ def plotGTC(chains, **kwargs):
 
     # Custom parameter range
     paramRanges = kwargs.pop('paramRanges', None)
-    
+
     # User-defined color ordering
     customColorsOrder = kwargs.pop('colorsOrder', None) #Labels for multiple chains, goes in plot legend
     if customColorsOrder is not None:
@@ -147,9 +146,9 @@ def plotGTC(chains, **kwargs):
             customColorsOrder = [customColorsOrder]
         lencustomColorsOrder = len(customColorsOrder)
         assert lencustomColorsOrder<=nChains, "colorsOrder mismatch with number of chains"
-        colorsOrder[:lencustomColorsOrder] = customColorsOrder[:lencustomColorsOrder]    
+        colorsOrder[:lencustomColorsOrder] = customColorsOrder[:lencustomColorsOrder]
         colors = [colorsDict[cs] for cs in colorsOrder]
-        
+
     # Colors of truth lines
     truthColors = kwargs.pop('truthColors', ['r','c','g','b','m']) #Default supports up to five truths TODO: prettier colors
     truths = kwargs.pop('truths', None) # Highlight a point (or several) in parameter space by lines
@@ -159,7 +158,7 @@ def plotGTC(chains, **kwargs):
         else:
             if len(truths)>len(truthColors):
                 raise ValueError("More truths than available colors. Set colors with truthColors = [colors...]")
-    
+
     # Fill up truths lists with None for missing entries
     if truths is not None:
         truthsTemp = []
@@ -173,7 +172,7 @@ def plotGTC(chains, **kwargs):
                 tempList.append( temp )
             truthsTemp.append(tempList)
         truths = np.array(truthsTemp)
-    
+
     # Labels for the different truth lines
     truthLabels = kwargs.pop('truthLabels', None) #Labels for multiple truths, goes in plot legend
     if truthLabels is not None:
@@ -229,10 +228,10 @@ def plotGTC(chains, **kwargs):
                 figureWidth = figSizeDict[figureSize]
             else:
                 raise ValueError("figureSize %s unknown!"%figureSize)
-                
+
     # Plot 1d histograms
     do1dplots = kwargs.pop('do1dplots', True)
-    
+
     # Plot ONLY 1d histograms
     doonly1dplot = kwargs.pop('doonly1dplot', False)
     if doonly1dplot:
@@ -256,8 +255,8 @@ def plotGTC(chains, **kwargs):
     fig = plt.figure(figsize=(figureWidth,figureWidth))
 
 
-    
-    
+
+
     ########## 2D contour plots
     if not doonly1dplot:
         for i in range(nDim): # row
@@ -268,7 +267,7 @@ def plotGTC(chains, **kwargs):
                         ax = fig.add_subplot(nDim,nDim,(i*nDim)+j+1)
                     else:
                         ax = fig.add_subplot(nDim-1,nDim-1,((i-1)*nDim)+j+1)
-                    
+
 
                     ##### Draw contours and truths
                     # Extract 2d chains
@@ -279,11 +278,11 @@ def plotGTC(chains, **kwargs):
                         truthsForPlot2D = [[truths[k,i], truths[k,j]] for k in range(len(truths))]
                     else:
                         truthsForPlot2D = None
-                
+
                     # Plot!
                     ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins, nBinsFlat, smoothingKernel, colors, nConfidenceLevels, truthsForPlot2D, truthColors)
-                
-                
+
+
                     ##### Range
                     if paramRanges is not None:
                         if j<len(paramRanges):
@@ -325,14 +324,14 @@ def plotGTC(chains, **kwargs):
                     ax.xaxis.set_major_locator(myLocator)
                     myLocator = MaxNLocator(5)
                     ax.yaxis.set_major_locator(myLocator)
-                    
+
                     # Remove first and last tick location
                     ax.xaxis.set_ticks(ax.xaxis.get_ticklocs()[1:-1])
                     ax.yaxis.set_ticks(ax.yaxis.get_ticklocs()[1:-1])
 
                     # Limits to be applied to 1d histograms
                     xmin[j], xmax[j] = ax.get_xlim()
-                
+
 
 
     if do1dplots:
@@ -351,7 +350,7 @@ def plotGTC(chains, **kwargs):
                 truthsForPlot1D = [truths[k,i] for k in range(len(truths))]
             else:
                 truthsForPlot1D = None
-            
+
             # Extract 1d prior
             if priors is not None:
                 if i<len(priors):
@@ -359,10 +358,10 @@ def plotGTC(chains, **kwargs):
                         prior1d = priors[i]
             else:
                 prior1d = None
-                    
+
             # Plot!
             ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins, smoothingKernel, colors, truthsForPlot1D, truthColors, prior1d, lightBlack)
-        
+
 
             ##### Ticks, labels, range
             ax.get_xaxis().get_major_formatter().set_useOffset(False)
@@ -398,7 +397,7 @@ def plotGTC(chains, **kwargs):
 
             # Remove first and last tick location
             ax.xaxis.set_ticks(ax.xaxis.get_ticklocs()[1:-1])
-            
+
 
 
     ########## Legend
@@ -424,19 +423,19 @@ def plotGTC(chains, **kwargs):
             for k in range(len(truthLabels)):
                 ax.plot(0,0, color=truthColors[k], label=truthLabels[k])
                 labelColors.append(truthColors[k])
-        
+
         # Set xlim back to what the data wanted
         if doonly1dplot:
             ax.set_xlim(xmin, xmax)
-            
+
 
         ##### Legend and label colors according to plot
         leg = plt.legend(loc='upper right', fancybox=True)
         leg.get_frame().set_alpha(0.)
         for color,text in zip(labelColors,leg.get_texts()):
             text.set_color(color)
-    
-    
+
+
 
 
 
@@ -451,7 +450,7 @@ def plotGTC(chains, **kwargs):
         plt.savefig(plotName, bbox_inches='tight')
 
     return fig
-    
+
 
 
 #################### Create single 1d panel
@@ -484,25 +483,25 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, colors, tru
         # Plot prior in -4 to +4 sigma range
         arr = np.linspace(prior1d[0]-4*prior1d[1], prior1d[0]+4*prior1d[1], 40)
         plt.plot(arr,norm.pdf(arr,prior1d[0],prior1d[1]), color=lightBlack)
-    
+
     return ax
-    
-    
-    
+
+
+
 #################### Create single 2d panel
 
 def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, colors, nConfidenceLevels, truths2d, truthColors):
-    
+
     #generateLabels defaults to True for standalone plotting
     #pltGTC sets generateLabels=False and handles its own
-    
+
     # Use the 68%, 95%, and 99% confidence levels, which look different in 2D
     gaussConfLevels = [.3173, .0455, .0027]
-    
-    # 
+
+    #
     chainLevels = np.ones((nChains,nConfidenceLevels+1))
     extents = np.empty((nChains,4))
-    
+
     ##### The filled contour plots
     smoothData = []
     # Draw filled contours in reversed order to have first chain in list on top
