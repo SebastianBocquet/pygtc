@@ -33,7 +33,7 @@ def plotGTC(chains, **kwargs):
         colorsOrder: change the default order of colors for the contours
         do1dPlots: set to False if you don't want the 1d panels
         doOnly1dPlot: only plot ONE 1d histogram. Provide chain(s) of shape (Npoints,1)
-
+    
     Returns:
     --------
     fig: matplotlib.figure
@@ -89,7 +89,7 @@ def plotGTC(chains, **kwargs):
             dfColNames = list(chains[0].columns.values)
             chains = [df.values for df in chains]
             
-    except ValueError: #Probably a list of pandas DFs
+    except ValueError: #Probably a list of pandas DFs 
         if hasattr(chains[0], 'columns') and hasattr(chains[0], 'values'):
             dfColNames = list(chains[0].columns.values)
             chains = [df.values for df in chains]
@@ -134,6 +134,8 @@ def plotGTC(chains, **kwargs):
 
     # Custom parameter range
     paramRanges = kwargs.pop('paramRanges', None)
+    if paramRanges is not None:
+        assert len(paramRanges)==nDim, "paramRanges must match number of parameters"
 
     # User-defined color ordering
     customColorsOrder = kwargs.pop('colorsOrder', None) #Labels for multiple chains, goes in plot legend
@@ -153,25 +155,11 @@ def plotGTC(chains, **kwargs):
     truths = kwargs.pop('truths', None)
     if truths is not None:
         # Convert to list if needed
-        try:
-            temp = truths[0][0]
-        except:
+        if len(np.shape(truths))==1:
             truths = [truths]
-        assert len(truths)<=len(truthColors), "More truths than available colors. Set colors with truthColors = [colors...]"
-
-    # Fill up truths lists with None for missing entries
-    if truths is not None:
-        truthsTemp = []
-        for k in range(len(truths)):
-            tempList = []
-            for i in range(nDim):
-                if i<len(truths[k]):
-                    temp = truths[k][i] if truths[k][i] is not None else None
-                else:
-                    temp = None
-                tempList.append( temp )
-            truthsTemp.append(tempList)
-        truths = np.array(truthsTemp)
+        truths = np.array(truths)
+        assert np.shape(truths)[0]<=len(truthColors), "More truths than available colors. Set colors with truthColors = [colors...]"
+        assert np.shape(truths)[1]==nDim, "Each list of truths must match number of parameters"
 
     # Labels for the different truth lines
     truthLabels = kwargs.pop('truthLabels', None) #Labels for multiple truths, goes in plot legend
@@ -186,11 +174,8 @@ def plotGTC(chains, **kwargs):
     #Show Gaussian priors on plots (assuming flat priors)
     priors = kwargs.pop('priors', None)
     if priors is not None:
-        try:
-            temp = priors[0][0]
-        except:
-            priors = [priors]
-        for i in range(len(priors)):
+        assert len(priors)==nDim, "List of priors must match number of parameters"
+        for i in range(nDim):
             if priors[i]:
                 assert priors[i][1]>0, "Prior width must be positive"
     
@@ -294,12 +279,10 @@ def plotGTC(chains, **kwargs):
 
                     ##### Range
                     if paramRanges is not None:
-                        if j<len(paramRanges):
-                            if paramRanges[j]:
-                                ax.set_xlim(paramRanges[j][0],paramRanges[j][1])
-                        if i<len(paramRanges):
-                            if paramRanges[i]:
-                                ax.set_ylim(paramRanges[i][0],paramRanges[i][1])
+                        if paramRanges[j]:
+                            ax.set_xlim(paramRanges[j][0],paramRanges[j][1])
+                        if paramRanges[i]:                                
+                            ax.set_ylim(paramRanges[i][0],paramRanges[i][1])
 
                     ##### Ticks & labels
                     ax.get_xaxis().get_major_formatter().set_useOffset(False)
@@ -362,9 +345,8 @@ def plotGTC(chains, **kwargs):
             # Extract 1d prior
             prior1d = None
             if priors is not None:
-                if i<len(priors):
-                    if priors[i] and priors[i][1]>0:
-                        prior1d = priors[i]            
+                if priors[i] and priors[i][1]>0:
+                    prior1d = priors[i]            
 
             # Plot!
             ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins, smoothingKernel, colors, truthsForPlot1D, truthColors, prior1d, lightBlack)
