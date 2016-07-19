@@ -29,7 +29,7 @@ def create_random_samples(ndim, Npoints):
 
 # Create two sets of sample points with 8 parameters and 50000 points
 samples1 = create_random_samples(8, 50000)
-samples2 = 1+create_random_samples(8, 50000)
+samples2 = 1+create_random_samples(8, 60000)
 
 # List of parameter names, supports latex
 names = ['param name', '$B_\mathrm{\lambda}$', '$C$', '$\\lambda$', 'C', 'D', 'M', '$\\gamma$']
@@ -63,22 +63,15 @@ colorsOrder = ['blues', 'yellows']
 # inputarr must either be:
 # -list of length nChains, each being an array of shape (Npoints, nDim)
 # -single array of shape (Npoints, nDim)
-#inputarr=[samples1,samples2]
-#GTC = pyGTC.plotGTC(chains=inputarr, paramNames=names, truths=truths, priors=priors, chainLabels=chainLabels, truthLabels=truthLabels, paramRanges=paramRanges, colorsOrder=colorsOrder)
+GTC = pyGTC.plotGTC(chains=[samples1[:,:2],samples2[:,:2]], paramNames=names[:2], truths=truths, priors=priors, chainLabels=chainLabels, truthLabels=truthLabels, paramRanges=paramRanges, colorsOrder=colorsOrder)
 
-##### Only 2 parameters
-# inputarr must be list of length nChains, each being an array of shape (Npoints, 2)
-inputarr = [np.array([samples1[:,0],samples1[:,1]]).T]
-# Covariance and 1d histograms
-#GTC = pyGTC.plotGTC(chains=inputarr, paramNames=names[:2], chainLabels='data', figureSize='APJ_column')
 # Only covariance
-#GTC = pyGTC.plotGTC(chains=inputarr, paramNames=names[:2], chainLabels='data', figureSize='APJ_column', do1dplots=False)
+# pass do1dplots=False
 
 ##### Only one 1d histogram
 # inputarr must be list of length nChains, each being array of shape (Npoints, 1)
 inputarr = [np.array([samples1[:,0]]).T, np.array([samples2[:,0]]).T]
-print np.shape(inputarr)
-GTC = pyGTC.plotGTC(chains=inputarr, paramNames=[names[0]],  chainLabels=chainLabels,figureSize='APJ_column', doonly1dplot=True)
+#GTC = pyGTC.plotGTC(chains=inputarr, paramNames=[names[0]],  chainLabels=chainLabels,figureSize='APJ_column', doonly1dplot=True)
 
 
 #plt.show()

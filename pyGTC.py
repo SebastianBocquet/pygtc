@@ -73,10 +73,14 @@ def plotGTC(chains, **kwargs):
     #so if it gets one, extract array vals and throw away the rest
     dfColNames = None
     try: #Not a list of DFs, but might be a single DF
-        shapeLength = len(np.shape(chains))
-        assert shapeLength in [2,3], "unexpected chains shape"
-        if shapeLength == 2:
-            chains = [chains]
+        #shapeLength = len(np.shape(chains))
+        #assert shapeLength in [2,3], "unexpected chains shape"
+        try:
+            if chains.ndim == 2:
+                chains = [chains]
+        except:
+            for i in range(len(chains)):
+                assert len(chains[i].shape)==2, "unexpected shape of chain %d"%(chains[i])
 
         # Read in column names from Pandas DataFrame if exists
         #Also convert DataFrame to simple numpy array to avoid later conflicts
@@ -96,10 +100,10 @@ def plotGTC(chains, **kwargs):
     #Get number of chains
     nChains = len(chains)
     assert nChains<=len(colorsOrder), "currently only supports up to "+str(len(colorsOrder))+" chains"
-
-    # Check that chains are 2d arrays
+    
+    # Double-check that chains are 2d arrays
     for i in range(nChains):
-        assert len(np.shape(chains[i]))==2, "chain "+str(i)+" has unexpected shape"
+        assert len(chains[i].shape)==2, "chain "+str(i)+" has unexpected shape"
 
     # Number of dimensions (parameters)
     nDim = len(chains[0][0,:])
@@ -121,7 +125,7 @@ def plotGTC(chains, **kwargs):
             #    paramNames = list(val)
             #else:
         if len(paramNames) != nDim:
-            raise ValueError("paramNames length must match number of parameters in chains")
+            raise ValueError("paramNames length (%d) must match number of parameters in chains (%d)"%(len(paramNames),nDim))
         #else:
         #    raise TypeError("paramNames must be a list of strings")
     elif dfColNames is not None:
@@ -308,10 +312,14 @@ def plotGTC(chains, **kwargs):
                         yLabel.set_rotation(tickAngle)
 
                     # No more than 5 ticks per panel
-                    myLocator = MaxNLocator(4)
+                    myLocator = MaxNLocator(5)
                     ax.xaxis.set_major_locator(myLocator)
-                    myLocator = MaxNLocator(4)
+                    myLocator = MaxNLocator(5)
                     ax.yaxis.set_major_locator(myLocator)
+                    
+                    # Remove first and last tick location
+                    ax.xaxis.set_ticks(ax.xaxis.get_ticklocs()[1:-1])
+                    ax.yaxis.set_ticks(ax.yaxis.get_ticklocs()[1:-1])
 
                     # Limits to be applied to 1d histograms
                     xmin[j], xmax[j] = ax.get_xlim()
@@ -376,10 +384,12 @@ def plotGTC(chains, **kwargs):
                     ax.set_ylabel(paramNames[i])
 
             # No more than 5 ticks per panel
-            myLocator = MaxNLocator(4)
+            myLocator = MaxNLocator(5)
             ax.xaxis.set_major_locator(myLocator)
-            #myLocator = MaxNLocator(4)
-            #ax.yaxis.set_major_locator(myLocator)
+
+            # Remove first and last tick location
+            ax.xaxis.set_ticks(ax.xaxis.get_ticklocs()[1:-1])
+            
 
 
     ########## Legend
