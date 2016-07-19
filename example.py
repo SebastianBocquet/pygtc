@@ -76,15 +76,13 @@ paramRanges = ((-3,5),None,(-2,4),())
 #truthLabels = 'the truth'
 truthLabels = ( 'the truth', 'alternative truth')
 
-# New order of colors
-colorsOrder = ['blues', 'yellows']
 
 ########## Do the magic
 ##### Full GTC
 # inputarr must either be:
 # -list of length nChains, each being an array of shape (Npoints, nDim)
 # -single array of shape (Npoints, nDim)
-GTC = pyGTC.plotGTC(chains=[samples1,samples2], paramNames=names[:2], truths=truths, priors=priors, chainLabels=chainLabels, truthLabels=truthLabels, paramRanges=paramRanges, colorsOrder=colorsOrder)
+GTC = pyGTC.plotGTC(chains=[samples1,samples2], paramNames=names, truths=truths, priors=priors, chainLabels=chainLabels, truthLabels=truthLabels, paramRanges=paramRanges, figureSize='APJ_page')
 
 
 ##### Only one 1d histogram
