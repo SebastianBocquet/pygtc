@@ -30,8 +30,8 @@ def plotGTC(chains, **kwargs):
         figureSize
         paramRanges
         colorsOrder
-        do1dplots
-        doonly1dplot
+        do1dPlots
+        doOnly1dPlot
 
     Returns:
     --------
@@ -229,14 +229,14 @@ def plotGTC(chains, **kwargs):
                 raise ValueError("figureSize %s unknown!"%figureSize)
 
     # Plot 1d histograms
-    do1dplots = kwargs.pop('do1dplots', True)
+    do1dPlots = kwargs.pop('do1dPlots', True)
 
     # Plot ONLY 1d histograms
-    doonly1dplot = kwargs.pop('doonly1dplot', False)
-    if doonly1dplot:
+    doOnly1dPlot = kwargs.pop('doOnly1dPlot', False)
+    if doOnly1dPlot:
         for i in range(nChains):
             assert chains[i].shape[1]==1, "Provide chains of shape(Npoints,1) if you only want the 1d histogram"
-        do1dplots = True
+        do1dPlots = True
 
     #Check to see if there are any remaining keyword arguments
     keys = ''
@@ -257,15 +257,15 @@ def plotGTC(chains, **kwargs):
 
 
     ########## 2D contour plots
-    if not doonly1dplot:
+    if not doOnly1dPlot:
         for i in range(nDim): # row
             for j in range(nDim): # column
                 if j<i:
                     ##### Create subplot
-                    if do1dplots:
+                    if do1dPlots:
                         ax = fig.add_subplot(nDim,nDim,(i*nDim)+j+1)
                     else:
-                        ax = fig.add_subplot(nDim-1,nDim-1,((i-1)*nDim)+j+1)
+                        ax = fig.add_subplot(nDim-1,nDim-1,((i-1)*(nDim-1))+j+1)
 
 
                     ##### Draw contours and truths
@@ -273,10 +273,9 @@ def plotGTC(chains, **kwargs):
                     chainsForPlot2D = [[chains[k][:,j], chains[k][:,i]] for k in range(nChains)]
 
                     # Extract 2d truths
+                    truthsForPlot2D = None
                     if truths is not None:
                         truthsForPlot2D = [[truths[k,i], truths[k,j]] for k in range(len(truths))]
-                    else:
-                        truthsForPlot2D = None
 
                     # Plot!
                     ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins, nBinsFlat, smoothingKernel, colors, nConfidenceLevels, truthsForPlot2D, truthColors)
@@ -333,7 +332,7 @@ def plotGTC(chains, **kwargs):
 
 
 
-    if do1dplots:
+    if do1dPlots:
         ########## 1D histograms
         for i in range(nDim):
             ##### Create subplot
@@ -345,19 +344,16 @@ def plotGTC(chains, **kwargs):
             chainsForPlot1D = [chains[k][:,i] for k in range(nChains)]
 
             # Extract 1d truths
+            truthsForPlot1D = None
             if truths is not None:
                 truthsForPlot1D = [truths[k,i] for k in range(len(truths))]
-            else:
-                truthsForPlot1D = None
 
             # Extract 1d prior
             prior1d = None
             if priors is not None:
                 if i<len(priors):
                     if priors[i] and priors[i][1]>0:
-                        prior1d = priors[i]
-            print i,prior1d
-            
+                        prior1d = priors[i]            
 
             # Plot!
             ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins, smoothingKernel, colors, truthsForPlot1D, truthColors, prior1d, lightBlack)
@@ -386,7 +382,7 @@ def plotGTC(chains, **kwargs):
 
             # y label for top-left panel
             if i==0:
-                if doonly1dplot:
+                if doOnly1dPlot:
                     ax.set_ylabel('Probability')
                 elif paramNames is not None:
                     ax.set_ylabel(paramNames[i])
@@ -404,7 +400,7 @@ def plotGTC(chains, **kwargs):
     if (chainLabels is not None) or (truthLabels is not None):
         ##### Dummy plot for label line color
         labelColors = []
-        if not doonly1dplot:
+        if not doOnly1dPlot:
             ax = fig.add_subplot(nDim,nDim,nDim)
             ax.axis('off')
         else:
@@ -425,7 +421,7 @@ def plotGTC(chains, **kwargs):
                 labelColors.append(truthColors[k])
 
         # Set xlim back to what the data wanted
-        if doonly1dplot:
+        if doOnly1dPlot:
             ax.set_xlim(xmin, xmax)
 
 
