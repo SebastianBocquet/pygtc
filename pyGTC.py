@@ -10,36 +10,86 @@ from scipy.stats import norm
 def plotGTC(chains, **kwargs):
     """Create a beautiful triangle plot - aka Giant Triangle Confusogram (GTC).
 
-    Parameters:
-    -----------
-    chains: 2d array or list of 2d arrays
-        Sample points (length x Ndim) or multiple sets of samples points
-        Note: If you are using emcee (http://dan.iel.fm/emcee/current/) - and you should! - you need to pass the EnsembleSampler.flatchain object.
-    kwargs:
-        weights: weights for the sample points. Either 1d array or list of 1d arrays
-        chainLabels: one label per chain, supports latex
-        paramNames: one label per parameter, supports latex
-        truths: show points in parameter space by lines, multiple sets possible
-        truthLabels: one label per truth line, supports latex
-        truthColors: user-defined colors for the truth lines
-        priors: plot Gaussian priors in 1d panels
-        plotName: provide filename for direct output
-        nConfidenceLevels: in 2d panels, plot nConfidenceLevels confidence levels (1,2, or 3)
-        nBins: change number of bins for histograms
-        smoothingKernel: size of Gaussian smoothing kernel (in bins)
-        figureSize: provide either figure width, or choose from predefined journal setting (recommended)
-        panelSpacing: "loose" / "tight" (default)
-        paramRanges: provide ranges for subset or all parameters 
-        colorsOrder: change the default order of colors for the contours
-        do1dPlots: set to False if you don't want the 1d panels
-        doOnly1dPlot: only plot ONE 1d histogram. Provide chain(s) of shape (Npoints,1)
-    
+    Arguments:
+        chains - 2d array with dimensions [num dimensions , sample points] or a
+                    list of such 2d arrays. If a list, all chains in the list
+                    must have the same number of dimensions.
+                    Note: If you are using emcee
+                    (http://dan.iel.fm/emcee/current/) - and you should! - each
+                    element of chains is an EnsembleSampler.flatchain object.
+
+    Keyword Arguments:
+        weights -- Weights for the sample points. If a 1d array is passed,
+                    the same weights are used for all dimension in chains.
+                    If a list of 1d arrays is passed, there must be a weights
+                    array for each dimension of chains. Default weight is 1.
+
+        chainLabels -- A list of text labels describing each chain passed to
+                    chains. len(chainLabels) must equal len(chains).
+                    chainLabels supports LaTex commands enclosed in $..$.
+                    Additionally, you can pass None as a label. Default is None.
+
+        paramNames -- A list of text labels describing each dimension of chains.
+                    len(paramNames) must equal len(chains[0]). paramNames
+                    supports LaTex commands enclosed in $..$. Additionally, you
+                    can pass None as a label. Default is None, however if you
+                    pass a pandas DataFrame object, paramNames defaults to the
+                    DataFrame column names.
+
+        truths -- A list of values to hilite in the GTC parameter space, or a
+                    list of lists of values to hilite in the parameter space.
+                    For each set of truths passed, there must be a value
+                    corresponding to every dimension in chains, although any
+                    value may be None. Default is None.
+
+        truthLabels -- A list of labels, one for each list passed to truths.
+                    truthLabels supports LaTex commands enclosed in $..$.
+                    Additionally, you can pass None as a label. Default is None.
+
+        truthColors -- User-defined colors for the truth lines, must be one per
+                    set of truths passed to truths. Default colors in code.
+
+        priors -- A list of tuples in the form (mu, sigma) that describe
+                    Gaussians to be plotted over the parameter histograms. The
+                    number of priors must equal the number of dimensions in
+                    chains. Default is None.
+
+        plotName -- A filename to save the plot to. Default is None.
+
+        nConfidenceLevels -- The number of contours to plot in the 2d
+                    histograms. Each contour corresponds to a sigma. May be 1,
+                    2, or 3. Default is 2.
+
+        nBins -- An integer describing the number of bins used to compute the
+                    histograms. Default is 30.
+
+        smoothingKernel -- An integer describing the size of the Gaussian
+                    smoothing kernel in bins. Default is 1.
+
+        figureSize -- A number in inches describing the length = width of the
+                    GTC, or a string indicating a predefined journal setting.
+                    Default is 70/dpi where dpi = plt.rcParams['figure.dpi'].
+
+        panelSpacing -- 'loose' or 'tight'. Default is 'tight'.
+
+        paramRanges -- A list of tuples, on for each dimension of chains, in
+                    the form (min, max). Default is 4 sigma bounds.
+
+        colorsOrder -- Default is ['blues', 'greens', 'yellows', 'reds',
+                    'purples']
+
+        do1dPlots -- Boolean describing whether 1d histrograms are plotted on
+                    the diagonal. Default is True.
+
+        doOnly1dPlot -- True/False: plot only ONE 1d histogram. If this is
+                    True, then chains must have shape (samples,1). Default is
+                    False.
+
     Returns:
     --------
-    fig: matplotlib.figure
-        the GTC in all its glory
+    fig -- matplotlib.figure object (the GTC in all its glory)
     """
-    
+
     ##### Matplotlib and figure setting
     # Mtplotlb rcParams TODO: make sure this list is exhaustive
     plt.rcParams['legend.fontsize'] = 9
@@ -49,6 +99,8 @@ def plotGTC(chains, **kwargs):
     plt.rcParams['text.usetex'] = True
     plt.rcParams['text.latex.preamble'] = [r'\usepackage{sansmath}', r'\sansmath']
 
+    #Set up some colors
+    truthsDefaultColors = ['r','c','g','b','m']
     colorsDict = { 'blues' : ('#4c72b0','#7fa5e3','#b2d8ff'),
                     'greens' : ('#55a868','#88db9b','#bbffce'),
                     'yellows' : ('#f5964f','#ffc982','#fffcb5'),
@@ -57,7 +109,7 @@ def plotGTC(chains, **kwargs):
     colorsOrder = ['blues', 'greens', 'yellows', 'reds', 'purples']
     colors = [colorsDict[cs] for cs in colorsOrder]
     lightBlack = '#333333'
-    
+
     #Angle of tick labels
     tickAngle = 45
 
@@ -81,15 +133,15 @@ def plotGTC(chains, **kwargs):
                 chains = [chains]
         except:
             pass
-        
+
         # Read in column names from Pandas DataFrame if exists
         #Also convert DataFrame to simple numpy array to avoid later conflicts
         if hasattr(chains[0], 'columns'):
             #Set param names from DataFrame column names, can be overridden later
             dfColNames = list(chains[0].columns.values)
             chains = [df.values for df in chains]
-            
-    except ValueError: #Probably a list of pandas DFs 
+
+    except ValueError: #Probably a list of pandas DFs
         if hasattr(chains[0], 'columns') and hasattr(chains[0], 'values'):
             dfColNames = list(chains[0].columns.values)
             chains = [df.values for df in chains]
@@ -143,7 +195,7 @@ def plotGTC(chains, **kwargs):
         # Convert to list if only one entry
         if isinstance(customColorsOrder, basestring):
             customColorsOrder = [customColorsOrder]
-        lencustomColorsOrder = len(customColorsOrder)        
+        lencustomColorsOrder = len(customColorsOrder)
         if not all(color in colorsDict.keys() for color in customColorsOrder):
             raise ValueError("Bad color name in colorsOrder=%s, pick from %s"%(customColorsOrder,colorsDict.keys()))
         colorsOrder[:lencustomColorsOrder] = customColorsOrder[:lencustomColorsOrder]
@@ -151,7 +203,7 @@ def plotGTC(chains, **kwargs):
 
     # Highlight a point (or several) in parameter space by lines
     # Colors of truth lines
-    truthColors = kwargs.pop('truthColors', ['r','c','g','b','m']) #Default supports up to five truths TODO: prettier colors
+    truthColors = kwargs.pop('truthColors', truthsDefaultColors) #Default supports up to five truths TODO: prettier colors
     truths = kwargs.pop('truths', None)
     if truths is not None:
         # Convert to list if needed
@@ -178,7 +230,7 @@ def plotGTC(chains, **kwargs):
         for i in range(nDim):
             if priors[i]:
                 assert priors[i][1]>0, "Prior width must be positive"
-    
+
     # Manage the sample point weights
     weights = kwargs.pop('weights', None)
     if weights==None:
@@ -281,7 +333,7 @@ def plotGTC(chains, **kwargs):
                     if paramRanges is not None:
                         if paramRanges[j]:
                             ax.set_xlim(paramRanges[j][0],paramRanges[j][1])
-                        if paramRanges[i]:                                
+                        if paramRanges[i]:
                             ax.set_ylim(paramRanges[i][0],paramRanges[i][1])
 
                     ##### Ticks & labels
@@ -346,7 +398,7 @@ def plotGTC(chains, **kwargs):
             prior1d = None
             if priors is not None:
                 if priors[i] and priors[i][1]>0:
-                    prior1d = priors[i]            
+                    prior1d = priors[i]
 
             # Plot!
             ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins, smoothingKernel, colors, truthsForPlot1D, truthColors, prior1d, lightBlack)
