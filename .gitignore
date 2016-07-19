@@ -8,5 +8,8 @@
 *~
 .ipynb_checkpoints
 
+# pdf files
+*.pdf
+
 #Data for editing notebooks
 /ExampleData
