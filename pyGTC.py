@@ -185,7 +185,15 @@ def plotGTC(chains, **kwargs):
 
     #Show Gaussian priors on plots (assuming flat priors)
     priors = kwargs.pop('priors', None)
-
+    if priors is not None:
+        try:
+            temp = priors[0][0]
+        except:
+            priors = [priors]
+        for i in range(len(priors)):
+            if priors[i]:
+                assert priors[i][1]>0, "Prior width must be positive"
+    
     # Manage the sample point weights
     weights = kwargs.pop('weights', None)
     if weights==None:
@@ -226,7 +234,7 @@ def plotGTC(chains, **kwargs):
             if figureSize in figSizeDict.keys():
                 figureWidth = figSizeDict[figureSize]
             else:
-                raise ValueError("figureSize %s unknown!"%figureSize)
+                raise ValueError("figureSize %s unknown"%figureSize)
 
     # Space between panels
     panelSpacing = kwargs.pop('panelSpacing', 'tight')
