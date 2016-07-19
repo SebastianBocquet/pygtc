@@ -75,61 +75,60 @@ def plotGTC(chains, **kwargs):
     #so if it gets one, extract array vals and throw away the rest
     dfColNames = None
     try: #Not a list of DFs, but might be a single DF
-        #shapeLength = len(np.shape(chains))
-        #assert shapeLength in [2,3], "unexpected chains shape"
         try:
+            # Check if single numpy 2d chain
             if chains.ndim == 2:
                 chains = [chains]
         except:
-            for i in range(len(chains)):
-                assert len(chains[i].shape)==2, "unexpected shape of chain %d"%(chains[i])
-
+            pass
+        
         # Read in column names from Pandas DataFrame if exists
         #Also convert DataFrame to simple numpy array to avoid later conflicts
         if hasattr(chains[0], 'columns'):
             #Set param names from DataFrame column names, can be overridden later
             dfColNames = list(chains[0].columns.values)
             chains = [df.values for df in chains]
-
+            
     except ValueError: #Probably a list of pandas DFs
         if hasattr(chains[0], 'columns') and hasattr(chains[0], 'values'):
             dfColNames = list(chains[0].columns.values)
             chains = [df.values for df in chains]
 
-        #If not a DF but something else, this will fail again, which is good
-        assert len(np.shape(chains)) in [2,3], "unexpected chains shape"
-
     #Get number of chains
     nChains = len(chains)
     assert nChains<=len(colorsOrder), "currently only supports up to "+str(len(colorsOrder))+" chains"
 
-    # Double-check that chains are 2d arrays
+    # Check that each chain looks reasonable (2d shape)
     for i in range(nChains):
-        assert len(chains[i].shape)==2, "chain "+str(i)+" has unexpected shape"
+        assert len(chains[i].shape)==2, "unexpected shape of chain %d"%(chains[i])
 
-    # Number of dimensions (parameters)
+    # Number of dimensions (parameters), check all chains have same nDim
     nDim = len(chains[0][0,:])
+    for i in range(nChains):
+        nDimi = len(chains[i][0,:])
+        assert nDimi==nDim, "chain %d has unexpected number of dimensions %d"%(i,nDimi)
 
-    #Process kwargs and set defaults
-    chainLabels = kwargs.pop('chainLabels', None) #Labels for multiple chains, goes in plot legend
+    # Labels for multiple chains, goes in plot legend
+    chainLabels = kwargs.pop('chainLabels', None)
     if chainLabels is not None:
-        if not (isinstance(chainLabels, tuple) or isinstance(chainLabels, list)):
+        # Convert to list if only one label
+        if isinstance(chainLabels, basestring):
             chainLabels = [chainLabels]
+        # Check that number of labels equals number of chains
         assert len(chainLabels) == nChains, "chainLabels mismatch with number of chains"
+        # Check that it's a list of strings
+        assert all(isinstance(s, basestring) for s in chainLabels), "chainLabels must be list of strings"
 
     # Label the x and y axes, supports latex
     paramNames = kwargs.pop('paramNames', None)
     if paramNames is not None:
-        if not (isinstance(paramNames, tuple) or isinstance(paramNames, list)):
+        # Convert to list if only one name
+        if isinstance(paramNames, basestring):
             paramNames = [paramNames]
-        #if all(isinstance(s, basestring) for s in paramNames):
-            #if len(paramNames) == len(chains[0][0,:]):
-            #    paramNames = list(val)
-            #else:
-        if len(paramNames) != nDim:
-            raise ValueError("paramNames length (%d) must match number of parameters in chains (%d)"%(len(paramNames),nDim))
-        #else:
-        #    raise TypeError("paramNames must be a list of strings")
+        # Check that number of paramNames equals nDim
+        assert len(paramNames) == nDim, "paramNames mismatch with number of dimensions"
+        # Check that it's a list of strings
+        assert all(isinstance(s, basestring) for s in paramNames), "paramNames must be list of strings"
     elif dfColNames is not None:
         paramNames = dfColNames
 
@@ -139,24 +138,26 @@ def plotGTC(chains, **kwargs):
     # User-defined color ordering
     customColorsOrder = kwargs.pop('colorsOrder', None) #Labels for multiple chains, goes in plot legend
     if customColorsOrder is not None:
+        # Convert to list if only one entry
+        if isinstance(customColorsOrder, basestring):
+            customColorsOrder = [customColorsOrder]
+        lencustomColorsOrder = len(customColorsOrder)        
         if not all(color in colorsDict.keys() for color in customColorsOrder):
             raise ValueError("Bad color name in colorsOrder=%s, pick from %s"%(customColorsOrder,colorsDict.keys()))
-        if not (isinstance(customColorsOrder, tuple) or isinstance(customColorsOrder, list)):
-            customColorsOrder = [customColorsOrder]
-        lencustomColorsOrder = len(customColorsOrder)
-        assert lencustomColorsOrder<=nChains, "colorsOrder mismatch with number of chains"
         colorsOrder[:lencustomColorsOrder] = customColorsOrder[:lencustomColorsOrder]
         colors = [colorsDict[cs] for cs in colorsOrder]
 
+    # Highlight a point (or several) in parameter space by lines
     # Colors of truth lines
     truthColors = kwargs.pop('truthColors', ['r','c','g','b','m']) #Default supports up to five truths TODO: prettier colors
-    truths = kwargs.pop('truths', None) # Highlight a point (or several) in parameter space by lines
+    truths = kwargs.pop('truths', None)
     if truths is not None:
-        if not (isinstance(truths[0], tuple) or isinstance(truths[0], list)):
+        # Convert to list if needed
+        try:
+            temp = truths[0][0]
+        except:
             truths = [truths]
-        else:
-            if len(truths)>len(truthColors):
-                raise ValueError("More truths than available colors. Set colors with truthColors = [colors...]")
+        assert len(truths)<=len(truthColors), "More truths than available colors. Set colors with truthColors = [colors...]"
 
     # Fill up truths lists with None for missing entries
     if truths is not None:
@@ -175,8 +176,11 @@ def plotGTC(chains, **kwargs):
     # Labels for the different truth lines
     truthLabels = kwargs.pop('truthLabels', None) #Labels for multiple truths, goes in plot legend
     if truthLabels is not None:
-        if not (isinstance(truthLabels, tuple) or isinstance(truthLabels, list)):
+        # Convert to list if only one label
+        if isinstance(truthLabels, basestring):
             truthLabels = [truthLabels]
+        # Check that it's a list of strings
+        assert all(isinstance(s, basestring) for s in truthLabels), "truthLabels must be list of strings"
         assert len(truthLabels) == len(truths), "truthLabels mismatch with number of truths"
 
     #Show Gaussian priors on plots (assuming flat priors)
@@ -186,18 +190,12 @@ def plotGTC(chains, **kwargs):
     weights = kwargs.pop('weights', None)
     if weights==None:
         # Set unit weights if no weights are provided
-        weights = []
-        for i in range(nChains):
-            weights.append( np.ones(len(chains[i])) )
+        weights = [np.ones(len(chains[i])) for i in range(nChains)]
     else:
         if len(weights)==len(chains[0]):
             weights = [weights]
-        else:
-            try:
-                for i in range(nChains):
-                    if len(weights[i])!=len(chains[i]):
-                        raise ValueError("missmatch in chain/weights #%d: len(chain) %d, len(weights) %d"%(i,len(chains[i]),len(weights[i])))
-            except: raise ValueError("your weights don't make sense")
+        for i in range(nChains):
+            assert len(weights[i])==len(chains[i]), "missmatch in chain/weights #%d: len(chain) %d, len(weights) %d"%(i,len(chains[i]),len(weights[i]))
 
     # Set plotName to save the plot to plotName
     plotName = kwargs.pop('plotName', None) #Um... the name of the plot?!
@@ -211,6 +209,8 @@ def plotGTC(chains, **kwargs):
     # Data binning and smoothing
     nBins = kwargs.pop('nBins', 30) # Number of bins for 1d and 2d histograms. 30 works...
     smoothingKernel = kwargs.pop('smoothingKernel', 1) #Don't you like smooth data?
+    if smoothingKernel>=nBins/10:
+        print("Wow, that's a huge smoothing kernel! You sure you want its scale to be %.1f percent of the plot?!"%(100.*float(smoothingKernel)/float(nBins)))
 
     # Figure size: choose size to fit journal, use reasonable default, or provide your own
     figureSize = kwargs.pop('figureSize', None) #Figure size descriptor or figure width=height in inches
