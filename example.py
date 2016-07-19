@@ -26,10 +26,11 @@ import pyGTC
         nBins: change number of bins for histograms
         smoothingKernel: size of Gaussian smoothing kernel (in bins)
         figureSize: provide either figure width, or choose from predefined journal setting (recommended)
+        panelSpacing: "loose" / "tight" (default)
         paramRanges: provide ranges for subset or all parameters 
         colorsOrder: change the default order of colors for the contours
-        do1dplots: set to False if you don't want the 1d panels
-        doonly1dplot: only plot ONE 1d histogram. Provide chain(s) of shape (Npoints,1)
+        do1dPlots: set to False if you don't want the 1d panels
+        doOnly1dPlot: only plot ONE 1d histogram. Provide chain(s) of shape (Npoints,1)
 
     returns:
         fig: matplotlib.figure
@@ -69,26 +70,26 @@ priors = ((2, 1), (.5, 2), (), (0, .4), None, ())
 #truths = (4, .5, None, .1, 0, None, None, 0)
 truths = ((4, .5, None, .1, 0, None, None, 0), (None, None, .3, 1))
 
-# List of parameter ranges to show, empty () or None to let pyGTC decide
-paramRanges = ((-3,5),None,(-2,4),())
-
 # Labels for the different truths
 #truthLabels = 'the truth'
 truthLabels = ( 'the truth', 'alternative truth')
 
+# List of parameter ranges to show, empty () or None to let pyGTC decide
+paramRanges = ((-3,5),None,(-2,4),())
 
 ########## Do the magic
 ##### Full GTC
 # inputarr must either be:
 # -list of length nChains, each being an array of shape (Npoints, nDim)
 # -single array of shape (Npoints, nDim)
-GTC = pyGTC.plotGTC(chains=[samples1,samples2], paramNames=names, truths=truths, priors=priors, chainLabels=chainLabels, truthLabels=truthLabels, paramRanges=paramRanges, figureSize='APJ_page')
+#GTC = pyGTC.plotGTC(chains=[samples1[:,:2]], do1dPlots=True, paramNames=names[:2], truths=truths, priors=priors, chainLabels=chainLabels[0], truthLabels=truthLabels, paramRanges=paramRanges, figureSize='APJ_column')
+GTC = pyGTC.plotGTC(chains=[samples1[:,:3],samples2[:,:3]], do1dPlots=True, paramNames=names[:3], truths=truths, priors=priors, chainLabels=chainLabels, truthLabels=truthLabels, paramRanges=paramRanges, figureSize='APJ_column')
 
 
 ##### Only one 1d histogram
 # inputarr must be list of length nChains, each being array of shape (Npoints, 1)
 #inputarr = [np.array([samples1[:,0]]).T, np.array([samples2[:,0]]).T]
-#GTC = pyGTC.plotGTC(chains=inputarr, paramNames=[names[0]],  chainLabels=chainLabels,figureSize='APJ_column', doonly1dplot=True)
+#GTC = pyGTC.plotGTC(chains=inputarr, paramNames=[names[0]],  chainLabels=chainLabels,figureSize='APJ_column', doOnly1dPlot=True)
 
 
 #plt.show()
