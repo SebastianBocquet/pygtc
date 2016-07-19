@@ -2,22 +2,43 @@ from matplotlib import pyplot as plt
 import numpy as np
 import pyGTC
 
+""" Create beautiful triangle plots - aka Giant Triangle Confusograms (GTCs)
 
-def create_random_samples(ndim, Npoints):
-    """Return samples drawn from random multivariate Gaussian.
+    Basic usage:
+    ----------
+    GTC = pyGTC.plotGTC(chains, kwargs)
 
     Parameters:
-    -----------
-    ndim: int
-        number of dimensions (parameters)
-    Npoints: int
-        number of random points to draw
+    ----------
+    chains: 2d array or list of 2d arrays
+        Sample points (length x Ndim) or multiple sets of samples points
+        Note: If you are using emcee (http://dan.iel.fm/emcee/current/) - and you should! - you need to pass the EnsembleSampler.flatchain object.
+    kwargs:
+        weights: weights for the sample points. Either 1d array or list of 1d arrays
+        chainLabels: one label per chain, supports latex
+        paramNames: one label per parameter, supports latex
+        truths: show points in parameter space by lines, multiple sets possible
+        truthLabels: one label per truth line, supports latex
+        truthColors: user-defined colors for the truth lines
+        priors: plot Gaussian priors in 1d panels
+        plotName: provide filename for direct output
+        nConfidenceLevels: in 2d panels, plot nConfidenceLevels confidence levels (1,2, or 3)
+        nBins: change number of bins for histograms
+        smoothingKernel: size of Gaussian smoothing kernel (in bins)
+        figureSize: provide either figure width, or choose from predefined journal setting (recommended)
+        paramRanges: provide ranges for subset or all parameters 
+        colorsOrder: change the default order of colors for the contours
+        do1dplots: set to False if you don't want the 1d panels
+        doonly1dplot: only plot ONE 1d histogram. Provide chain(s) of shape (Npoints,1)
 
-    Returns:
-    --------
-    samples: array
-        samples of points drawn from the distribution
-    """
+    returns:
+        fig: matplotlib.figure
+            the GTC in all its glory
+"""
+
+
+
+def create_random_samples(ndim, Npoints):
     means = np.random.rand(ndim)
     cov = .5 - np.random.rand(ndim**2).reshape((ndim,ndim))
     cov = np.triu(cov)
@@ -63,14 +84,12 @@ colorsOrder = ['blues', 'yellows']
 # inputarr must either be:
 # -list of length nChains, each being an array of shape (Npoints, nDim)
 # -single array of shape (Npoints, nDim)
-GTC = pyGTC.plotGTC(chains=[samples1[:,:2],samples2[:,:2]], paramNames=names[:2], truths=truths, priors=priors, chainLabels=chainLabels, truthLabels=truthLabels, paramRanges=paramRanges, colorsOrder=colorsOrder)
+GTC = pyGTC.plotGTC(chains=[samples1,samples2], paramNames=names[:2], truths=truths, priors=priors, chainLabels=chainLabels, truthLabels=truthLabels, paramRanges=paramRanges, colorsOrder=colorsOrder)
 
-# Only covariance
-# pass do1dplots=False
 
 ##### Only one 1d histogram
 # inputarr must be list of length nChains, each being array of shape (Npoints, 1)
-inputarr = [np.array([samples1[:,0]]).T, np.array([samples2[:,0]]).T]
+#inputarr = [np.array([samples1[:,0]]).T, np.array([samples2[:,0]]).T]
 #GTC = pyGTC.plotGTC(chains=inputarr, paramNames=[names[0]],  chainLabels=chainLabels,figureSize='APJ_column', doonly1dplot=True)
 
 

@@ -16,18 +16,22 @@ def plotGTC(chains, **kwargs):
         Sample points (length x Ndim) or multiple sets of samples points
         Note: If you are using emcee (http://dan.iel.fm/emcee/current/) - and you should! - you need to pass the EnsembleSampler.flatchain object.
     kwargs:
+        weights
         chainLabels
         paramNames
         truthColors
         truths
         truthLabels
         priors
-        weights
         plotName
         nConfidenceLevels
+        nBins
         smoothingKernel
         figureSize
         paramRanges
+        colorsOrder
+        do1dplots
+        doonly1dplot
 
     Returns:
     --------
@@ -188,11 +192,14 @@ def plotGTC(chains, **kwargs):
         for i in range(nChains):
             weights.append( np.ones(len(chains[i])) )
     else:
-        if len(np.shape(weights))==len(chains[0]):
+        if len(weights)==len(chains[0]):
             weights = [weights]
-        for i in range(nChains):
-            if len(weights[i])!=len(chains[i]):
-                raise ValueError("missmatch in chain/weights #%d: len(chain) %d, len(weights) %d"%(i,len(chains[i]),len(weights[i])))
+        else:
+            try:
+                for i in range(nChains):
+                    if len(weights[i])!=len(chains[i]):
+                        raise ValueError("missmatch in chain/weights #%d: len(chain) %d, len(weights) %d"%(i,len(chains[i]),len(weights[i])))
+            except: raise ValueError("your weights don't make sense")
 
     # Set plotName to save the plot to plotName
     plotName = kwargs.pop('plotName', None) #Um... the name of the plot?!
@@ -229,6 +236,8 @@ def plotGTC(chains, **kwargs):
     # Plot ONLY 1d histograms
     doonly1dplot = kwargs.pop('doonly1dplot', False)
     if doonly1dplot:
+        for i in range(nChains):
+            assert chains[i].shape[1]==1, "Provide chains of shape(Npoints,1) if you only want the 1d histogram"
         do1dplots = True
 
     #Check to see if there are any remaining keyword arguments
