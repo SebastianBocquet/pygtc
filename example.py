@@ -55,8 +55,38 @@ paramRanges = ((-3,5),None,(-2,4),())
 #truthLabels = 'the truth'
 truthLabels = ( 'the truth', 'alternative truth')
 
-# Do the magic
-GTC = pyGTC.plotGTC(chains=[samples1,samples2], paramNames=names, truths=truths, priors=priors, chainLabels=chainLabels, truthLabels=truthLabels, paramRanges=paramRanges)
+# New order of colors
+colorsOrder = ['blues', 'yellows']
+
+########## Do the magic
+##### Full GTC
+# inputarr must either be:
+# -list of length nChains, each being an array of shape (Npoints, nDim)
+# -single array of shape (Npoints, nDim)
+#inputarr=[samples1,samples2]
+#GTC = pyGTC.plotGTC(chains=inputarr, paramNames=names, truths=truths, priors=priors, chainLabels=chainLabels, truthLabels=truthLabels, paramRanges=paramRanges, colorsOrder=colorsOrder)
+
+##### Only 2 parameters
+# inputarr must be list of length nChains, each being an array of shape (Npoints, 2)
+inputarr = [np.array([samples1[:,0],samples1[:,1]]).T]
+# Covariance and 1d histograms
+#GTC = pyGTC.plotGTC(chains=inputarr, paramNames=names[:2], chainLabels='data', figureSize='APJ_column')
+# Only covariance
+#GTC = pyGTC.plotGTC(chains=inputarr, paramNames=names[:2], chainLabels='data', figureSize='APJ_column', do1dplots=False)
+
+##### Only one 1d histogram
+# inputarr must be list of length nChains, each being array of shape (Npoints, 1)
+inputarr = [np.array([samples1[:,0]]).T, np.array([samples2[:,0]]).T]
+print np.shape(inputarr)
+GTC = pyGTC.plotGTC(chains=inputarr, paramNames=[names[0]],  chainLabels=chainLabels,figureSize='APJ_column', doonly1dplot=True)
+
 
 #plt.show()
 plt.savefig('GTC.pdf', bbox_inches='tight')
+
+#plt.clf()
+
+
+#fig = plt.figure()
+#fig = pyGTC.plot1d(fig, 1, [samples1[:,0]], [np.ones(len(samples1))], 30, 1, [('#4c72b0','#7fa5e3','#b2d8ff')], None, None, None, None)
+#plt.show()

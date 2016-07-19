@@ -51,7 +51,9 @@ def plotGTC(chains, **kwargs):
                     'purples' : ('#8172b2','#b4a5e5','#37d8ff')}
 
     colorsOrder = ['blues', 'greens', 'yellows', 'reds', 'purples']
-
+    
+    colors = [colorsDict[cs] for cs in colorsOrder]
+    
     lightBlack = '#333333'
 
     tickAngle = 45 #Angle of tick labels
@@ -112,14 +114,16 @@ def plotGTC(chains, **kwargs):
     # Label the x and y axes, supports latex
     paramNames = kwargs.pop('paramNames', None)
     if paramNames is not None:
-        if all(isinstance(s, basestring) for s in paramNames):
+        if not (isinstance(paramNames, tuple) or isinstance(paramNames, list)):
+            paramNames = [paramNames]
+        #if all(isinstance(s, basestring) for s in paramNames):
             #if len(paramNames) == len(chains[0][0,:]):
             #    paramNames = list(val)
             #else:
-            if len(paramNames) != len(chains[0][0,:]):
-                raise ValueError("paramNames length must match number of parameters in chains")
-        else:
-            raise TypeError("paramNames must be a list of strings")
+        if len(paramNames) != nDim:
+            raise ValueError("paramNames length must match number of parameters in chains")
+        #else:
+        #    raise TypeError("paramNames must be a list of strings")
     elif dfColNames is not None:
         paramNames = dfColNames
 
@@ -214,6 +218,14 @@ def plotGTC(chains, **kwargs):
                 figureWidth = figSizeDict[figureSize]
             else:
                 raise ValueError("figureSize %s unknown!"%figureSize)
+                
+    # Plot 1d histograms
+    do1dplots = kwargs.pop('do1dplots', True)
+    
+    # Plot ONLY 1d histograms
+    doonly1dplot = kwargs.pop('doonly1dplot', False)
+    if doonly1dplot:
+        do1dplots = True
 
     #Check to see if there are any remaining keyword arguments
     keys = ''
@@ -231,142 +243,154 @@ def plotGTC(chains, **kwargs):
     fig = plt.figure(figsize=(figureWidth,figureWidth))
 
 
+    
+    
     ########## 2D contour plots
-
-    for i in range(nDim): # row
-        for j in range(nDim): # column
-            if j<i:
-                ##### Create subplot
-                ax = fig.add_subplot(nDim,nDim,(i*nDim)+j+1)
-
-                ##### Draw contours and truths
-                # Extract 2d chains
-                chainsForPlot2D = [[chains[k][:,j], chains[k][:,i]] for k in range(nChains)]
-
-                # Extract 2d truths
-                if truths is not None:
-                    truthsForPlot2D = [[truths[k,i], truths[k,j]] for k in range(len(truths))]
-                else:
-                    truthsForPlot2D = None
-                
-                # Plot!
-                ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins, nBinsFlat, smoothingKernel, colors, nConfidenceLevels, truthsForPlot2D, truthColors)
-                
-                
-                ##### Range
-                if paramRanges is not None:
-                    if j<len(paramRanges):
-                        if paramRanges[j]:
-                            ax.set_xlim(paramRanges[j][0],paramRanges[j][1])
-                    if i<len(paramRanges):
-                        if paramRanges[i]:
-                            ax.set_ylim(paramRanges[i][0],paramRanges[i][1])
-
-                ##### Ticks & labels
-                ax.get_xaxis().get_major_formatter().set_useOffset(False)
-                ax.get_xaxis().get_major_formatter().set_scientific(False)
-
-                ax.get_yaxis().get_major_formatter().set_useOffset(False)
-                ax.get_yaxis().get_major_formatter().set_scientific(False)
-
-                # x-labels at bottom of plot only
-                if i==nDim-1:
-                    if paramNames is not None:
-                        ax.set_xlabel(paramNames[j])
-                else:
-                    ax.get_xaxis().set_ticklabels([])
-
-                for xLabel in ax.get_xticklabels():
-                    xLabel.set_rotation(tickAngle)
-
-                # y-labels for left-most panels only
-                if j==0:
-                    if paramNames is not None:
-                        ax.set_ylabel(paramNames[i])
-                else:
-                    ax.get_yaxis().set_ticklabels([])
-
-                for yLabel in ax.get_yticklabels():
-                    yLabel.set_rotation(tickAngle)
-
-                # No more than 5 ticks per panel
-                myLocator = MaxNLocator(5)
-                ax.xaxis.set_major_locator(myLocator)
-                myLocator = MaxNLocator(5)
-                ax.yaxis.set_major_locator(myLocator)
-
-                # Limits to be applied to 1d histograms
-                xmin[j], xmax[j] = ax.get_xlim()
-                
-
-
-
-    ########## 1D histograms
-    for i in range(nDim):
-        ##### Create subplot
-        ax = fig.add_subplot(nDim,nDim,(i*nDim)+i+1)
-
-
-        ##### Plot histograms, truths, Gaussians
-        # Extract 1d chains
-        chainsForPlot1D = [chains[k][:,i] for k in range(nChains)]
-
-        # Extract 1d truths
-        if truths is not None:
-            truthsForPlot1D = [truths[k,i] for k in range(len(truths))]
-        else:
-            truthsForPlot1D = None
-            
-        # Extract 1d prior
-        if priors is not None:
-            if i<len(priors):
-                if priors[i] and priors[i][1]>0:
-                    prior1d = priors[i]
+    if not doonly1dplot:
+        for i in range(nDim): # row
+            for j in range(nDim): # column
+                if j<i:
+                    ##### Create subplot
+                    if do1dplots:
+                        ax = fig.add_subplot(nDim,nDim,(i*nDim)+j+1)
+                    else:
+                        ax = fig.add_subplot(nDim-1,nDim-1,((i-1)*nDim)+j+1)
                     
-        # Plot!
-        ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins, smoothingKernel, colors, truthsForPlot1D, truthColors, prior1d, lightBlack)
+
+                    ##### Draw contours and truths
+                    # Extract 2d chains
+                    chainsForPlot2D = [[chains[k][:,j], chains[k][:,i]] for k in range(nChains)]
+
+                    # Extract 2d truths
+                    if truths is not None:
+                        truthsForPlot2D = [[truths[k,i], truths[k,j]] for k in range(len(truths))]
+                    else:
+                        truthsForPlot2D = None
+                
+                    # Plot!
+                    ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins, nBinsFlat, smoothingKernel, colors, nConfidenceLevels, truthsForPlot2D, truthColors)
+                
+                
+                    ##### Range
+                    if paramRanges is not None:
+                        if j<len(paramRanges):
+                            if paramRanges[j]:
+                                ax.set_xlim(paramRanges[j][0],paramRanges[j][1])
+                        if i<len(paramRanges):
+                            if paramRanges[i]:
+                                ax.set_ylim(paramRanges[i][0],paramRanges[i][1])
+
+                    ##### Ticks & labels
+                    ax.get_xaxis().get_major_formatter().set_useOffset(False)
+                    ax.get_xaxis().get_major_formatter().set_scientific(False)
+
+                    ax.get_yaxis().get_major_formatter().set_useOffset(False)
+                    ax.get_yaxis().get_major_formatter().set_scientific(False)
+
+                    # x-labels at bottom of plot only
+                    if i==nDim-1:
+                        if paramNames is not None:
+                            ax.set_xlabel(paramNames[j])
+                    else:
+                        ax.get_xaxis().set_ticklabels([])
+
+                    for xLabel in ax.get_xticklabels():
+                        xLabel.set_rotation(tickAngle)
+
+                    # y-labels for left-most panels only
+                    if j==0:
+                        if paramNames is not None:
+                            ax.set_ylabel(paramNames[i])
+                    else:
+                        ax.get_yaxis().set_ticklabels([])
+
+                    for yLabel in ax.get_yticklabels():
+                        yLabel.set_rotation(tickAngle)
+
+                    # No more than 5 ticks per panel
+                    myLocator = MaxNLocator(4)
+                    ax.xaxis.set_major_locator(myLocator)
+                    myLocator = MaxNLocator(4)
+                    ax.yaxis.set_major_locator(myLocator)
+
+                    # Limits to be applied to 1d histograms
+                    xmin[j], xmax[j] = ax.get_xlim()
+                
+
+
+    if do1dplots:
+        ########## 1D histograms
+        for i in range(nDim):
+            ##### Create subplot
+            ax = fig.add_subplot(nDim,nDim,(i*nDim)+i+1)
+
+
+            ##### Plot histograms, truths, Gaussians
+            # Extract 1d chains
+            chainsForPlot1D = [chains[k][:,i] for k in range(nChains)]
+
+            # Extract 1d truths
+            if truths is not None:
+                truthsForPlot1D = [truths[k,i] for k in range(len(truths))]
+            else:
+                truthsForPlot1D = None
+            
+            # Extract 1d prior
+            if priors is not None:
+                if i<len(priors):
+                    if priors[i] and priors[i][1]>0:
+                        prior1d = priors[i]
+            else:
+                prior1d = None
+                    
+            # Plot!
+            ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins, smoothingKernel, colors, truthsForPlot1D, truthColors, prior1d, lightBlack)
         
 
-        ##### Ticks, labels, range
-        ax.get_xaxis().get_major_formatter().set_useOffset(False)
-        ax.get_xaxis().get_major_formatter().set_scientific(False)
+            ##### Ticks, labels, range
+            ax.get_xaxis().get_major_formatter().set_useOffset(False)
+            ax.get_xaxis().get_major_formatter().set_scientific(False)
 
-        # No ticks or labels on y-axes, lower limit 0
-        ax.get_yaxis().set_ticklabels([])
-        ax.yaxis.set_ticks_position('none')
-        ax.set_ylim(bottom=0)
-        ax.xaxis.set_ticks_position('bottom')
+            # No ticks or labels on y-axes, lower limit 0
+            ax.get_yaxis().set_ticklabels([])
+            ax.yaxis.set_ticks_position('none')
+            ax.set_ylim(bottom=0)
+            ax.xaxis.set_ticks_position('bottom')
 
-        # x-label for bottom-right panel only
-        if i==nDim-1:
-            if paramNames is not None:
-                ax.set_xlabel(paramNames[i])
-        else:
-            ax.set_xlim(xmin[i],xmax[i])
-            ax.get_xaxis().set_ticklabels([])
+            # x-label for bottom-right panel only
+            if i==nDim-1:
+                if paramNames is not None:
+                    ax.set_xlabel(paramNames[i])
+            else:
+                ax.set_xlim(xmin[i],xmax[i])
+                ax.get_xaxis().set_ticklabels([])
 
-        for xLabel in ax.get_xticklabels():
-            xLabel.set_rotation(tickAngle)
+            for xLabel in ax.get_xticklabels():
+                xLabel.set_rotation(tickAngle)
 
-        # y label for top-left panel
-        if i==0:
-            if paramNames is not None:
-                ax.set_ylabel(paramNames[i])
+            # y label for top-left panel
+            if i==0:
+                if doonly1dplot:
+                    ax.set_ylabel('Probability')
+                elif paramNames is not None:
+                    ax.set_ylabel(paramNames[i])
 
-        # No more than 5 ticks per panel
-        myLocator = MaxNLocator(5)
-        ax.xaxis.set_major_locator(myLocator)
-        myLocator = MaxNLocator(5)
-        ax.yaxis.set_major_locator(myLocator)
-
+            # No more than 5 ticks per panel
+            myLocator = MaxNLocator(4)
+            ax.xaxis.set_major_locator(myLocator)
+            #myLocator = MaxNLocator(4)
+            #ax.yaxis.set_major_locator(myLocator)
 
 
     ########## Legend
     if (chainLabels is not None) or (truthLabels is not None):
         ##### Dummy plot for label line color
         labelColors = []
-        ax = fig.add_subplot(nDim,nDim,nDim)
-        ax.axis('off')
+        if not doonly1dplot:
+            ax = fig.add_subplot(nDim,nDim,nDim)
+            ax.axis('off')
+        else:
+            xmin, xmax = ax.get_xlim()
 
         ##### Label the data sets
         if chainLabels is not None:
@@ -381,12 +405,19 @@ def plotGTC(chains, **kwargs):
             for k in range(len(truthLabels)):
                 ax.plot(0,0, color=truthColors[k], label=truthLabels[k])
                 labelColors.append(truthColors[k])
+        
+        # Set xlim back to what the data wanted
+        if doonly1dplot:
+            ax.set_xlim(xmin, xmax)
+            
 
         ##### Legend and label colors according to plot
         leg = plt.legend(loc='upper right', fancybox=True)
         leg.get_frame().set_alpha(0.)
         for color,text in zip(labelColors,leg.get_texts()):
             text.set_color(color)
+    
+    
 
 
 
