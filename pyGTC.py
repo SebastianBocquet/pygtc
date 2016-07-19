@@ -16,29 +16,32 @@ def plotGTC(chains, **kwargs):
         Sample points (length x Ndim) or multiple sets of samples points
         Note: If you are using emcee (http://dan.iel.fm/emcee/current/) - and you should! - you need to pass the EnsembleSampler.flatchain object.
     kwargs:
-        weights
-        chainLabels
-        paramNames
-        truthColors
-        truths
-        truthLabels
-        priors
-        plotName
-        nConfidenceLevels
-        nBins
-        smoothingKernel
-        figureSize
-        paramRanges
-        colorsOrder
-        do1dPlots
-        doOnly1dPlot
+        weights: weights for the sample points. Either 1d array or list of 1d arrays
+        chainLabels: one label per chain, supports latex
+        paramNames: one label per parameter, supports latex
+        truths: show points in parameter space by lines, multiple sets possible
+        truthLabels: one label per truth line, supports latex
+        truthColors: user-defined colors for the truth lines
+        priors: plot Gaussian priors in 1d panels
+        plotName: provide filename for direct output
+        nConfidenceLevels: in 2d panels, plot nConfidenceLevels confidence levels (1,2, or 3)
+        nBins: change number of bins for histograms
+        smoothingKernel: size of Gaussian smoothing kernel (in bins)
+        figureSize: provide either figure width, or choose from predefined journal setting (recommended)
+        panelSpacing: "loose" / "tight" (default)
+        paramRanges: provide ranges for subset or all parameters 
+        colorsOrder: change the default order of colors for the contours
+        do1dPlots: set to False if you don't want the 1d panels
+        doOnly1dPlot: only plot ONE 1d histogram. Provide chain(s) of shape (Npoints,1)
 
     Returns:
     --------
     fig: matplotlib.figure
         the GTC in all its glory
     """
-    # Setup matplotlb rcParams TODO: make sure this list is exhaustive
+    
+    ##### Matplotlib and figure setting
+    # Mtplotlb rcParams TODO: make sure this list is exhaustive
     plt.rcParams['legend.fontsize'] = 9
     plt.rcParams['axes.labelsize'] = 9
     plt.rcParams['xtick.labelsize'] = 6
@@ -51,15 +54,12 @@ def plotGTC(chains, **kwargs):
                     'yellows' : ('#f5964f','#ffc982','#fffcb5'),
                     'reds' : ('#c44e52','#f78185','#ffb4b8'),
                     'purples' : ('#8172b2','#b4a5e5','#37d8ff')}
-
     colorsOrder = ['blues', 'greens', 'yellows', 'reds', 'purples']
-
     colors = [colorsDict[cs] for cs in colorsOrder]
-
     lightBlack = '#333333'
-
-    tickAngle = 45 #Angle of tick labels
-
+    
+    #Angle of tick labels
+    tickAngle = 45
 
     #Dictionary of size types or whatever:
     mplPPI = plt.rcParams['figure.dpi'] #Matplotlib dots per inch
@@ -69,7 +69,7 @@ def plotGTC(chains, **kwargs):
                     'MNRAS_page' : 504. / mplPPI}
 
 
-    #Check the validity of the chains argument:
+    ##### Check the validity of the chains argument:
 
     #Numpy really doesn't like lists of Pandas DataFrame objects
     #so if it gets one, extract array vals and throw away the rest
@@ -227,6 +227,9 @@ def plotGTC(chains, **kwargs):
                 figureWidth = figSizeDict[figureSize]
             else:
                 raise ValueError("figureSize %s unknown!"%figureSize)
+
+    # Space between panels
+    panelSpacing = kwargs.pop('panelSpacing', 'tight')
 
     # Plot 1d histograms
     do1dPlots = kwargs.pop('do1dPlots', True)
@@ -438,8 +441,11 @@ def plotGTC(chains, **kwargs):
     ##########
 
     # No space between panels
-    fig.subplots_adjust(hspace=0)
-    fig.subplots_adjust(wspace=0)
+    space = 0
+    if panelSpacing=='loose':
+        space = .05
+    fig.subplots_adjust(hspace=space)
+    fig.subplots_adjust(wspace=space)
 
     # Save figure
     if plotName is not None:
