@@ -63,19 +63,19 @@ chainLabels = ["data1 $\lambda$", "data 2"]
 # List of Gaussian curves to plot (to represent priors): mean, width
 # List can be shorter than number of parameters
 # Empty () or None if no prior to plot
-priors = ((2, 1), (.5, 2), (), (0, .4), None, ())
+priors = (None, (2, 1), (.5, 2), (), (0, .4), None, None, None)
 
 # List of truth values, to mark best-fit or input values
-# NOT a python array because of different lengths
-#truths = (4, .5, None, .1, 0, None, None, 0)
-truths = ((4, .5, None, .1, 0, None, None, 0), (None, None, .3, 1))
+#truths = (None, .5, None, .1, 0, None, None, 0)
+truths = ((4, .5, None), (None, None, .3))
+#truths = ((4, .5, None, .1, 0, None, None, 0), (None, None, .3, 1, None, None, None, None))
 
 # Labels for the different truths
 #truthLabels = 'the truth'
 truthLabels = ( 'the truth', 'alternative truth')
 
 # List of parameter ranges to show, empty () or None to let pyGTC decide
-paramRanges = ((-3,5),None,(-2,4),())
+paramRanges = ((-3,5),None,(-2,4))
 
 ########## Do the magic
 ##### Full GTC
@@ -83,7 +83,7 @@ paramRanges = ((-3,5),None,(-2,4),())
 # -list of length nChains, each being an array of shape (Npoints, nDim)
 # -single array of shape (Npoints, nDim)
 #GTC = pyGTC.plotGTC(chains=[samples1[:,:2]], do1dPlots=True, paramNames=names[:2], truths=truths, priors=priors, chainLabels=chainLabels[0], truthLabels=truthLabels, paramRanges=paramRanges, figureSize='APJ_column')
-GTC = pyGTC.plotGTC(chains=[samples1[:,:3],samples2[:,:3]], do1dPlots=True, paramNames=names[:3], truths=truths, priors=priors, chainLabels=chainLabels, truthLabels=truthLabels, paramRanges=paramRanges, figureSize='APJ_column')
+GTC = pyGTC.plotGTC(chains=[samples1[:,:3],samples2[:,:3]], do1dPlots=True, paramNames=names[:3], truths=truths[:3], priors=priors[:3], chainLabels=chainLabels, truthLabels=truthLabels, paramRanges=paramRanges, figureSize='APJ_column')
 
 
 ##### Only one 1d histogram
