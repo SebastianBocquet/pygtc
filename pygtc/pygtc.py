@@ -164,23 +164,23 @@ def plotGTC(chains, **kwargs):
     chainLabels = kwargs.pop('chainLabels', None)
     if chainLabels is not None:
         # Convert to list if only one label
-        if isinstance(chainLabels, basestring):
+        if isstr(chainLabels):
             chainLabels = [chainLabels]
         # Check that number of labels equals number of chains
         assert len(chainLabels) == nChains, "chainLabels mismatch with number of chains"
         # Check that it's a list of strings
-        assert all(isinstance(s, basestring) for s in chainLabels), "chainLabels must be list of strings"
+        assert all(isstr(s) for s in chainLabels), "chainLabels must be list of strings"
 
     # Label the x and y axes, supports latex
     paramNames = kwargs.pop('paramNames', None)
     if paramNames is not None:
         # Convert to list if only one name
-        if isinstance(paramNames, basestring):
+        if isstr(paramNames):
             paramNames = [paramNames]
         # Check that number of paramNames equals nDim
         assert len(paramNames) == nDim, "paramNames mismatch with number of dimensions"
         # Check that it's a list of strings
-        assert all(isinstance(s, basestring) for s in paramNames), "paramNames must be list of strings"
+        assert all(isstr(s) for s in paramNames), "paramNames must be list of strings"
     elif dfColNames is not None:
         paramNames = dfColNames
 
@@ -193,7 +193,7 @@ def plotGTC(chains, **kwargs):
     customColorsOrder = kwargs.pop('colorsOrder', None) #Labels for multiple chains, goes in plot legend
     if customColorsOrder is not None:
         # Convert to list if only one entry
-        if isinstance(customColorsOrder, basestring):
+        if isstr(customColorsOrder):
             customColorsOrder = [customColorsOrder]
         lencustomColorsOrder = len(customColorsOrder)
         if not all(color in colorsDict.keys() for color in customColorsOrder):
@@ -217,10 +217,10 @@ def plotGTC(chains, **kwargs):
     truthLabels = kwargs.pop('truthLabels', None) #Labels for multiple truths, goes in plot legend
     if truthLabels is not None:
         # Convert to list if only one label
-        if isinstance(truthLabels, basestring):
+        if isstr(truthLabels):
             truthLabels = [truthLabels]
         # Check that it's a list of strings
-        assert all(isinstance(s, basestring) for s in truthLabels), "truthLabels must be list of strings"
+        assert all(isstr(s) for s in truthLabels), "truthLabels must be list of strings"
         assert len(truthLabels) == len(truths), "truthLabels mismatch with number of truths"
 
     #Show Gaussian priors on plots (assuming flat priors)
@@ -245,7 +245,7 @@ def plotGTC(chains, **kwargs):
     # Set plotName to save the plot to plotName
     plotName = kwargs.pop('plotName', None) #Um... the name of the plot?!
     if plotName is not None:
-        assert isinstance(plotName, basestring), "plotName must be a string type"
+        assert isstr(plotName), "plotName must be a string type"
 
     # Define which confidence levels to show
     nConfidenceLevels = kwargs.pop('nConfidenceLevels', 2) #How many of the above confidence levels to show
@@ -264,7 +264,7 @@ def plotGTC(chains, **kwargs):
         figureWidth = nDim*70. / mplPPI
     else:
         # User-defined width=height in inches
-        if not isinstance(figureSize, basestring):
+        if not isstr(figureSize):
             figureWidth = figureSize
         else:
             # Choose from a couple of presets to fit your publication
@@ -288,7 +288,7 @@ def plotGTC(chains, **kwargs):
 
     #Check to see if there are any remaining keyword arguments
     keys = ''
-    for key in kwargs.iterkeys():
+    for key in iter(kwargs.keys()):
         keys = keys + key + ' '
         raise NameError("illegal keyword arguments: " + keys)
 
@@ -593,3 +593,13 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, 
                 ax.axvline(truths2d[k][1], color=truthColors[k])
 
     return ax
+
+
+
+#################### Check for basestring in python 2/3 compatible way
+def isstr(s):
+    try:
+        isinstance("", basestring)
+        return isinstance(s, basestring)
+    except NameError:
+        return isinstance(s, str)
