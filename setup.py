@@ -4,7 +4,7 @@ import pygtc
 setup(
     name = 'pyGTC',
     description = 'Make an awesome giant triangle confusogram (gtc)!',
-    version = pygtc.__version__,
+    version = '0.1.0',
     packages = [pygtc],
     long_description = open('README.rst').read(),
     install_requires = ['numpy', 'matplotlib', 'scipy'],
