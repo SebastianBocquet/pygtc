@@ -1,12 +1,12 @@
 from matplotlib import pyplot as plt
 import numpy as np
-import pyGTC
+import pygtc
 
 """ Create beautiful triangle plots - aka Giant Triangle Confusograms (GTCs)
 
     Basic usage:
     ----------
-    GTC = pyGTC.plotGTC(chains, kwargs)
+    GTC = pygtc.plotGTC(chains, kwargs)
 
     Parameters:
     ----------
@@ -50,6 +50,7 @@ def create_random_samples(ndim, Npoints):
 
 
 # Create two sets of sample points with 8 parameters and 50000 points
+np.random.seed(0) # To be able to create the same fake data over and over again
 samples1 = create_random_samples(8, 50000)
 samples2 = 1+create_random_samples(8, 60000)
 
@@ -74,7 +75,7 @@ truths = ((4, .5, None), (None, None, .3))
 #truthLabels = 'the truth'
 truthLabels = ( 'the truth', 'alternative truth')
 
-# List of parameter ranges to show, empty () or None to let pyGTC decide
+# List of parameter ranges to show, empty () or None to let pygtc decide
 paramRanges = ((-3,5),None,(-2,4))
 
 ########## Do the magic
@@ -82,14 +83,14 @@ paramRanges = ((-3,5),None,(-2,4))
 # inputarr must either be:
 # -list of length nChains, each being an array of shape (Npoints, nDim)
 # -single array of shape (Npoints, nDim)
-#GTC = pyGTC.plotGTC(chains=[samples1[:,:2]], do1dPlots=True, paramNames=names[:2], truths=truths, priors=priors, chainLabels=chainLabels[0], truthLabels=truthLabels, paramRanges=paramRanges, figureSize='APJ_column')
-GTC = pyGTC.plotGTC(chains=[samples1[:,:3],samples2[:,:3]], do1dPlots=True, paramNames=names[:3], truths=truths[:3], priors=priors[:3], chainLabels=chainLabels, truthLabels=truthLabels, paramRanges=paramRanges, figureSize='APJ_column')
+#GTC = pygtc.plotGTC(chains=[samples1[:,:2]], do1dPlots=True, paramNames=names[:2], truths=truths, priors=priors, chainLabels=chainLabels[0], truthLabels=truthLabels, paramRanges=paramRanges, figureSize='APJ_column')
+GTC = pygtc.plotGTC(chains=[samples1[:,:3],samples2[:,:3]], do1dPlots=True, paramNames=names[:3], truths=truths[:3], priors=priors[:3], chainLabels=chainLabels, truthLabels=truthLabels, paramRanges=paramRanges, figureSize='APJ_column')
 
 
 ##### Only one 1d histogram
 # inputarr must be list of length nChains, each being array of shape (Npoints, 1)
 #inputarr = [np.array([samples1[:,0]]).T, np.array([samples2[:,0]]).T]
-#GTC = pyGTC.plotGTC(chains=inputarr, paramNames=[names[0]],  chainLabels=chainLabels,figureSize='APJ_column', doOnly1dPlot=True)
+#GTC = pygtc.plotGTC(chains=inputarr, paramNames=[names[0]],  chainLabels=chainLabels,figureSize='APJ_column', doOnly1dPlot=True)
 
 
 #plt.show()
@@ -99,5 +100,5 @@ plt.savefig('GTC.pdf', bbox_inches='tight')
 
 
 #fig = plt.figure()
-#fig = pyGTC.plot1d(fig, 1, [samples1[:,0]], [np.ones(len(samples1))], 30, 1, [('#4c72b0','#7fa5e3','#b2d8ff')], None, None, None, None)
+#fig = pygtc.plot1d(fig, 1, [samples1[:,0]], [np.ones(len(samples1))], 30, 1, [('#4c72b0','#7fa5e3','#b2d8ff')], None, None, None, None)
 #plt.show()
