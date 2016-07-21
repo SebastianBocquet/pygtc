@@ -5,6 +5,9 @@ setup(
     name = 'pyGTC',
     description = 'Make an awesome giant triangle confusogram (gtc)!',
     version = '0.1.0',
+    author = 'Sebastian Bocquet',
+    author_email = 'sebastian.bocquet@gmail.com',
+    url = 'http://github.com/sebastianbocquet/pygtc',
     packages = ['pygtc'],
     long_description = open('README.rst').read(),
     install_requires = ['numpy', 'matplotlib', 'scipy'],
@@ -13,7 +16,7 @@ setup(
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
-        'Topic :: Scientific/Engineering :: Visualization',
-    ],
+        'Topic :: Scientific/Engineering :: Visualization'
+    ]
 
 )
