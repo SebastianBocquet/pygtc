@@ -6,6 +6,7 @@
 
 #Python packaging
 *.egg-info
+dist
 
 # Temp files
 *~
