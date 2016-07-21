@@ -4,6 +4,9 @@
 # Python build
 *.pyc
 
+#Python packaging
+*.egg-info
+
 # Temp files
 *~
 .ipynb_checkpoints

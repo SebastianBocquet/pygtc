@@ -5,7 +5,7 @@ setup(
     name = 'pyGTC',
     description = 'Make an awesome giant triangle confusogram (gtc)!',
     version = '0.1.0',
-    packages = [pygtc],
+    packages = ['pygtc'],
     long_description = open('README.rst').read(),
     install_requires = ['numpy', 'matplotlib', 'scipy'],
     classifiers = [
@@ -13,7 +13,7 @@ setup(
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
-        'Topic :: Scientific/Engineering :: Visualization'
-    ]
+        'Topic :: Scientific/Engineering :: Visualization',
+    ],
 
 )
