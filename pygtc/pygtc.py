@@ -399,20 +399,24 @@ def plotGTC(chains, **kwargs):
                     for yLabel in ax.get_yticklabels():
                         yLabel.set_rotation(tickAngle)
 
+                    # Limits to be applied to 1d histograms
+                    xmin[j], xmax[j] = ax.get_xlim()
+                    
                     # No more than 5 ticks per panel
-                    myLocator = mtik.MaxNLocator(5)
+                    myLocator = mtik.MaxNLocator(5, prune='both')
                     ax.xaxis.set_major_locator(myLocator)
                     myLocator = mtik.MaxNLocator(5)
                     ax.yaxis.set_major_locator(myLocator)
+                
+                    # Remove ticks that are too close to panel edge
+                    deltaX = xmax[j]-xmin[j]
+                    xLoHi = (xmin[j]+.05*deltaX, xmax[j]-.05*deltaX)
+                    idx = np.where((ax.xaxis.get_ticklocs()>xLoHi[0])&(ax.xaxis.get_ticklocs()<xLoHi[1]))[0]
+                    ax.xaxis.set_ticks(ax.xaxis.get_ticklocs()[idx])
 
-                    # Remove first and last tick location
-                    ax.xaxis.set_ticks(ax.xaxis.get_ticklocs()[1:-1])
-                    ax.yaxis.set_ticks(ax.yaxis.get_ticklocs()[1:-1])
-
-                    # Limits to be applied to 1d histograms
-                    xmin[j], xmax[j] = ax.get_xlim()
-
-
+                    
+                    
+                    
 
     if do1dPlots:
         ########## 1D histograms
@@ -472,8 +476,11 @@ def plotGTC(chains, **kwargs):
             myLocator = mtik.MaxNLocator(5)
             ax.xaxis.set_major_locator(myLocator)
 
-            # Remove first and last tick location
-            ax.xaxis.set_ticks(ax.xaxis.get_ticklocs()[1:-1])
+            # Remove ticks that are too close to panel edge
+            deltaX = xmax[i]-xmin[i]
+            xLoHi = (xmin[i]+.05*deltaX, xmax[i]-.05*deltaX)
+            idx = np.where((ax.xaxis.get_ticklocs()>xLoHi[0])&(ax.xaxis.get_ticklocs()<xLoHi[1]))[0]
+            ax.xaxis.set_ticks(ax.xaxis.get_ticklocs()[idx])
 
 
 
