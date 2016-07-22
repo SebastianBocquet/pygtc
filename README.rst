@@ -3,7 +3,7 @@ pygtc.py
 
 Make a sweet giant triangle confusogram (GTC) plot with just one line of code!
 
-See source for documentation, or check out demo.ipynp.
+Read `the documentation <http://pygtc.readthedocs.io/>`_, or check out `demo.ipynp <https://github.com/SebastianBocquet/pygtc/blob/master/demo.ipynb>`_.
 
 Works great with the output from ``emcee``.
 
