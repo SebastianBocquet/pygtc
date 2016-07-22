@@ -403,7 +403,7 @@ def plotGTC(chains, **kwargs):
                     xmin[j], xmax[j] = ax.get_xlim()
                     
                     # No more than 5 ticks per panel
-                    myLocator = mtik.MaxNLocator(5, prune='both')
+                    myLocator = mtik.MaxNLocator(5)
                     ax.xaxis.set_major_locator(myLocator)
                     myLocator = mtik.MaxNLocator(5)
                     ax.yaxis.set_major_locator(myLocator)
