@@ -89,11 +89,15 @@ def plotGTC(chains, **kwargs):
         Options are ``'loose'`` or ``'tight'``. Determines whether there is
         some space between the subplots of the GTC or not. Default is
         ``'tight'``.
+    
+    legendMarker : bool
+        Whether or not to show a colored line in front of the data or 
+        truth entries in the legend. Default is ``False``.
 
     paramRanges : list of tuples [nDim]
         Set the boundaries of each paramter range. Must provide a tuples for
         each dimension of `chains`. If ``None`` is provided for a
-        parameter, the range defaults to 4 sigma bounds.
+        parameter, the range defaults to the width of the histogram.
 
     colorsOrder : list-like[nDims]
         The color order for chains passed to `chains`. Default is
@@ -305,6 +309,9 @@ def plotGTC(chains, **kwargs):
     # Space between panels
     panelSpacing = kwargs.pop('panelSpacing', 'tight')
 
+    # Marker lines in legend
+    legendMarker = kwargs.pop('legendMarker', 'False')
+
     # Plot 1d histograms
     do1dPlots = kwargs.pop('do1dPlots', True)
 
@@ -484,7 +491,7 @@ def plotGTC(chains, **kwargs):
         if chainLabels is not None:
             # Label for each chain
             for k in range(nChains):
-                ax.plot(0,0, color=colors[k][0], label=chainLabels[k])
+                ax.plot(0,0, color=colors[k][0], lw=4, label=chainLabels[k])
                 labelColors.append(colors[k][0])
 
         ##### Label the truth lines
@@ -504,14 +511,16 @@ def plotGTC(chains, **kwargs):
         leg.get_frame().set_alpha(0.)
         for color,text in zip(labelColors,leg.get_texts()):
             text.set_color(color)
+        # Remove markers in legend
+        if legendMarker is not True:
+            for item in leg.legendHandles:
+                item.set_visible(False)
 
 
 
+    ########## Panel spacing, save to file (optional) and return
 
-
-    ##########
-
-    # No space between panels
+    # Space between panels
     space = 0
     if panelSpacing=='loose':
         space = .05
