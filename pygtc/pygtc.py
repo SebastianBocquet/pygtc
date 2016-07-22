@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 import numpy as np
 import scipy.ndimage
-from matplotlib.ticker import MaxNLocator
+import matplotlib.ticker as mtik
 from scipy.stats import norm
 
 __all__ = ['plotGTC']
@@ -393,9 +393,9 @@ def plotGTC(chains, **kwargs):
                         yLabel.set_rotation(tickAngle)
 
                     # No more than 5 ticks per panel
-                    myLocator = MaxNLocator(5)
+                    myLocator = mtik.MaxNLocator(5)
                     ax.xaxis.set_major_locator(myLocator)
-                    myLocator = MaxNLocator(5)
+                    myLocator = mtik.MaxNLocator(5)
                     ax.yaxis.set_major_locator(myLocator)
 
                     # Remove first and last tick location
@@ -462,7 +462,7 @@ def plotGTC(chains, **kwargs):
                     ax.set_ylabel(paramNames[i])
 
             # No more than 5 ticks per panel
-            myLocator = MaxNLocator(5)
+            myLocator = mtik.MaxNLocator(5)
             ax.xaxis.set_major_locator(myLocator)
 
             # Remove first and last tick location
