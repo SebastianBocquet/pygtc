@@ -4,6 +4,8 @@ import scipy.ndimage
 from matplotlib.ticker import MaxNLocator
 from scipy.stats import norm
 
+__all__ = ['plotGTC']
+
 
 #################### Create a full GTC
 
