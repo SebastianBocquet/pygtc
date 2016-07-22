@@ -531,7 +531,7 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, colors, tru
     ##### 1D histogram
     for k in reversed(range(nChains)):
         # create 1d histogram
-        hist1d, edges = np.histogram(chains1d[k], weights = weights[k], normed=True, bins=nBins)
+        hist1d, edges = np.histogram(chains1d[k], weights=weights[k], normed=True, bins=nBins)
         # Bin center between histogram edges
         centers = np.delete(edges+.5*(edges[1]-edges[0]), -1)
         # Gaussian smoothing
