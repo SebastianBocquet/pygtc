@@ -9,5 +9,5 @@ Works great with the output from ``emcee``.
 
 Install with pip: ``pip install pygtc``
 
-----
+
 Copyright 2016, Sebastian Bocquet and Faustin W. Carter
