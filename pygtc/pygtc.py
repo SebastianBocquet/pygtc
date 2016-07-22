@@ -8,86 +8,113 @@ from scipy.stats import norm
 #################### Create a full GTC
 
 def plotGTC(chains, **kwargs):
-    """Create a beautiful triangle plot - aka Giant Triangle Confusogram (GTC).
+    r"""Make a great looking Giant Triangle Confusogram (GTC) with one line of code!
+    A GTC is a lot like a triangle (or corner) plot, but you get to put as many
+    sets of data, and overlay as many truths as you like. That's what can make
+    it so *confusing*!
 
-    Arguments:
-        chains : 2d array with dimensions [num dimensions , sample points] or a
-                    list of such 2d arrays. If a list, all chains in the list
-                    must have the same number of dimensions.
-                    Note: If you are using emcee
-                    (http://dan.iel.fm/emcee/current/) - and you should! - each
-                    element of chains is an EnsembleSampler.flatchain object.
+    Parameters
+    ----------
+    chains : array-like[nDims , samples] or a list[[nDims, samples1], ...]
+        All chains (where a chain is [nDims, samples]) in the list must have
+        the same number of dimensions. Note: If you are using ``emcee``
+        (http://dan.iel.fm/emcee/current/) - and you should! - each element
+        of chains is an ``EnsembleSampler.flatchain`` object.
 
-    Keyword Arguments:
-        weights : Weights for the sample points. If a 1d array is passed,
-                    the same weights are used for all dimension in chains.
-                    If a list of 1d arrays is passed, there must be a weights
-                    array for each dimension of chains. Default weight is 1.
+    weights : array-like[nSamples] or a list[[nSamples1], ...]
+        Weights for the sample points. If a 1d array is passed, the same
+        weights are used for all dimension in chains. If a list of 1d arrays
+        is passed, there must be a weights array for each dimension of
+        `chains`. Default weight is 1.
 
-        chainLabels : A list of text labels describing each chain passed to
-                    chains. len(chainLabels) must equal len(chains).
-                    chainLabels supports LaTex commands enclosed in $..$.
-                    Additionally, you can pass None as a label. Default is None.
+    chainLabels : array-like[nChains]
+        A list of text labels describing each chain passed to chains.
+        len(chainLabels) must equal len(chains). chainLabels supports LaTex
+        commands enclosed in $..$. Additionally, you can pass None as a
+        label. Default is ``None``.
 
-        paramNames : A list of text labels describing each dimension of chains.
-                    len(paramNames) must equal len(chains[0]). paramNames
-                    supports LaTex commands enclosed in $..$. Additionally, you
-                    can pass None as a label. Default is None, however if you
-                    pass a pandas DataFrame object, paramNames defaults to the
-                    DataFrame column names.
+    paramNames : list-like[nDims]
+        A list of text labels describing each dimension of chains.
+        len(paramNames) must equal len(chains[0]). paramNames supports LaTex
+        commands enclosed in $..$. Additionally, you can pass None as a
+        label. Default is None, however if you pass a ``pandas.DataFrame``
+        object, `paramNames` defaults to the ``DataFrame`` column names.
 
-        truths : A list of values to hilite in the GTC parameter space, or a
-                    list of lists of values to hilite in the parameter space.
-                    For each set of truths passed, there must be a value
-                    corresponding to every dimension in chains, although any
-                    value may be None. Default is None.
+    truths : list-like[nDims] or [[nDims], ...]
+        A list of parameter values, one for each parameter in `chains` to
+        hilite in the GTC parameter space, or a list of lists of values to
+        hilite in the parameter space. For each set of truths passed to
+        `truths`, there must be a value corresponding to every dimension
+        in `chains`, although any value may be `None`. Default is
+        ``None``.
 
-        truthLabels : A list of labels, one for each list passed to truths.
-                    truthLabels supports LaTex commands enclosed in $..$.
-                    Additionally, you can pass None as a label. Default is None.
+    truthLabels : list-like[nTruths]
+        A list of labels, one for each list passed to truths. truthLabels
+        supports LaTex commands enclosed in $..$. Additionally, you can pass
+        ``None`` as a label. Default is ``None``.
 
-        truthColors : User-defined colors for the truth lines, must be one per
-                    set of truths passed to truths. Default colors in code.
+    truthColors : list-like[nTruths]
+        User-defined colors for the truth lines, must be one per set of
+        truths passed to `truths`. Default colors are
+        ``['r','c','g','b','m']``.
 
-        priors : A list of tuples in the form (mu, sigma) that describe
-                    Gaussians to be plotted over the parameter histograms. The
-                    number of priors must equal the number of dimensions in
-                    chains. Default is None.
+    priors : list of tuples [(mu1, sigma1), ...]
+        Each tuple describes a Gaussian to be plotted over that parameter's
+        histogram. The number of priors must equal the number of dimensions
+        in `chains`. Default is ``None``.
 
-        plotName : A filename to save the plot to. Default is None.
+    plotName : string
+        A path to save the GTC to in pdf form. Default is ``None``.
 
-        nConfidenceLevels : The number of contours to plot in the 2d
-                    histograms. Each contour corresponds to a sigma. May be 1,
-                    2, or 3. Default is 2.
+    nConfidenceLevels : int
+        The number of contours to plot in the 2d histograms. Each contour
+        corresponds to a sigma. May be 1, 2, or 3. Default is 2.
 
-        nBins : An integer describing the number of bins used to compute the
-                    histograms. Default is 30.
+    nBins : int
+        An integer describing the number of bins used to compute the
+        histograms. Default is 30.
 
-        smoothingKernel : An integer describing the size of the Gaussian
-                    smoothing kernel in bins. Default is 1.
+    smoothingKernel : int
+        An integer describing the size of the Gaussian smoothing kernel in
+        bins. Default is 1.
 
-        figureSize : A number in inches describing the length = width of the
-                    GTC, or a string indicating a predefined journal setting.
-                    Default is 70/dpi where dpi = plt.rcParams['figure.dpi'].
+    figureSize : float or string
+        A number in inches describing the length = width of the GTC, or a
+        string indicating a predefined journal setting. Default is 70/dpi
+        where ``dpi = plt.rcParams['figure.dpi']``.
 
-        panelSpacing : 'loose' or 'tight'. Default is 'tight'.
+    panelSpacing : string
+        Options are ``'loose'`` or ``'tight'``. Determines whether there is
+        some space between the subplots of the GTC or not. Default is
+        ``'tight'``.
 
-        paramRanges : A list of tuples, on for each dimension of chains, in
-                    the form (min, max). Default is 4 sigma bounds.
+    paramRanges : list of tuples [nDim]
+        Set the boundaries of each paramter range. Must provide a tuples for
+        each dimension of `chains`. If ``None`` is provided for a
+        parameter, the range defaults to 4 sigma bounds.
 
-        colorsOrder : Default is ['blues', 'greens', 'yellows', 'reds',
-                    'purples']
+    colorsOrder : list-like[nDims]
+        The color order for chains passed to `chains`. Default is
+        ``['blues', 'greens', 'yellows', 'reds', 'purples']``. Currently,
+        ``pygtc`` is limited to these color values, so you can reorder them,
+        but can't yet define your own colors.
 
-        do1dPlots : Boolean describing whether 1d histrograms are plotted on
-                    the diagonal. Default is True.
+    do1dPlots : bool
+        Whether or not 1d histrograms are plotted on the diagonal. Default
+        is ``True``.
 
-        doOnly1dPlot : True/False: plot only ONE 1d histogram. If this is
-                    True, then chains must have shape (samples,1). Default is
-                    False.
+    doOnly1dPlot : bool
+        Pot only ONE 1d histogram. If this is True, then chains must have
+        shape ``(samples,1)``. Default is ``False``.
 
-    Returns:
-    --------
-    fig : matplotlib.figure object (the GTC in all its glory)
+    Returns
+    -------
+    fig : ``matplotlib.figure`` object
+        You can do all sorts of fun things with this in terms of
+        customization after it gets returned. If you are using a ``JuPyter``
+        notebook with inline plotting enabled, you should assign a variable
+        to catch the return or else the figure will plot twice.
+
     """
 
     ##### Matplotlib and figure setting
