@@ -7,4 +7,4 @@ See source for documentation, or check out demo.ipynp.
 
 Works great with the output from ``emcee``.
 
-Install with pip: pip install pygtc
+Install with pip: ``pip install pygtc``
