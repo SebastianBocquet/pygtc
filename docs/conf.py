@@ -15,6 +15,9 @@
 import sys
 import os
 
+#All this mock stuff is just so I can import pygtc below without actually
+#having to load up any of the modules listed in MOCK_MODULES.
+#This is important because RTD doesn't support any c-based modules.
 import mock
 
 MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'matplotlib.pyplot', 'matplotlib.ticker', 'scipy.ndimage', 'scipy.stats']
