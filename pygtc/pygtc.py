@@ -166,10 +166,10 @@ def plotGTC(chains, **kwargs):
 
     ##### Check the validity of the chains argument:
 
-    #Numpy really doesn't like lists of Pandas DataFrame objects
-    #so if it gets one, extract array vals and throw away the rest
+    # Numpy really doesn't like lists of Pandas DataFrame objects
+    # So if it gets one, extract array vals and throw away the rest
     dfColNames = None
-    try: #Not a list of DFs, but might be a single DF
+    try: # Not a list of DFs, but might be a single DF
         try:
             # Check if single numpy 2d chain
             if chains.ndim == 2:
@@ -178,18 +178,18 @@ def plotGTC(chains, **kwargs):
             pass
 
         # Read in column names from Pandas DataFrame if exists
-        #Also convert DataFrame to simple numpy array to avoid later conflicts
+        # Also convert DataFrame to simple numpy array to avoid later conflicts
         if hasattr(chains[0], 'columns'):
-            #Set param names from DataFrame column names, can be overridden later
+            # Set param names from DataFrame column names, can be overridden later
             dfColNames = list(chains[0].columns.values)
             chains = [df.values for df in chains]
 
-    except ValueError: #Probably a list of pandas DFs
+    except ValueError: # Probably a list of pandas DFs
         if hasattr(chains[0], 'columns') and hasattr(chains[0], 'values'):
             dfColNames = list(chains[0].columns.values)
             chains = [df.values for df in chains]
 
-    #Get number of chains
+    # Get number of chains
     nChains = len(chains)
     assert nChains<=len(colorsOrder), "currently only supports up to "+str(len(colorsOrder))+" chains"
 
@@ -207,23 +207,23 @@ def plotGTC(chains, **kwargs):
     chainLabels = kwargs.pop('chainLabels', None)
     if chainLabels is not None:
         # Convert to list if only one label
-        if isstr(chainLabels):
+        if __isstr(chainLabels):
             chainLabels = [chainLabels]
         # Check that number of labels equals number of chains
         assert len(chainLabels) == nChains, "chainLabels mismatch with number of chains"
         # Check that it's a list of strings
-        assert all(isstr(s) for s in chainLabels), "chainLabels must be list of strings"
+        assert all(__isstr(s) for s in chainLabels), "chainLabels must be list of strings"
 
     # Label the x and y axes, supports latex
     paramNames = kwargs.pop('paramNames', None)
     if paramNames is not None:
         # Convert to list if only one name
-        if isstr(paramNames):
+        if __isstr(paramNames):
             paramNames = [paramNames]
         # Check that number of paramNames equals nDim
         assert len(paramNames) == nDim, "paramNames mismatch with number of dimensions"
         # Check that it's a list of strings
-        assert all(isstr(s) for s in paramNames), "paramNames must be list of strings"
+        assert all(__isstr(s) for s in paramNames), "paramNames must be list of strings"
     elif dfColNames is not None:
         paramNames = dfColNames
 
@@ -236,7 +236,7 @@ def plotGTC(chains, **kwargs):
     customColorsOrder = kwargs.pop('colorsOrder', None) #Labels for multiple chains, goes in plot legend
     if customColorsOrder is not None:
         # Convert to list if only one entry
-        if isstr(customColorsOrder):
+        if __isstr(customColorsOrder):
             customColorsOrder = [customColorsOrder]
         lencustomColorsOrder = len(customColorsOrder)
         if not all(color in colorsDict.keys() for color in customColorsOrder):
@@ -245,7 +245,6 @@ def plotGTC(chains, **kwargs):
         colors = [colorsDict[cs] for cs in colorsOrder]
 
     # Highlight a point (or several) in parameter space by lines
-    # Colors of truth lines
     truthColors = kwargs.pop('truthColors', truthsDefaultColors) #Default supports up to three truths
     truthLineStyles = kwargs.pop('truthLineStyles', truthsDefaultLS)
     truths = kwargs.pop('truths', None)
@@ -262,13 +261,13 @@ def plotGTC(chains, **kwargs):
     truthLabels = kwargs.pop('truthLabels', None) #Labels for multiple truths, goes in plot legend
     if truthLabels is not None:
         # Convert to list if only one label
-        if isstr(truthLabels):
+        if __isstr(truthLabels):
             truthLabels = [truthLabels]
         # Check that it's a list of strings
-        assert all(isstr(s) for s in truthLabels), "truthLabels must be list of strings"
+        assert all(__isstr(s) for s in truthLabels), "truthLabels must be list of strings"
         assert len(truthLabels) == len(truths), "truthLabels mismatch with number of truths"
 
-    #Show Gaussian priors on plots (assuming flat priors)
+    # Show Gaussian PDF on 1d plots (to show Gaussian priors)
     priors = kwargs.pop('priors', None)
     if priors is not None:
         assert len(priors)==nDim, "List of priors must match number of parameters"
@@ -290,7 +289,7 @@ def plotGTC(chains, **kwargs):
     # Set plotName to save the plot to plotName
     plotName = kwargs.pop('plotName', None) #Um... the name of the plot?!
     if plotName is not None:
-        assert isstr(plotName), "plotName must be a string type"
+        assert __isstr(plotName), "plotName must be a string type"
 
     # Define which confidence levels to show
     nConfidenceLevels = kwargs.pop('nConfidenceLevels', 2) #How many of the above confidence levels to show
@@ -309,7 +308,7 @@ def plotGTC(chains, **kwargs):
         figureWidth = nDim*70. / mplPPI
     else:
         # User-defined width=height in inches
-        if not isstr(figureSize):
+        if not __isstr(figureSize):
             figureWidth = figureSize
         else:
             # Choose from a couple of presets to fit your publication
@@ -334,7 +333,7 @@ def plotGTC(chains, **kwargs):
             assert chains[i].shape[1]==1, "Provide chains of shape(Npoints,1) if you only want the 1d histogram"
         do1dPlots = True
 
-    #Check to see if there are any remaining keyword arguments
+    # Check to see if there are any remaining keyword arguments
     keys = ''
     for key in iter(kwargs.keys()):
         keys = keys + key + ' '
@@ -347,7 +346,7 @@ def plotGTC(chains, **kwargs):
     panelXrange = np.empty((nDim,2))
     xTicks, yTicks = nDim*[None], nDim*[None]
 
-    #Create the figure
+    # Create the figure
     fig = plt.figure(figsize=(figureWidth,figureWidth))
 
 
@@ -364,19 +363,15 @@ def plotGTC(chains, **kwargs):
                     else:
                         ax = fig.add_subplot(nDim-1,nDim-1,((i-1)*(nDim-1))+j+1)
 
-
                     ##### Draw contours and truths
                     # Extract 2d chains
                     chainsForPlot2D = [[chains[k][:,j], chains[k][:,i]] for k in range(nChains)]
-
                     # Extract 2d truths
                     truthsForPlot2D = None
                     if truths is not None:
                         truthsForPlot2D = [[truths[k,i], truths[k,j]] for k in range(len(truths))]
-
                     # Plot!
                     ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins, nBinsFlat, smoothingKernel, colors, nConfidenceLevels, truthsForPlot2D, truthColors, truthLineStyles)
-
 
                     ##### Range
                     if paramRanges is not None:
@@ -385,59 +380,58 @@ def plotGTC(chains, **kwargs):
                         if paramRanges[i]:
                             ax.set_ylim(paramRanges[i][0],paramRanges[i][1])
 
-                    ##### Ticks & labels
+                    ##### Tick labels without offset and scientific notation
                     ax.get_xaxis().get_major_formatter().set_useOffset(False)
                     ax.get_xaxis().get_major_formatter().set_scientific(False)
-
                     ax.get_yaxis().get_major_formatter().set_useOffset(False)
                     ax.get_yaxis().get_major_formatter().set_scientific(False)
 
-                    # x-labels at bottom of plot only
+                    ##### x-labels at bottom of plot only
                     if i==nDim-1:
                         if paramNames is not None:
                             ax.set_xlabel(paramNames[j])
                     else:
                         ax.get_xaxis().set_ticklabels([])
                         
-                    # y-labels for left-most panels only
+                    ##### y-labels for left-most panels only
                     if j==0:
                         if paramNames is not None:
                             ax.set_ylabel(paramNames[i])
                     else:
                         ax.get_yaxis().set_ticklabels([])
 
-                    # Rotate tick labels
+                    ##### Rotate tick labels
                     for xLabel in ax.get_xticklabels():
                         xLabel.set_rotation(tickAngle)
                     for yLabel in ax.get_yticklabels():
                         yLabel.set_rotation(tickAngle)
 
-                    # X limits to be applied to 1d histograms
+                    ##### x limits to be applied to 1d histograms
                     panelXrange[j] = ax.get_xlim()
                     
-                    # Ticks x axis
+                    ##### Ticks x axis
                     if xTicks[j] is None:
-                        ax.xaxis.set_major_locator(mtik.MaxNLocator(5)) # 5 ticks max
-                        # Remove ticks that are too close to panel edge
+                        # 5 ticks max
+                        ax.xaxis.set_major_locator(mtik.MaxNLocator(5))
+                        # Remove xticks that are too close (5% of panel size) to panel edge
                         deltaX = panelXrange[j,1]-panelXrange[j,0]
-                        LoHi = (panelXrange[j,0]+.05*deltaX, panelXrange[j,1]-.05*deltaX) # Remove first and last 5%
-                        tickLocs = ax.xaxis.get_ticklocs() # Current tick locations
-                        idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0] # Keep those within 90% of the panel range
-                        xTicks[j] = tickLocs[idx] # Keep for other panels
-                    # Apply
+                        LoHi = (panelXrange[j,0]+.05*deltaX, panelXrange[j,1]-.05*deltaX)
+                        tickLocs = ax.xaxis.get_ticklocs()
+                        idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0]
+                        xTicks[j] = tickLocs[idx]
                     ax.xaxis.set_ticks(xTicks[j])
                     
-                    # Ticks y axis
+                    ##### Ticks y axis
                     if yTicks[i] is None:
-                        ax.yaxis.set_major_locator(mtik.MaxNLocator(5)) # 5 ticks max
-                        # Remove ticks that are too close to panel edge
+                        # 5 ticks max
+                        ax.yaxis.set_major_locator(mtik.MaxNLocator(5))
+                        # Remove xticks that are too close (5% of panel size) to panel edge
                         panelYrange = ax.get_ylim()
                         deltaY = panelYrange[1]-panelYrange[0]
-                        LoHi = (panelYrange[0]+.05*deltaY, panelYrange[1]-.05*deltaY) # Remove first and last 5%
-                        tickLocs = ax.yaxis.get_ticklocs() # Current tick locations
-                        idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0] # Keep those within 90% of the panel range
-                        yTicks[i] = tickLocs[idx] # Keep for other panels
-                    # Apply
+                        LoHi = (panelYrange[0]+.05*deltaY, panelYrange[1]-.05*deltaY)
+                        tickLocs = ax.yaxis.get_ticklocs()
+                        idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0]
+                        yTicks[i] = tickLocs[idx]
                     ax.yaxis.set_ticks(yTicks[i])
                                         
                     
@@ -448,37 +442,33 @@ def plotGTC(chains, **kwargs):
             ##### Create subplot
             ax = fig.add_subplot(nDim,nDim,(i*nDim)+i+1)
 
-
             ##### Plot histograms, truths, Gaussians
             # Extract 1d chains
             chainsForPlot1D = [chains[k][:,i] for k in range(nChains)]
-
             # Extract 1d truths
             truthsForPlot1D = None
             if truths is not None:
                 truthsForPlot1D = [truths[k,i] for k in range(len(truths))]
-
             # Extract 1d prior
             prior1d = None
             if priors is not None:
                 if priors[i] and priors[i][1]>0:
                     prior1d = priors[i]
-
             # Plot!
             ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins, smoothingKernel, colors, truthsForPlot1D, truthColors, truthLineStyles, prior1d, priorColor)
 
 
-            ##### Ticks, labels, range
+            ##### Tick labels without offset and scientific notation
             ax.get_xaxis().get_major_formatter().set_useOffset(False)
             ax.get_xaxis().get_major_formatter().set_scientific(False)
 
-            # No ticks or labels on y-axes, lower limit 0
+            ##### No ticks or labels on y-axes, lower limit 0
             ax.get_yaxis().set_ticklabels([])
             ax.yaxis.set_ticks_position('none')
             ax.set_ylim(bottom=0)
             ax.xaxis.set_ticks_position('bottom')
 
-            # x-label for bottom-right panel only
+            ##### x-label for bottom-right panel only
             if i==nDim-1:
                 if paramNames is not None:
                     ax.set_xlabel(paramNames[i])
@@ -486,24 +476,24 @@ def plotGTC(chains, **kwargs):
                 ax.set_xlim(panelXrange[i])
                 ax.get_xaxis().set_ticklabels([])
 
-            # Rotate tick labels
+            ##### Rotate tick labels
             for xLabel in ax.get_xticklabels():
                 xLabel.set_rotation(tickAngle)
 
-            # Ticks x axis
+            ##### Ticks x axis
             if i==nDim-1:
-                ax.xaxis.set_major_locator(mtik.MaxNLocator(5)) # 5 ticks max
-                # Remove xticks that are too close to panel edge
+                # 5 ticks max
+                ax.xaxis.set_major_locator(mtik.MaxNLocator(5))
+                # Remove xticks that are too close (5% of panel size) to panel edge
                 panelXrange[i] = ax.get_xlim()
                 deltaX = panelXrange[i,1]-panelXrange[i,0]
-                LoHi = (panelXrange[i,0]+.05*deltaX, panelXrange[i,1]-.05*deltaX) # Remove first and last 5%
-                tickLocs = ax.xaxis.get_ticklocs() # Current tick locations
-                idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0] # Keep those within 90% of the panel range
-                xTicks[i] = tickLocs[idx] # Keep for other panels
-            # Apply
+                LoHi = (panelXrange[i,0]+.05*deltaX, panelXrange[i,1]-.05*deltaX)
+                tickLocs = ax.xaxis.get_ticklocs()
+                idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0]
+                xTicks[i] = tickLocs[idx]
             ax.xaxis.set_ticks(xTicks[i])
 
-            # y label for top-left panel
+            ##### y label for top-left panel
             if i==0:
                 if doOnly1dPlot:
                     ax.set_ylabel('Probability')
@@ -535,7 +525,7 @@ def plotGTC(chains, **kwargs):
                 ax.plot(0,0, color=truthColors[k], label=truthLabels[k], ls=truthsDefaultLS[k])
                 labelColors.append(truthColors[k])
 
-        # Set xlim back to what the data wanted
+        ##### Set xlim back to what the data wanted
         if doOnly1dPlot:
             ax.set_xlim(labelPanelRange)
 
@@ -586,13 +576,11 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, colors, tru
         # Dotted line for hidden histogram
         plt.plot(plotData[0], plotData[1], ls=':', color=colors[k][1])
 
-
     ##### Truth line
     if truths1d is not None:
         for k in range(len(truths1d)):
             if truths1d[k] is not None:
                 ax.axvline(truths1d[k], color=truthColors[k], ls=truthLineStyles[k])
-
 
     ##### Gaussian prior
     if prior1d is not None:
@@ -608,13 +596,10 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, colors, tru
 
 def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, colors, nConfidenceLevels, truths2d, truthColors, truthLineStyles):
 
-    #generateLabels defaults to True for standalone plotting
-    #pltGTC sets generateLabels=False and handles its own
-
-    # Use the 68%, 95%, and 99% confidence levels, which look different in 2D
+    # Use the 68%, 95%, and 99% confidence levels
     gaussConfLevels = [.3173, .0455, .0027]
 
-    #
+    # Empty arrays needed below
     chainLevels = np.ones((nChains,nConfidenceLevels+1))
     extents = np.empty((nChains,4))
 
@@ -647,12 +632,10 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, 
         smoothData.append( scipy.ndimage.gaussian_filter(hist2d.T, sigma=smoothingKernel) )
         ax.contourf(xbins, ybins, smoothData[-1], levels=chainLevels[k], colors=colors[k][:nConfidenceLevels][::-1])
 
-
     ###### Draw contour lines in order to see contours lying on top of each other
     for k in range(nChains):
         for l in range(nConfidenceLevels):
             ax.contour(smoothData[nChains-1-k], [chainLevels[k][nConfidenceLevels-1-l]], extent=extents[k], origin='lower', colors=colors[k][l])
-
 
     ##### Truth lines
     if truths2d is not None:
@@ -669,7 +652,7 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, 
 
 
 #################### Check for basestring in python 2/3 compatible way
-def isstr(s):
+def __isstr(s):
     try:
         isinstance("", basestring)
         return isinstance(s, basestring)
