@@ -57,9 +57,14 @@ def plotGTC(chains, **kwargs):
 
     truthColors : list-like[nTruths]
         User-defined colors for the truth lines, must be one per set of
-        truths passed to `truths`. Default colors are
-        ``['r','c','g','b','m']``.
+        truths passed to `truths`. Default color is gray ``#4d4d4d``
+        for up to three lines.
 
+    truthLineStyles : list-like[nTruths]
+        User-defined line styles for the truth lines, must be one per set of
+        truths passed to `truths`. Default line styles
+        are ``[':','--','dashdot']``.
+    
     priors : list of tuples [(mu1, sigma1), ...]
         Each tuple describes a Gaussian to be plotted over that parameter's
         histogram. The number of priors must equal the number of dimensions
@@ -124,22 +129,21 @@ def plotGTC(chains, **kwargs):
     """
 
     ##### Matplotlib and figure setting
-    # Mtplotlb rcParams TODO: make sure this list is exhaustive
+    # Matplotlb rcParams
     axisColor = '#333333'
     plt.rcParams['legend.fontsize'] = 9
     plt.rcParams['axes.labelsize'] = 9
     plt.rcParams['xtick.labelsize'] = 6
     plt.rcParams['ytick.labelsize'] = 6
-    
     plt.rcParams['axes.edgecolor'] = axisColor
     plt.rcParams['xtick.color'] = axisColor
     plt.rcParams['ytick.color'] = axisColor
-    
     plt.rcParams['text.usetex'] = True
     plt.rcParams['text.latex.preamble'] = [r'\usepackage{sansmath}', r'\sansmath']
 
     #Set up some colors
-    truthsDefaultColors = ['r','c','g','b','m']
+    truthsDefaultColors = ['#4d4d4d', '#4d4d4d', '#4d4d4d']
+    truthsDefaultLS = [':','--','dashdot']
     colorsDict = { 'blues' : ('#4c72b0','#7fa5e3','#b2d8ff'),
                     'greens' : ('#55a868','#88db9b','#bbffce'),
                     'yellows' : ('#f5964f','#ffc982','#fffcb5'),
@@ -147,7 +151,7 @@ def plotGTC(chains, **kwargs):
                     'purples' : ('#8172b2','#b4a5e5','#37d8ff')}
     colorsOrder = ['blues', 'greens', 'yellows', 'reds', 'purples']
     colors = [colorsDict[cs] for cs in colorsOrder]
-    lightBlack = '#333333'
+    priorColor = '#333333'
 
     #Angle of tick labels
     tickAngle = 45
@@ -157,7 +161,7 @@ def plotGTC(chains, **kwargs):
     figSizeDict = { 'APJ_column' : 245.26653 / mplPPI,
                     'APJ_page' : 513.11743 / mplPPI,
                     'MNRAS_column' : 240. / mplPPI,
-                    'MNRAS_page' : 504. / mplPPI}
+                    'MNRAS_page' : 504. / mplPPI }
 
 
     ##### Check the validity of the chains argument:
@@ -242,7 +246,8 @@ def plotGTC(chains, **kwargs):
 
     # Highlight a point (or several) in parameter space by lines
     # Colors of truth lines
-    truthColors = kwargs.pop('truthColors', truthsDefaultColors) #Default supports up to five truths TODO: prettier colors
+    truthColors = kwargs.pop('truthColors', truthsDefaultColors) #Default supports up to three truths
+    truthLineStyles = kwargs.pop('truthLineStyles', truthsDefaultLS)
     truths = kwargs.pop('truths', None)
     if truths is not None:
         # Convert to list if needed
@@ -250,6 +255,7 @@ def plotGTC(chains, **kwargs):
             truths = [truths]
         truths = np.array(truths)
         assert np.shape(truths)[0]<=len(truthColors), "More truths than available colors. Set colors with truthColors = [colors...]"
+        assert np.shape(truths)[0]<=len(truthLineStyles), "More truths than available line styles. Set line styles with truthLineStyles = [ls...]"
         assert np.shape(truths)[1]==nDim, "Each list of truths must match number of parameters"
 
     # Labels for the different truth lines
@@ -368,7 +374,7 @@ def plotGTC(chains, **kwargs):
                         truthsForPlot2D = [[truths[k,i], truths[k,j]] for k in range(len(truths))]
 
                     # Plot!
-                    ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins, nBinsFlat, smoothingKernel, colors, nConfidenceLevels, truthsForPlot2D, truthColors)
+                    ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins, nBinsFlat, smoothingKernel, colors, nConfidenceLevels, truthsForPlot2D, truthColors, truthLineStyles)
 
 
                     ##### Range
@@ -447,7 +453,7 @@ def plotGTC(chains, **kwargs):
                     prior1d = priors[i]
 
             # Plot!
-            ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins, smoothingKernel, colors, truthsForPlot1D, truthColors, prior1d, lightBlack)
+            ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins, smoothingKernel, colors, truthsForPlot1D, truthColors, truthLineStyles, prior1d, priorColor)
 
 
             ##### Ticks, labels, range
@@ -510,7 +516,7 @@ def plotGTC(chains, **kwargs):
         if truthLabels is not None:
             # Label for each truth
             for k in range(len(truthLabels)):
-                ax.plot(0,0, color=truthColors[k], label=truthLabels[k])
+                ax.plot(0,0, color=truthColors[k], label=truthLabels[k], ls=truthsDefaultLS[k])
                 labelColors.append(truthColors[k])
 
         # Set xlim back to what the data wanted
@@ -519,7 +525,7 @@ def plotGTC(chains, **kwargs):
 
 
         ##### Legend and label colors according to plot
-        leg = plt.legend(loc='upper right', fancybox=True)
+        leg = plt.legend(loc='upper right', fancybox=True, handlelength=3)
         leg.get_frame().set_alpha(0.)
         for color,text in zip(labelColors,leg.get_texts()):
             text.set_color(color)
@@ -549,7 +555,7 @@ def plotGTC(chains, **kwargs):
 
 #################### Create single 1d panel
 
-def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, colors, truths1d, truthColors, prior1d, lightBlack):
+def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, colors, truths1d, truthColors, truthLineStyles, prior1d, priorColor):
 
     ##### 1D histogram
     for k in reversed(range(nChains)):
@@ -569,14 +575,14 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, colors, tru
     if truths1d is not None:
         for k in range(len(truths1d)):
             if truths1d[k] is not None:
-                ax.axvline(truths1d[k], color=truthColors[k])
+                ax.axvline(truths1d[k], color=truthColors[k], ls=truthLineStyles[k])
 
 
     ##### Gaussian prior
     if prior1d is not None:
         # Plot prior in -4 to +4 sigma range
         arr = np.linspace(prior1d[0]-4*prior1d[1], prior1d[0]+4*prior1d[1], 40)
-        plt.plot(arr,norm.pdf(arr,prior1d[0],prior1d[1]), color=lightBlack)
+        plt.plot(arr,norm.pdf(arr,prior1d[0],prior1d[1]), color=priorColor)
 
     return ax
 
@@ -584,7 +590,7 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, colors, tru
 
 #################### Create single 2d panel
 
-def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, colors, nConfidenceLevels, truths2d, truthColors):
+def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, colors, nConfidenceLevels, truths2d, truthColors, truthLineStyles):
 
     #generateLabels defaults to True for standalone plotting
     #pltGTC sets generateLabels=False and handles its own
@@ -637,10 +643,10 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, 
         for k in range(len(truths2d)):
             # horizontal line
             if truths2d[k][0] is not None:
-                ax.axhline(truths2d[k][0], color=truthColors[k])
+                ax.axhline(truths2d[k][0], color=truthColors[k], ls=truthLineStyles[k])
             # vertical line
             if truths2d[k][1] is not None:
-                ax.axvline(truths2d[k][1], color=truthColors[k])
+                ax.axvline(truths2d[k][1], color=truthColors[k], ls=truthLineStyles[k])
 
     return ax
 
