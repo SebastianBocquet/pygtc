@@ -346,9 +346,9 @@ def plotGTC(chains, **kwargs):
     panelXrange = np.empty((nDim,2))
     xTicks, yTicks = nDim*[None], nDim*[None]
 
-    # Create the figure
+    # Create the figure, and empty list for first column / last row
     fig = plt.figure(figsize=(figureWidth,figureWidth))
-
+    axV, axH = [],[]
 
 
 
@@ -434,7 +434,11 @@ def plotGTC(chains, **kwargs):
                         yTicks[i] = tickLocs[idx]
                     ax.yaxis.set_ticks(yTicks[i])
                                         
-    
+                    ##### First column and last row are needed to align labels
+                    if j==0:
+                        axV.append(ax)
+                    if i==nDim-1:
+                        axH.append(ax)
                     
 
     if do1dPlots:
@@ -499,48 +503,43 @@ def plotGTC(chains, **kwargs):
                     ax.set_ylabel('Probability')
                 elif paramNames is not None:
                     ax.set_ylabel(paramNames[i])
+                    
+            ##### First column and last row are needed to align labels
+            if i==0:
+                axV.append(ax)
+            elif i==nDim-1:
+                axH.append(ax)
+                
 
 
     ########## Align labels if there is more than one panel
-    if (not doOnly1dPlot) & (not nDim==2):
+    if len(axH)>1:
         fig.canvas.draw()
-        BBoxdiff = np.empty(nDim)
+        bboxSize = np.empty(len(axH))
         
         ##### x labels
         # Get label length of the bottom row
-        for i in range(nDim):
-            if do1dPlots:
-                ax = fig.add_subplot(nDim, nDim, ((nDim-1)*nDim)+i+1)
-            else:
-                ax = fig.add_subplot(nDim-1, nDim-1, (((nDim-1)-1)*(nDim-1))+i+1)
-            Bbox = ax.xaxis.get_ticklabel_extents(fig.canvas.renderer)[0].get_points()
-            BBoxdiff[i] = Bbox[1,1]-Bbox[0,1]
-        # Apply longest spacing to all panels in lowest row
-        longestTickLabel = np.amax(BBoxdiff)
-        for i in range(nDim):
-            if do1dPlots:
-                ax = fig.add_subplot(nDim, nDim, ((nDim-1)*nDim)+i+1)
-            else:
-                ax = fig.add_subplot(nDim-1, nDim-1, (((nDim-1)-1)*(nDim-1))+i+1)
-            ax.get_xaxis().set_label_coords(.5, -(longestTickLabel/mplPPI+.25))
+        for i in range(len(axH)):
+            bboxTickLabel = axH[i].xaxis.get_ticklabel_extents(fig.canvas.renderer)[0].get_points()
+            bboxSize[i] = bboxTickLabel[1,1]-bboxTickLabel[0,1]
+            panelWidth = axH[i].get_window_extent().transformed(fig.dpi_scale_trans.inverted()).width
+        # Apply longest spacing to all panels in last row
+        longestTickLabel = 2+np.amax(bboxSize)
+        loc = (longestTickLabel/mplPPI/panelWidth)
+        for i in range(len(axH)):
+            axH[i].get_xaxis().set_label_coords(.5, -loc)
     
         ##### y labels
         # Get label length of the left column
-        for i in range(nDim):
-            if do1dPlots:
-                ax = fig.add_subplot(nDim,nDim,(i*nDim)+1)
-            else:
-                ax = fig.add_subplot(nDim-1,nDim-1,((i-1)*(nDim-1))+1)
-            Bbox = ax.yaxis.get_ticklabel_extents(fig.canvas.renderer)[0].get_points()
-            BBoxdiff[i] = Bbox[1,0]-Bbox[0,0]
-        # Apply longest spacing to all panels in lowest row
-        longestTickLabel = np.amax(BBoxdiff)
-        for i in range(nDim):
-            if do1dPlots:
-                ax = fig.add_subplot(nDim,nDim,(i*nDim)+1)
-            else:
-                ax = fig.add_subplot(nDim-1,nDim-1,((i-1)*(nDim-1))+1)
-            ax.get_yaxis().set_label_coords(-(longestTickLabel/mplPPI+.25), .5)
+        for i in range(len(axV)):
+            bboxTickLabel = axV[i].yaxis.get_ticklabel_extents(fig.canvas.renderer)[0].get_points()
+            bboxSize[i] = bboxTickLabel[1,0]-bboxTickLabel[0,0]
+            panelHeight = axV[i].get_window_extent().transformed(fig.dpi_scale_trans.inverted()).height
+        # Apply longest spacing to all panels in first column
+        longestTickLabel = 2+np.amax(bboxSize)
+        loc = (longestTickLabel/mplPPI/panelHeight)
+        for i in range(len(axV)):
+            axV[i].get_yaxis().set_label_coords(-loc, .5)
         
         
     
