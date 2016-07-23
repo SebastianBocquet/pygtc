@@ -503,6 +503,7 @@ def plotGTC(chains, **kwargs):
 
     ########## Align labels if there is more than one panel
     if (not doOnly1dPlot) & (not nDim==2):
+        fig.canvas.draw()
         BBoxdiff = np.empty(nDim)
         
         ##### x labels
