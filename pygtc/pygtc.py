@@ -434,6 +434,7 @@ def plotGTC(chains, **kwargs):
                         yTicks[i] = tickLocs[idx]
                     ax.yaxis.set_ticks(yTicks[i])
                                         
+    
                     
 
     if do1dPlots:
@@ -463,8 +464,7 @@ def plotGTC(chains, **kwargs):
             ax.get_xaxis().get_major_formatter().set_scientific(False)
 
             ##### No ticks or labels on y-axes, lower limit 0
-            ax.get_yaxis().set_ticklabels([])
-            ax.yaxis.set_ticks_position('none')
+            ax.yaxis.set_ticks([])
             ax.set_ylim(bottom=0)
             ax.xaxis.set_ticks_position('bottom')
 
@@ -500,7 +500,50 @@ def plotGTC(chains, **kwargs):
                 elif paramNames is not None:
                     ax.set_ylabel(paramNames[i])
 
-            
+
+    ########## Align labels if there is more than one panel
+    if (not doOnly1dPlot) & (not nDim==2):
+        BBoxdiff = np.empty(nDim)
+        
+        ##### x labels
+        # Get label length of the bottom row
+        for i in range(nDim):
+            if do1dPlots:
+                ax = fig.add_subplot(nDim, nDim, ((nDim-1)*nDim)+i+1)
+            else:
+                ax = fig.add_subplot(nDim-1, nDim-1, (((nDim-1)-1)*(nDim-1))+i+1)
+            Bbox = ax.xaxis.get_ticklabel_extents(fig.canvas.renderer)[0].get_points()
+            BBoxdiff[i] = Bbox[1,1]-Bbox[0,1]
+        # Apply longest spacing to all panels in lowest row
+        longestTickLabel = np.amax(BBoxdiff)
+        for i in range(nDim):
+            if do1dPlots:
+                ax = fig.add_subplot(nDim, nDim, ((nDim-1)*nDim)+i+1)
+            else:
+                ax = fig.add_subplot(nDim-1, nDim-1, (((nDim-1)-1)*(nDim-1))+i+1)
+            ax.get_xaxis().set_label_coords(.5, -(longestTickLabel/mplPPI+.25))
+    
+        ##### y labels
+        # Get label length of the left column
+        for i in range(nDim):
+            if do1dPlots:
+                ax = fig.add_subplot(nDim,nDim,(i*nDim)+1)
+            else:
+                ax = fig.add_subplot(nDim-1,nDim-1,((i-1)*(nDim-1))+1)
+            Bbox = ax.yaxis.get_ticklabel_extents(fig.canvas.renderer)[0].get_points()
+            BBoxdiff[i] = Bbox[1,0]-Bbox[0,0]
+        # Apply longest spacing to all panels in lowest row
+        longestTickLabel = np.amax(BBoxdiff)
+        for i in range(nDim):
+            if do1dPlots:
+                ax = fig.add_subplot(nDim,nDim,(i*nDim)+1)
+            else:
+                ax = fig.add_subplot(nDim-1,nDim-1,((i-1)*(nDim-1))+1)
+            ax.get_yaxis().set_label_coords(-(longestTickLabel/mplPPI+.25), .5)
+        
+        
+    
+    
     ########## Legend
     if (chainLabels is not None) or (truthLabels is not None):
         ##### Dummy plot for label line color
