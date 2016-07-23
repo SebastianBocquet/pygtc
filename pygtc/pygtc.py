@@ -125,10 +125,16 @@ def plotGTC(chains, **kwargs):
 
     ##### Matplotlib and figure setting
     # Mtplotlb rcParams TODO: make sure this list is exhaustive
+    axisColor = '#333333'
     plt.rcParams['legend.fontsize'] = 9
     plt.rcParams['axes.labelsize'] = 9
     plt.rcParams['xtick.labelsize'] = 6
     plt.rcParams['ytick.labelsize'] = 6
+    
+    plt.rcParams['axes.edgecolor'] = axisColor
+    plt.rcParams['xtick.color'] = axisColor
+    plt.rcParams['ytick.color'] = axisColor
+    
     plt.rcParams['text.usetex'] = True
     plt.rcParams['text.latex.preamble'] = [r'\usepackage{sansmath}', r'\sansmath']
 
@@ -456,6 +462,7 @@ def plotGTC(chains, **kwargs):
 
             # x-label for bottom-right panel only
             if i==nDim-1:
+                xmin[i], xmax[i] = ax.get_xlim()
                 if paramNames is not None:
                     ax.set_xlabel(paramNames[i])
             else:
@@ -464,13 +471,6 @@ def plotGTC(chains, **kwargs):
 
             for xLabel in ax.get_xticklabels():
                 xLabel.set_rotation(tickAngle)
-
-            # y label for top-left panel
-            if i==0:
-                if doOnly1dPlot:
-                    ax.set_ylabel('Probability')
-                elif paramNames is not None:
-                    ax.set_ylabel(paramNames[i])
 
             # No more than 5 ticks per panel
             myLocator = mtik.MaxNLocator(5)
@@ -482,7 +482,12 @@ def plotGTC(chains, **kwargs):
             idx = np.where((ax.xaxis.get_ticklocs()>xLoHi[0])&(ax.xaxis.get_ticklocs()<xLoHi[1]))[0]
             ax.xaxis.set_ticks(ax.xaxis.get_ticklocs()[idx])
 
-
+            # y label for top-left panel
+            if i==0:
+                if doOnly1dPlot:
+                    ax.set_ylabel('Probability')
+                elif paramNames is not None:
+                    ax.set_ylabel(paramNames[i])
 
     ########## Legend
     if (chainLabels is not None) or (truthLabels is not None):
