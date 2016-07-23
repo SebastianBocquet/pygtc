@@ -344,7 +344,8 @@ def plotGTC(chains, **kwargs):
     nBinsFlat = np.linspace(0., nBins**2, nBins**2)
 
     # Left and right panel boundaries
-    xmin, xmax = np.empty(nDim), np.empty(nDim)
+    panelXrange = np.empty((nDim,2))
+    xTicks, yTicks = nDim*[None], nDim*[None]
 
     #Create the figure
     fig = plt.figure(figsize=(figureWidth,figureWidth))
@@ -397,10 +398,7 @@ def plotGTC(chains, **kwargs):
                             ax.set_xlabel(paramNames[j])
                     else:
                         ax.get_xaxis().set_ticklabels([])
-
-                    for xLabel in ax.get_xticklabels():
-                        xLabel.set_rotation(tickAngle)
-
+                        
                     # y-labels for left-most panels only
                     if j==0:
                         if paramNames is not None:
@@ -408,26 +406,40 @@ def plotGTC(chains, **kwargs):
                     else:
                         ax.get_yaxis().set_ticklabels([])
 
+                    # Rotate tick labels
+                    for xLabel in ax.get_xticklabels():
+                        xLabel.set_rotation(tickAngle)
                     for yLabel in ax.get_yticklabels():
                         yLabel.set_rotation(tickAngle)
 
-                    # Limits to be applied to 1d histograms
-                    xmin[j], xmax[j] = ax.get_xlim()
+                    # X limits to be applied to 1d histograms
+                    panelXrange[j] = ax.get_xlim()
                     
-                    # No more than 5 ticks per panel
-                    myLocator = mtik.MaxNLocator(5)
-                    ax.xaxis.set_major_locator(myLocator)
-                    myLocator = mtik.MaxNLocator(5)
-                    ax.yaxis.set_major_locator(myLocator)
-                
-                    # Remove ticks that are too close to panel edge
-                    deltaX = xmax[j]-xmin[j]
-                    xLoHi = (xmin[j]+.05*deltaX, xmax[j]-.05*deltaX)
-                    idx = np.where((ax.xaxis.get_ticklocs()>xLoHi[0])&(ax.xaxis.get_ticklocs()<xLoHi[1]))[0]
-                    ax.xaxis.set_ticks(ax.xaxis.get_ticklocs()[idx])
-
+                    # Ticks x axis
+                    if xTicks[j] is None:
+                        ax.xaxis.set_major_locator(mtik.MaxNLocator(5)) # 5 ticks max
+                        # Remove ticks that are too close to panel edge
+                        deltaX = panelXrange[j,1]-panelXrange[j,0]
+                        LoHi = (panelXrange[j,0]+.05*deltaX, panelXrange[j,1]-.05*deltaX) # Remove first and last 5%
+                        tickLocs = ax.xaxis.get_ticklocs() # Current tick locations
+                        idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0] # Keep those within 90% of the panel range
+                        xTicks[j] = tickLocs[idx] # Keep for other panels
+                    # Apply
+                    ax.xaxis.set_ticks(xTicks[j])
                     
-                    
+                    # Ticks y axis
+                    if yTicks[i] is None:
+                        ax.yaxis.set_major_locator(mtik.MaxNLocator(5)) # 5 ticks max
+                        # Remove ticks that are too close to panel edge
+                        panelYrange = ax.get_ylim()
+                        deltaY = panelYrange[1]-panelYrange[0]
+                        LoHi = (panelYrange[0]+.05*deltaY, panelYrange[1]-.05*deltaY) # Remove first and last 5%
+                        tickLocs = ax.yaxis.get_ticklocs() # Current tick locations
+                        idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0] # Keep those within 90% of the panel range
+                        yTicks[i] = tickLocs[idx] # Keep for other panels
+                    # Apply
+                    ax.yaxis.set_ticks(yTicks[i])
+                                        
                     
 
     if do1dPlots:
@@ -468,25 +480,28 @@ def plotGTC(chains, **kwargs):
 
             # x-label for bottom-right panel only
             if i==nDim-1:
-                xmin[i], xmax[i] = ax.get_xlim()
                 if paramNames is not None:
                     ax.set_xlabel(paramNames[i])
             else:
-                ax.set_xlim(xmin[i],xmax[i])
+                ax.set_xlim(panelXrange[i])
                 ax.get_xaxis().set_ticklabels([])
 
+            # Rotate tick labels
             for xLabel in ax.get_xticklabels():
                 xLabel.set_rotation(tickAngle)
 
-            # No more than 5 ticks per panel
-            myLocator = mtik.MaxNLocator(5)
-            ax.xaxis.set_major_locator(myLocator)
-
-            # Remove ticks that are too close to panel edge
-            deltaX = xmax[i]-xmin[i]
-            xLoHi = (xmin[i]+.05*deltaX, xmax[i]-.05*deltaX)
-            idx = np.where((ax.xaxis.get_ticklocs()>xLoHi[0])&(ax.xaxis.get_ticklocs()<xLoHi[1]))[0]
-            ax.xaxis.set_ticks(ax.xaxis.get_ticklocs()[idx])
+            # Ticks x axis
+            if i==nDim-1:
+                ax.xaxis.set_major_locator(mtik.MaxNLocator(5)) # 5 ticks max
+                # Remove xticks that are too close to panel edge
+                panelXrange[i] = ax.get_xlim()
+                deltaX = panelXrange[i,1]-panelXrange[i,0]
+                LoHi = (panelXrange[i,0]+.05*deltaX, panelXrange[i,1]-.05*deltaX) # Remove first and last 5%
+                tickLocs = ax.xaxis.get_ticklocs() # Current tick locations
+                idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0] # Keep those within 90% of the panel range
+                xTicks[i] = tickLocs[idx] # Keep for other panels
+            # Apply
+            ax.xaxis.set_ticks(xTicks[i])
 
             # y label for top-left panel
             if i==0:
@@ -495,6 +510,7 @@ def plotGTC(chains, **kwargs):
                 elif paramNames is not None:
                     ax.set_ylabel(paramNames[i])
 
+            
     ########## Legend
     if (chainLabels is not None) or (truthLabels is not None):
         ##### Dummy plot for label line color
@@ -503,7 +519,7 @@ def plotGTC(chains, **kwargs):
             ax = fig.add_subplot(nDim,nDim,nDim)
             ax.axis('off')
         else:
-            xmin, xmax = ax.get_xlim()
+            labelPanelRange = ax.get_xlim()
 
         ##### Label the data sets
         if chainLabels is not None:
@@ -521,7 +537,7 @@ def plotGTC(chains, **kwargs):
 
         # Set xlim back to what the data wanted
         if doOnly1dPlot:
-            ax.set_xlim(xmin, xmax)
+            ax.set_xlim(labelPanelRange)
 
 
         ##### Legend and label colors according to plot
