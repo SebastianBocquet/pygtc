@@ -2,7 +2,6 @@
   title: 'pyGTC: beautiful Giant Triangle Confusograms aka. likelihood surface plots'
   tags:
     - Python
-    - Parameter space exploration
     - data analysis
     - visualization
   authors:
