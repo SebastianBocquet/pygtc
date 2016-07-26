@@ -35,4 +35,6 @@ GTC = pygtc.plotGTC(chains=[dat1,dat2,dat3],
                     figureSize='APJ_page')
 ```
 
+![A GTC produced by *pygtc*.](GTC.png)
+
 # References
