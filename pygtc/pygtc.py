@@ -63,7 +63,7 @@ def plotGTC(chains, **kwargs):
     truthLineStyles : list-like[nTruths]
         User-defined line styles for the truth lines, must be one per set of
         truths passed to `truths`. Default line styles
-        are ``[':','--','dashdot']``.
+        are ``['--',':','dashdot']``.
     
     priors : list of tuples [(mu1, sigma1), ...]
         Each tuple describes a Gaussian to be plotted over that parameter's
@@ -95,9 +95,10 @@ def plotGTC(chains, **kwargs):
         some space between the subplots of the GTC or not. Default is
         ``'tight'``.
     
-    legendMarker : bool
-        Whether or not to show a colored line in front of the data or 
-        truth entries in the legend. Default is ``False``.
+    legendMarker : string
+        Options are ``'All'``, ``'None'``, ``'Auto'``. ``'All'`` and ``'None'``
+        force-show or force-hide all label markers. ``'Auto'`` shows label
+        markers if two or more truths are plotted.
 
     paramRanges : list of tuples [nDim]
         Set the boundaries of each paramter range. Must provide a tuples for
@@ -143,7 +144,7 @@ def plotGTC(chains, **kwargs):
 
     #Set up some colors
     truthsDefaultColors = ['#4d4d4d', '#4d4d4d', '#4d4d4d']
-    truthsDefaultLS = [':','--','dashdot']
+    truthsDefaultLS = ['--',':','dashdot']
     colorsDict = { 'blues' : ('#4c72b0','#7fa5e3','#b2d8ff'),
                     'greens' : ('#55a868','#88db9b','#bbffce'),
                     'yellows' : ('#f5964f','#ffc982','#fffcb5'),
@@ -321,7 +322,13 @@ def plotGTC(chains, **kwargs):
     panelSpacing = kwargs.pop('panelSpacing', 'tight')
 
     # Marker lines in legend
-    legendMarker = kwargs.pop('legendMarker', 'False')
+    showLegendMarker = False
+    legendMarker = kwargs.pop('legendMarker', 'Auto')
+    assert legendMarker in ('All','None','Auto'), "legendMarker must be one of 'All', 'None', 'Auto'"
+    if legendMarker=='Auto':
+        if truthLabels is not None:
+            if len(truthLabels)>1: showLegendMarker = True
+    elif legendMarker=='All': showLegendMarker = True
 
     # Plot 1d histograms
     do1dPlots = kwargs.pop('do1dPlots', True)
@@ -524,7 +531,7 @@ def plotGTC(chains, **kwargs):
             bboxSize[i] = bboxTickLabel[1,1]-bboxTickLabel[0,1]
             panelWidth = axH[i].get_window_extent().transformed(fig.dpi_scale_trans.inverted()).width
         # Apply longest spacing to all panels in last row
-        longestTickLabel = 2+np.amax(bboxSize)
+        longestTickLabel = 3+np.amax(bboxSize)
         loc = (longestTickLabel/mplPPI/panelWidth)
         for i in range(len(axH)):
             axH[i].get_xaxis().set_label_coords(.5, -loc)
@@ -579,7 +586,7 @@ def plotGTC(chains, **kwargs):
         for color,text in zip(labelColors,leg.get_texts()):
             text.set_color(color)
         # Remove markers in legend
-        if legendMarker is not True:
+        if showLegendMarker is not True:
             for item in leg.legendHandles:
                 item.set_visible(False)
 
