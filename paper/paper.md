@@ -1,5 +1,5 @@
 ---
-  title: 'pygtc: beautiful likelihood surface plots (aka. Giant Triangle Confusograms)'
+  title: 'pygtc: beautiful parameter covariance plots (aka. Giant Triangle Confusograms)'
   tags:
     - Python
     - data analysis
