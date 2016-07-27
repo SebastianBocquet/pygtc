@@ -29,7 +29,7 @@ Figure 1 shows an example figure (comparing three sets of data from different an
 GTC = pygtc.plotGTC(chains=[dat1,dat2,dat3],
                     chainLabels=["data1", "data2", "data3"],
                     paramNames=['foo', 'bar', '$C$', '$\\nu$'],
-                    truths=(None, .5, None, .1),
+                    truths=(None, 1, None, 0),
                     truthLabels='ref',
                     figureSize='APJ_page')
 ```
