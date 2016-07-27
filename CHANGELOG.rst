@@ -4,4 +4,5 @@ Version 0.1.1:
   * Fixed bug where parameter labels near the edge could overlap
 
 
-Version 0.1.0: Initial version
+Version 0.1.0:
+ * Initial version
