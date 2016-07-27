@@ -87,8 +87,11 @@ def plotGTC(chains, **kwargs):
 
     figureSize : float or string
         A number in inches describing the length = width of the GTC, or a
-        string indicating a predefined journal setting. Default is 70/dpi
-        where ``dpi = plt.rcParams['figure.dpi']``.
+        string indicating a predefined journal setting and whether the
+        figure will span one column or the full page width. Default is 70/dpi
+        where ``dpi = plt.rcParams['figure.dpi']``. Options to choose from
+        are ``'APJ_column'``, ``'APJ_page'``, ``'MNRAS_column'``,
+         ``'MNRAS_page'``, ``'AandA_column'``, ``'AandA_page'``.
 
     panelSpacing : string
         Options are ``'loose'`` or ``'tight'``. Determines whether there is
@@ -162,7 +165,9 @@ def plotGTC(chains, **kwargs):
     figSizeDict = { 'APJ_column' : 245.26653 / mplPPI,
                     'APJ_page' : 513.11743 / mplPPI,
                     'MNRAS_column' : 240. / mplPPI,
-                    'MNRAS_page' : 504. / mplPPI }
+                    'MNRAS_page' : 504. / mplPPI, 
+                    'AandA_column' : 256.0748 / mplPPI,
+                    'AandA_page' : 523.5307 / mplPPI}
 
 
     ##### Check the validity of the chains argument:
