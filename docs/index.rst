@@ -23,7 +23,7 @@ We recommend to familiarize yourself with pygtc's main features by studying our 
 
 Contributions, problems, questions, recommendations
 --------
-Please report any problems on `GitHub <https://github.com/SebastianBocquet/pygtc/issues>`_ where pygtc is being developed.
+Please `report any problems on GitHub <https://github.com/SebastianBocquet/pygtc/issues>`_ where pygtc is being developed.
 
 
 API
