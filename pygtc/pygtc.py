@@ -349,7 +349,7 @@ def plotGTC(chains, **kwargs):
     mathTextFontSet = kwargs.pop('mathTextFontSet', 'stixsans')
     if not mathTextFontSet=='None':
         plt.rcParams['mathtext.fontset'] = mathTextFontSet
-    
+        
     # Check to see if there are any remaining keyword arguments
     keys = ''
     for key in iter(kwargs.keys()):
@@ -385,6 +385,7 @@ def plotGTC(chains, **kwargs):
                     
                     # Layout things
                     ax.set_axis_bgcolor('w')
+                    ax.tick_params(direction='in')
                     ax.grid(False)
                     
                     ##### Draw contours and truths
@@ -486,6 +487,7 @@ def plotGTC(chains, **kwargs):
 
             # Layout things
             ax.set_axis_bgcolor('w')
+            ax.tick_params(direction='in')
             ax.grid(False)
                                 
             ##### Plot histograms, truths, Gaussians
@@ -672,7 +674,7 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, colors, tru
             # Filled smooth histogram
             plt.fill_between(plotData[0], plotData[1], 0, color=colors[k][1])
             # Dotted line for hidden histogram(s)
-            plt.plot(plotData[0], plotData[1], ls=':', color=colors[k][1])
+            plt.plot(plotData[0], plotData[1], lw=1, ls=':', color=colors[k][1])
     
     # No smoothing
     else:
@@ -687,13 +689,13 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, colors, tru
     if truths1d is not None:
         for k in range(len(truths1d)):
             if truths1d[k] is not None:
-                ax.axvline(truths1d[k], color=truthColors[k], ls=truthLineStyles[k])
+                ax.axvline(truths1d[k], lw=1, color=truthColors[k], ls=truthLineStyles[k])
 
     ##### Gaussian prior
     if prior1d is not None:
         # Plot prior in -4 to +4 sigma range
         arr = np.linspace(prior1d[0]-4*prior1d[1], prior1d[0]+4*prior1d[1], 40)
-        plt.plot(arr,norm.pdf(arr,prior1d[0],prior1d[1]), color=priorColor)
+        plt.plot(arr,norm.pdf(arr,prior1d[0],prior1d[1]), lw=1, color=priorColor)
 
     return ax
 
@@ -745,17 +747,17 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, 
     ###### Draw contour lines in order to see contours lying on top of each other
     for k in range(nChains):
         for l in range(nConfidenceLevels):
-            ax.contour(plotData[nChains-1-k], [chainLevels[k][nConfidenceLevels-1-l]], extent=extents[k], origin='lower', colors=colors[k][l])
+            ax.contour(plotData[nChains-1-k], [chainLevels[k][nConfidenceLevels-1-l]], extent=extents[k], origin='lower', lw=1, colors=colors[k][l])
 
     ##### Truth lines
     if truths2d is not None:
         for k in range(len(truths2d)):
             # horizontal line
             if truths2d[k][0] is not None:
-                ax.axhline(truths2d[k][0], color=truthColors[k], ls=truthLineStyles[k])
+                ax.axhline(truths2d[k][0], lw=1, color=truthColors[k], ls=truthLineStyles[k])
             # vertical line
             if truths2d[k][1] is not None:
-                ax.axvline(truths2d[k][1], color=truthColors[k], ls=truthLineStyles[k])
+                ax.axvline(truths2d[k][1], lw=1, color=truthColors[k], ls=truthLineStyles[k])
 
     return ax
 
