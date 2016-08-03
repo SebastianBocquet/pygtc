@@ -382,7 +382,11 @@ def plotGTC(chains, **kwargs):
                         ax = fig.add_subplot(nDim,nDim,(i*nDim)+j+1)
                     else:
                         ax = fig.add_subplot(nDim-1,nDim-1,((i-1)*(nDim-1))+j+1)
-
+                    
+                    # Layout things
+                    ax.set_axis_bgcolor('w')
+                    ax.grid(False)
+                    
                     ##### Draw contours and truths
                     # Extract 2d chains
                     chainsForPlot2D = [[chains[k][:,j], chains[k][:,i]] for k in range(nChains)]
@@ -480,6 +484,10 @@ def plotGTC(chains, **kwargs):
             ##### Create subplot
             ax = fig.add_subplot(nDim,nDim,(i*nDim)+i+1)
 
+            # Layout things
+            ax.set_axis_bgcolor('w')
+            ax.grid(False)
+                                
             ##### Plot histograms, truths, Gaussians
             # Extract 1d chains
             chainsForPlot1D = [chains[k][:,i] for k in range(nChains)]
