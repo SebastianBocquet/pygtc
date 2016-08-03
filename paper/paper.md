@@ -34,6 +34,6 @@ GTC = pygtc.plotGTC(chains=[dat1,dat2,dat3],
 
 ![A GTC produced by *pygtc*.](GTC.png)
 
-`pygtc` relies on `matplotlib` [@matplotlib] and `scipy` [@scipy] to produce aesthetically appealing GTCs, and is designed to accept the standard output of the `emcee` package or any other likelihood sampler that returns a list of (weighted or unit-weighted) sample points. The source code for `pygtc` is available at Zenodo [@pygtc_zenodo] and development is ongoing at GitHub [@pygtc].
+`pygtc` relies on `matplotlib` [@matplotlib] and `scipy` [@scipy] (optional) to produce aesthetically appealing GTCs, and is designed to accept the standard output of the `emcee` package or any other likelihood sampler that returns a list of (weighted or unit-weighted) sample points. The source code for `pygtc` is available at Zenodo [@pygtc_zenodo] and development is ongoing at GitHub [@pygtc].
 
 # References
