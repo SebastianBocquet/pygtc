@@ -12,7 +12,7 @@ the one-dimensional posteriors and the lower-left triangle shows the pairwise pr
 
 Installation
 --------
-pygtc depends on ``numpy``, ``matplotlib``, and ``scipy``. Installation is as easy as ``pip install pygtc``.
+pygtc depends on ``numpy``, ``matplotlib``, and ``scipy`` (optional). Installation is as easy as ``pip install pygtc``.
 
 
 Example Usage
