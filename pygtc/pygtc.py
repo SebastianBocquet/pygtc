@@ -348,7 +348,7 @@ def plotGTC(chains, **kwargs):
     # Set font in rcParams
     mathTextFontSet = kwargs.pop('mathTextFontSet', 'stixsans')
     if not mathTextFontSet=='None':
-        plt.rcParams['mathtext.fontset'] = mathTextFontSet
+        plt.rcParams['mathtext.fontset'] = mathTextFontSet    
         
     # Check to see if there are any remaining keyword arguments
     keys = ''
@@ -368,7 +368,7 @@ def plotGTC(chains, **kwargs):
     axisColor = '#333333'
     # Create the figure, and empty list for first column / last row
     fig = plt.figure(figsize=(figureWidth,figureWidth))
-    axV, axH = [],[]
+    axV, axH = [], []
 
 
 
@@ -382,11 +382,6 @@ def plotGTC(chains, **kwargs):
                         ax = fig.add_subplot(nDim,nDim,(i*nDim)+j+1)
                     else:
                         ax = fig.add_subplot(nDim-1,nDim-1,((i-1)*(nDim-1))+j+1)
-                    
-                    # Layout things
-                    ax.set_axis_bgcolor('w')
-                    ax.tick_params(direction='in')
-                    ax.grid(False)
                     
                     ##### Draw contours and truths
                     # Extract 2d chains
@@ -425,6 +420,16 @@ def plotGTC(chains, **kwargs):
                     else:
                         ax.get_yaxis().set_ticklabels([])
 
+                    ##### Panel layout
+                    ax.grid(False)
+                    #ax.set_axis_bgcolor('none')
+                    for axis in ['top','bottom','left','right']:
+                        ax.spines[axis].set_color(axisColor)
+                        ax.spines[axis].set_linewidth(1)
+                        
+                    ##### Global tick properties
+                    ax.tick_params(direction='in', pad=4, colors=axisColor, size=4, width=.5, labelsize=6)
+                    
                     ##### Rotate tick labels
                     for xLabel in ax.get_xticklabels():
                         xLabel.set_rotation(tickAngle)
@@ -460,22 +465,11 @@ def plotGTC(chains, **kwargs):
                     ax.yaxis.set_ticks(yTicks[i])
                                         
                     ##### First column and last row are needed to align labels
-                    # Set label font size
                     if j==0:
                         axV.append(ax)
-                        ax.tick_params(labelsize=6)
-                        
                     if i==nDim-1:
                         axH.append(ax)
-                        ax.tick_params(labelsize=6)
-                    
-                    ##### Light black axes 
-                    ax.spines['bottom'].set_color(axisColor)
-                    ax.spines['top'].set_color(axisColor) 
-                    ax.spines['right'].set_color(axisColor)
-                    ax.spines['left'].set_color(axisColor)
-                    ax.tick_params(axis='x', colors=axisColor)
-                    ax.tick_params(axis='y', colors=axisColor)
+                                        
                         
                     
 
@@ -484,11 +478,6 @@ def plotGTC(chains, **kwargs):
         for i in range(nDim):
             ##### Create subplot
             ax = fig.add_subplot(nDim,nDim,(i*nDim)+i+1)
-
-            # Layout things
-            ax.set_axis_bgcolor('w')
-            ax.tick_params(direction='in')
-            ax.grid(False)
                                 
             ##### Plot histograms, truths, Gaussians
             # Extract 1d chains
@@ -506,6 +495,16 @@ def plotGTC(chains, **kwargs):
             ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins, smoothingKernel, colors, truthsForPlot1D, truthColors, truthLineStyles, prior1d, priorColor)
 
 
+            ##### Panel layout
+            ax.grid(False)
+            ax.set_axis_bgcolor('w')
+            for axis in ['top','bottom','left','right']:
+                ax.spines[axis].set_color(axisColor)
+                ax.spines[axis].set_linewidth(1)
+
+            ##### Global tick properties
+            ax.tick_params(direction='in', pad=4, colors=axisColor, size=4, width=.5, labelsize=6)
+            
             ##### Tick labels without offset and scientific notation
             ax.get_xaxis().get_major_formatter().set_useOffset(False)
             ax.get_xaxis().get_major_formatter().set_scientific(False)
@@ -552,14 +551,7 @@ def plotGTC(chains, **kwargs):
                 axV.append(ax)
             elif i==nDim-1:
                 axH.append(ax)
-                ax.tick_params(labelsize=6)
-                
-            ##### Light black axes 
-            ax.spines['bottom'].set_color(axisColor)
-            ax.spines['top'].set_color(axisColor) 
-            ax.spines['right'].set_color(axisColor)
-            ax.spines['left'].set_color(axisColor)
-            ax.tick_params(axis='x', colors=axisColor)
+                            
 
 
     ########## Align labels if there is more than one panel
@@ -616,7 +608,7 @@ def plotGTC(chains, **kwargs):
         if truthLabels is not None:
             # Label for each truth
             for k in range(len(truthLabels)):
-                ax.plot(0,0, color=truthColors[k], label=truthLabels[k], ls=truthsDefaultLS[k])
+                ax.plot(0, 0, lw=1, color=truthColors[k], label=truthLabels[k], ls=truthsDefaultLS[k])
                 labelColors.append(truthColors[k])
 
         ##### Set xlim back to what the data wanted
@@ -747,7 +739,7 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, 
     ###### Draw contour lines in order to see contours lying on top of each other
     for k in range(nChains):
         for l in range(nConfidenceLevels):
-            ax.contour(plotData[nChains-1-k], [chainLevels[k][nConfidenceLevels-1-l]], extent=extents[k], origin='lower', lw=1, colors=colors[k][l])
+            ax.contour(plotData[nChains-1-k], [chainLevels[k][nConfidenceLevels-1-l]], extent=extents[k], origin='lower', linewidths=1, colors=colors[k][l])
 
     ##### Truth lines
     if truths2d is not None:
