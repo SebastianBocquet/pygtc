@@ -1,4 +1,7 @@
 from matplotlib import pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+#from matplotlib.colors import LogNorm
+import matplotlib.colors as mplcolors
 import numpy as np
 import matplotlib.ticker as mtik
 try:
@@ -89,6 +92,13 @@ def plotGTC(chains, **kwargs):
         A number describing the size of the Gaussian smoothing kernel in
         bins. Default is 1. Set to 0 for no smoothing.
 
+    filledPlots : bool
+        Whether you want the 2d contours and the 1d histograms to be 
+        filled. Default is ``True``.
+    
+    plotDensity : bool
+        Whether you want to see the 2d density of points. Default is ``False``.
+    
     figureSize : float or string
         A number in inches describing the length = width of the GTC, or a
         string indicating a predefined journal setting and whether the
@@ -302,11 +312,18 @@ def plotGTC(chains, **kwargs):
     # Data binning and smoothing
     nBins = kwargs.pop('nBins', 30) # Number of bins for 1d and 2d histograms. 30 works...
     smoothingKernel = kwargs.pop('smoothingKernel', 1) #Don't you like smooth data?
+    if not haveScipy:
+        print "Warning: You don't have Scipy installed. Your curves will not be smoothed."
+        smoothingKernel = 0
     if smoothingKernel>=nBins/10:
         print("Wow, that's a huge smoothing kernel! You sure you want its scale to be %.1f percent of the plot?!"%(100.*float(smoothingKernel)/float(nBins)))
-    if not haveScipy:
-        smoothingKernel = 0
 
+    # Filled contours and histograms
+    filledPlots = kwargs.pop('filledPlots', True)
+    
+    # Filled contours and histograms
+    plotDensity = kwargs.pop('plotDensity', False)
+    
     # Figure size: choose size to fit journal, use reasonable default, or provide your own
     figureSize = kwargs.pop('figureSize', None) #Figure size descriptor or figure width=height in inches
     if figureSize is None:
@@ -356,13 +373,10 @@ def plotGTC(chains, **kwargs):
         keys = keys + key + ' '
         raise NameError("illegal keyword arguments: " + keys)
 
-    # These are needed to compute the confidence levels
-    nBinsFlat = np.linspace(0., nBins**2, nBins**2)
+    
 
-    # Left and right panel boundaries
-    panelXrange = np.empty((nDim,2))
-    xTicks, yTicks = nDim*[None], nDim*[None]
-
+    ##### Define colormap
+    myColorMap = setCustomColorMaps(colors)
 
     ##### Matplotlib and figure settings
     axisColor = '#333333'
@@ -370,7 +384,12 @@ def plotGTC(chains, **kwargs):
     fig = plt.figure(figsize=(figureWidth,figureWidth))
     axV, axH = [], []
 
+    # These are needed to compute the confidence levels
+    nBinsFlat = np.linspace(0., nBins**2, nBins**2)
 
+    # Left and right panel boundaries
+    panelXrange = np.empty((nDim,2))
+    xTicks, yTicks = nDim*[None], nDim*[None]
 
     ########## 2D contour plots
     if not doOnly1dPlot:
@@ -391,7 +410,7 @@ def plotGTC(chains, **kwargs):
                     if truths is not None:
                         truthsForPlot2D = [[truths[k,i], truths[k,j]] for k in range(len(truths))]
                     # Plot!
-                    ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins, nBinsFlat, smoothingKernel, colors, nConfidenceLevels, truthsForPlot2D, truthColors, truthLineStyles)
+                    ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins, nBinsFlat, smoothingKernel, filledPlots, colors, nConfidenceLevels, truthsForPlot2D, truthColors, truthLineStyles, plotDensity, myColorMap)
 
                     ##### Range
                     if paramRanges is not None:
@@ -492,7 +511,7 @@ def plotGTC(chains, **kwargs):
                 if priors[i] and priors[i][1]>0:
                     prior1d = priors[i]
             # Plot!
-            ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins, smoothingKernel, colors, truthsForPlot1D, truthColors, truthLineStyles, prior1d, priorColor)
+            ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins, smoothingKernel, filledPlots, colors, truthsForPlot1D, truthColors, truthLineStyles, prior1d, priorColor)
 
 
             ##### Panel layout
@@ -650,10 +669,10 @@ def plotGTC(chains, **kwargs):
 
 #################### Create single 1d panel
 
-def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, colors, truths1d, truthColors, truthLineStyles, prior1d, priorColor):
+def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, filledPlots, colors, truths1d, truthColors, truthLineStyles, prior1d, priorColor):
 
     ##### 1D histogram
-    
+    plotData = []
     # With smoothing
     if smoothingKernel>0:
         for k in reversed(range(nChains)):
@@ -662,18 +681,21 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, colors, tru
             # Bin center between histogram edges
             centers = np.delete(edges+.5*(edges[1]-edges[0]), -1)
             # Filter data
-            plotData = scipy.ndimage.gaussian_filter1d((centers,hist1d), sigma=smoothingKernel)
-            # Filled smooth histogram
-            plt.fill_between(plotData[0], plotData[1], 0, color=colors[k][1])
-            # Dotted line for hidden histogram(s)
-            plt.plot(plotData[0], plotData[1], lw=1, ls=':', color=colors[k][1])
+            plotData.append( scipy.ndimage.gaussian_filter1d((centers,hist1d), sigma=smoothingKernel) )
+            if filledPlots:
+                # Filled smooth histogram
+                plt.fill_between(plotData[-1][0], plotData[-1][1], 0, color=colors[k][1])
+        # Line for hidden histogram
+        for k in reversed(range(nChains)):
+            plt.plot(plotData[nChains-1-k][0], plotData[nChains-1-k][1], lw=1, ls='-', color=colors[k][1])
     
     # No smoothing
     else:
-        for k in reversed(range(nChains)):
+        if filledPlots:
+            for k in reversed(range(nChains)):
             # Filled stepfilled histograms
-            plt.hist(chains1d[k], weights=weights[k], normed=True, bins=nBins, histtype='stepfilled', edgecolor='None', color=colors[k][1])
-        for k in range(nChains):
+                plt.hist(chains1d[k], weights=weights[k], normed=True, bins=nBins, histtype='stepfilled', edgecolor='None', color=colors[k][1])
+        for k in reversed(range(nChains)):
             # Step curves for hidden histogram(s)
             plt.hist(chains1d[k], weights=weights[k], normed=True, bins=nBins, histtype='step', color=colors[k][1])
 
@@ -695,7 +717,7 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, colors, tru
 
 #################### Create single 2d panel
 
-def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, colors, nConfidenceLevels, truths2d, truthColors, truthLineStyles):
+def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, filledPlots, colors, nConfidenceLevels, truths2d, truthColors, truthLineStyles, plotDensity, myColorMap):
 
     # Use the 68%, 95%, and 99% confidence levels
     gaussConfLevels = [.3173, .0455, .0027]
@@ -729,13 +751,22 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, 
         xbins = np.delete(xedges+.5*(xedges[1]-xedges[0]), -1)
         ybins = np.delete(yedges+.5*(yedges[1]-yedges[0]), -1)
 
-        # Apply Gaussian smoothing and plot
+        # Apply Gaussian smoothing and plot filled contours if requested
         if smoothingKernel>0:
             plotData.append( scipy.ndimage.gaussian_filter(hist2d.T, sigma=smoothingKernel) )
         else:
-            plotData.append( hist2d.T )            
-        ax.contourf(xbins, ybins, plotData[-1], levels=chainLevels[k], colors=colors[k][:nConfidenceLevels][::-1])
-
+            plotData.append( hist2d.T )
+        if filledPlots:
+            ax.contourf(xbins, ybins, plotData[-1], levels=chainLevels[k], colors=colors[k][:nConfidenceLevels][::-1])
+        
+        # Plot density
+        if plotDensity:
+            if filledPlots:
+                ax.imshow(hist2d.T, extent=extents[k], origin='lower', cmap=myColorMap[k], aspect='auto', clim=(0,chainLevels[k][0]))
+            else:
+                ax.imshow(hist2d.T, extent=extents[k], origin='lower', cmap=myColorMap[k], aspect='auto')
+        
+        
     ###### Draw contour lines in order to see contours lying on top of each other
     for k in range(nChains):
         for l in range(nConfidenceLevels):
@@ -752,6 +783,27 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, 
                 ax.axvline(truths2d[k][1], lw=1, color=truthColors[k], ls=truthLineStyles[k])
 
     return ax
+
+
+
+#################### Custom colormap for density plots
+def CustomCmap(to_rgb):
+    # from color r,g,b
+    r1,g1,b1 = 1,1,1
+    # to color r,g,b
+    r2,g2,b2 = mplcolors.hex2color(to_rgb)
+
+    cdict = {'red': ((0, r1, r1), (1, r2, r2)),
+           'green': ((0, g1, g1), (1, g2, g2)),
+           'blue': ((0, b1, b1), (1, b2, b2))}
+
+    cmap = LinearSegmentedColormap('custom_cmap', cdict)
+    return cmap
+    
+def setCustomColorMaps(colors):
+    customColorMaps = [CustomCmap(color[0]) for color in colors]
+    return customColorMaps
+
 
 
 
