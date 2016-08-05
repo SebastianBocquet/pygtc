@@ -84,6 +84,10 @@ def plotGTC(chains, **kwargs):
         The number of contours to plot in the 2d histograms. Each contour
         corresponds to a sigma. May be 1, 2, or 3. Default is 2.
 
+    GaussianConfLevels : bool
+        Whether you want non-standard 2d Gaussian "sigma" confidence levels
+        instead of the usual 68%, 95%, 99% confidence levels. Default is ``False``.
+    
     nBins : int
         An integer describing the number of bins used to compute the
         histograms. Default is 30.
@@ -309,6 +313,13 @@ def plotGTC(chains, **kwargs):
     nConfidenceLevels = kwargs.pop('nConfidenceLevels', 2) #How many of the above confidence levels to show
     assert nConfidenceLevels in [1,2,3], "nConfidenceLevels must be 1, 2, or 3"
 
+    # 2d confidence levels: Gaussian or (68%, 95%, 99%)
+    GaussianConfLevels = kwargs.pop('GaussianConfLevels', False)
+    confLevels = (.3173, .0455, .0027)
+    if GaussianConfLevels:
+        confLevels = (.6065, .1353, .0111)
+        
+
     # Data binning and smoothing
     nBins = kwargs.pop('nBins', 30) # Number of bins for 1d and 2d histograms. 30 works...
     smoothingKernel = kwargs.pop('smoothingKernel', 1) #Don't you like smooth data?
@@ -410,7 +421,7 @@ def plotGTC(chains, **kwargs):
                     if truths is not None:
                         truthsForPlot2D = [[truths[k,i], truths[k,j]] for k in range(len(truths))]
                     # Plot!
-                    ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins, nBinsFlat, smoothingKernel, filledPlots, colors, nConfidenceLevels, truthsForPlot2D, truthColors, truthLineStyles, plotDensity, myColorMap)
+                    ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins, nBinsFlat, smoothingKernel, filledPlots, colors, nConfidenceLevels, confLevels, truthsForPlot2D, truthColors, truthLineStyles, plotDensity, myColorMap)
 
                     ##### Range
                     if paramRanges is not None:
@@ -717,10 +728,7 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, filledPlots
 
 #################### Create single 2d panel
 
-def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, filledPlots, colors, nConfidenceLevels, truths2d, truthColors, truthLineStyles, plotDensity, myColorMap):
-
-    # Use the 68%, 95%, and 99% confidence levels
-    confLevels = [.3173, .0455, .0027]
+def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, filledPlots, colors, nConfidenceLevels, confLevels, truths2d, truthColors, truthLineStyles, plotDensity, myColorMap):
 
     # Empty arrays needed below
     chainLevels = np.ones((nChains,nConfidenceLevels+1))
