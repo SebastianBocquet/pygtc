@@ -720,7 +720,7 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, filledPlots
 def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, filledPlots, colors, nConfidenceLevels, truths2d, truthColors, truthLineStyles, plotDensity, myColorMap):
 
     # Use the 68%, 95%, and 99% confidence levels
-    gaussConfLevels = [.3173, .0455, .0027]
+    confLevels = [.3173, .0455, .0027]
 
     # Empty arrays needed below
     chainLevels = np.ones((nChains,nConfidenceLevels+1))
@@ -743,7 +743,7 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, 
         # Compute confidence levels (from low to high for technical reasons)
         for l in range(nConfidenceLevels):
             # Find location of confidence level in 1d histCumulative
-            temp = np.interp(gaussConfLevels[l], histCumulative, nBinsFlat)
+            temp = np.interp(confLevels[l], histCumulative, nBinsFlat)
             # Find "height" of confidence level
             chainLevels[k][nConfidenceLevels-1-l] = np.interp(temp, nBinsFlat, histOrdered)
 
