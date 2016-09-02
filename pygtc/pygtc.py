@@ -763,16 +763,14 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, 
             # Find "height" of confidence level
             chainLevels[k][nConfidenceLevels-1-l] = np.interp(temp, nBinsFlat, histOrdered)
 
-        # Get bin center of histogram edges
-        xbins = (xedges[1:]+xedges[:-1])/2
-        ybins = (yedges[1:]+yedges[:-1])/2
-
         # Apply Gaussian smoothing and plot filled contours if requested
         if smoothingKernel>0:
             plotData.append( scipy.ndimage.gaussian_filter(hist2d.T, sigma=smoothingKernel) )
         else:
             plotData.append( hist2d.T )
         if filledPlots:
+            xbins = (xedges[1:]+xedges[:-1])/2
+            ybins = (yedges[1:]+yedges[:-1])/2
             ax.contourf(xbins, ybins, plotData[-1], levels=chainLevels[k], colors=colors[k][:nConfidenceLevels][::-1])
 
         # Plot density
