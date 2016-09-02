@@ -10,7 +10,7 @@ try:
     haveScipy = True
 except ImportError:
     haveScipy = False
-    
+
 __all__ = ['plotGTC']
 
 
@@ -30,6 +30,8 @@ def plotGTC(chains, **kwargs):
         (http://dan.iel.fm/emcee/current/) - and you should! - each element
         of chains is an ``EnsembleSampler.flatchain`` object.
 
+    Keyword Arguments
+    -----------------
     weights : array-like[nSamples] or a list[[nSamples1], ...]
         Weights for the sample points. If a 1d array is passed, the same
         weights are used for all dimension in chains. If a list of 1d arrays
@@ -71,7 +73,7 @@ def plotGTC(chains, **kwargs):
         User-defined line styles for the truth lines, must be one per set of
         truths passed to `truths`. Default line styles
         are ``['--',':','dashdot']``.
-    
+
     priors : list of tuples [(mu1, sigma1), ...]
         Each tuple describes a Gaussian to be plotted over that parameter's
         histogram. The number of priors must equal the number of dimensions
@@ -87,7 +89,7 @@ def plotGTC(chains, **kwargs):
     GaussianConfLevels : bool
         Whether you want non-standard 2d Gaussian "sigma" confidence levels
         instead of the usual 68%, 95%, 99% confidence levels. Default is ``False``.
-    
+
     nBins : int
         An integer describing the number of bins used to compute the
         histograms. Default is 30.
@@ -97,12 +99,12 @@ def plotGTC(chains, **kwargs):
         bins. Default is 1. Set to 0 for no smoothing.
 
     filledPlots : bool
-        Whether you want the 2d contours and the 1d histograms to be 
+        Whether you want the 2d contours and the 1d histograms to be
         filled. Default is ``True``.
-    
+
     plotDensity : bool
         Whether you want to see the 2d density of points. Default is ``False``.
-    
+
     figureSize : float or string
         A number in inches describing the length = width of the GTC, or a
         string indicating a predefined journal setting and whether the
@@ -115,7 +117,7 @@ def plotGTC(chains, **kwargs):
         Options are ``'loose'`` or ``'tight'``. Determines whether there is
         some space between the subplots of the GTC or not. Default is
         ``'tight'``.
-    
+
     legendMarker : string
         Options are ``'All'``, ``'None'``, ``'Auto'``. ``'All'`` and ``'None'``
         force-show or force-hide all label markers. ``'Auto'`` shows label
@@ -139,7 +141,7 @@ def plotGTC(chains, **kwargs):
     doOnly1dPlot : bool
         Plot only ONE 1d histogram. If this is True, then chains must have
         shape ``(samples,1)``. Default is ``False``.
-    
+
     mathTextFontSet : string
         Set consistent font family in rcParams. Default is ``stixsans``. Set
         to ``'None'`` to use the setting in your matplotlib rc.
@@ -176,7 +178,7 @@ def plotGTC(chains, **kwargs):
     figSizeDict = { 'APJ_column' : 245.26653 / mplPPI,
                     'APJ_page' : 513.11743 / mplPPI,
                     'MNRAS_column' : 240. / mplPPI,
-                    'MNRAS_page' : 504. / mplPPI, 
+                    'MNRAS_page' : 504. / mplPPI,
                     'AandA_column' : 256.0748 / mplPPI,
                     'AandA_page' : 523.5307 / mplPPI}
 
@@ -318,7 +320,7 @@ def plotGTC(chains, **kwargs):
     confLevels = (.3173, .0455, .0027)
     if GaussianConfLevels:
         confLevels = (.6065, .1353, .0111)
-        
+
 
     # Data binning and smoothing
     nBins = kwargs.pop('nBins', 30) # Number of bins for 1d and 2d histograms. 30 works...
@@ -331,10 +333,10 @@ def plotGTC(chains, **kwargs):
 
     # Filled contours and histograms
     filledPlots = kwargs.pop('filledPlots', True)
-    
+
     # Filled contours and histograms
     plotDensity = kwargs.pop('plotDensity', False)
-    
+
     # Figure size: choose size to fit journal, use reasonable default, or provide your own
     figureSize = kwargs.pop('figureSize', None) #Figure size descriptor or figure width=height in inches
     if figureSize is None:
@@ -376,15 +378,15 @@ def plotGTC(chains, **kwargs):
     # Set font in rcParams
     mathTextFontSet = kwargs.pop('mathTextFontSet', 'stixsans')
     if not mathTextFontSet=='None':
-        plt.rcParams['mathtext.fontset'] = mathTextFontSet    
-        
+        plt.rcParams['mathtext.fontset'] = mathTextFontSet
+
     # Check to see if there are any remaining keyword arguments
     keys = ''
     for key in iter(kwargs.keys()):
         keys = keys + key + ' '
         raise NameError("illegal keyword arguments: " + keys)
 
-    
+
 
     ##### Define colormap
     myColorMap = setCustomColorMaps(colors)
@@ -412,7 +414,7 @@ def plotGTC(chains, **kwargs):
                         ax = fig.add_subplot(nDim,nDim,(i*nDim)+j+1)
                     else:
                         ax = fig.add_subplot(nDim-1,nDim-1,((i-1)*(nDim-1))+j+1)
-                    
+
                     ##### Draw contours and truths
                     # Extract 2d chains
                     chainsForPlot2D = [[chains[k][:,j], chains[k][:,i]] for k in range(nChains)]
@@ -442,7 +444,7 @@ def plotGTC(chains, **kwargs):
                             ax.set_xlabel(paramNames[j], fontsize=9)
                     else:
                         ax.get_xaxis().set_ticklabels([])
-                        
+
                     ##### y-labels for left-most panels only
                     if j==0:
                         if paramNames is not None:
@@ -456,13 +458,13 @@ def plotGTC(chains, **kwargs):
                     for axis in ['top','bottom','left','right']:
                         ax.spines[axis].set_color(axisColor)
                         ax.spines[axis].set_linewidth(1)
-                        
+
                     ##### Global tick properties
                     ax.tick_params(direction='in', pad=4, colors=axisColor, size=4, width=.5, labelsize=6)
 
                     ##### x limits to be applied to 1d histograms
                     panelXrange[j] = ax.get_xlim()
-                    
+
                     ##### Ticks x axis
                     if xTicks[j] is None:
                         # 5 ticks max
@@ -474,7 +476,7 @@ def plotGTC(chains, **kwargs):
                         idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0]
                         xTicks[j] = tickLocs[idx]
                     ax.xaxis.set_ticks(xTicks[j])
-                    
+
                     ##### Ticks y axis
                     if yTicks[i] is None:
                         # 5 ticks max
@@ -487,8 +489,8 @@ def plotGTC(chains, **kwargs):
                         idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0]
                         yTicks[i] = tickLocs[idx]
                     ax.yaxis.set_ticks(yTicks[i])
-                    
-                    ##### Rotate tick labels                    
+
+                    ##### Rotate tick labels
                     for xLabel in ax.get_xticklabels():
                         xLabel.set_rotation(tickAngle)
                         if (any(xTicks[j]>=1000))|(any(xTicks[j]<=-100)):
@@ -497,22 +499,22 @@ def plotGTC(chains, **kwargs):
                         yLabel.set_rotation(tickAngle)
                         if (any(yTicks[i]>=1000))|(any(yTicks[i]<=-100)):
                             yLabel.set_verticalalignment('top')
-                        
+
                     ##### First column and last row are needed to align labels
                     if j==0:
                         axV.append(ax)
                     if i==nDim-1:
                         axH.append(ax)
-                                        
-                        
-                    
+
+
+
 
     if do1dPlots:
         ########## 1D histograms
         for i in range(nDim):
             ##### Create subplot
             ax = fig.add_subplot(nDim,nDim,(i*nDim)+i+1)
-                                
+
             ##### Plot histograms, truths, Gaussians
             # Extract 1d chains
             chainsForPlot1D = [chains[k][:,i] for k in range(nChains)]
@@ -538,7 +540,7 @@ def plotGTC(chains, **kwargs):
 
             ##### Global tick properties
             ax.tick_params(direction='in', pad=4, colors=axisColor, size=4, width=.5, labelsize=6)
-            
+
             ##### Tick labels without offset and scientific notation
             ax.get_xaxis().get_major_formatter().set_useOffset(False)
             ax.get_xaxis().get_major_formatter().set_scientific(False)
@@ -574,27 +576,27 @@ def plotGTC(chains, **kwargs):
                 xLabel.set_rotation(tickAngle)
                 if (any(xTicks[i]>=1000))|(any(xTicks[i]<=-100)):
                     xLabel.set_horizontalalignment('right')
-                    
+
             ##### y label for top-left panel
             if i==0:
                 if doOnly1dPlot:
                     ax.set_ylabel('Probability')
                 elif paramNames is not None:
                     ax.set_ylabel(paramNames[i], fontsize=9)
-                    
+
             ##### First column and last row are needed to align labels
             if i==0:
                 axV.append(ax)
             elif i==nDim-1:
                 axH.append(ax)
-                            
+
 
 
     ########## Align labels if there is more than one panel
     if len(axH)>1:
         fig.canvas.draw()
         bboxSize = np.empty(len(axH))
-        
+
         ##### x labels
         # Get label length of the bottom row
         for i in range(len(axH)):
@@ -606,8 +608,8 @@ def plotGTC(chains, **kwargs):
         loc = (longestTickLabel/mplPPI/panelWidth)
         for i in range(len(axH)):
             axH[i].get_xaxis().set_label_coords(.5, -loc)
-            
-    
+
+
         ##### y labels
         # Get label length of the left column
         for i in range(len(axV)):
@@ -619,10 +621,10 @@ def plotGTC(chains, **kwargs):
         loc = (longestTickLabel/mplPPI/panelHeight)
         for i in range(len(axV)):
             axV[i].get_yaxis().set_label_coords(-loc, .5)
-        
-        
-    
-    
+
+
+
+
     ########## Legend
     if (chainLabels is not None) or (truthLabels is not None):
         ##### Dummy plot for label line color
@@ -679,7 +681,7 @@ def plotGTC(chains, **kwargs):
 
     # Revert to default rcParams
     #plt.rcdefaults()
-    
+
     return fig
 
 
@@ -705,7 +707,7 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, filledPlots
         # Line for hidden histogram
         for k in reversed(range(nChains)):
             plt.plot(plotData[nChains-1-k][0], plotData[nChains-1-k][1], lw=1, ls='-', color=colors[k][1])
-    
+
     # No smoothing
     else:
         if filledPlots:
@@ -772,15 +774,15 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, 
             plotData.append( hist2d.T )
         if filledPlots:
             ax.contourf(xbins, ybins, plotData[-1], levels=chainLevels[k], colors=colors[k][:nConfidenceLevels][::-1])
-        
+
         # Plot density
         if plotDensity:
             if filledPlots:
                 ax.imshow(hist2d.T, extent=extents[k], origin='lower', cmap=myColorMap[k], aspect='auto', clim=(0,chainLevels[k][0]))
             else:
                 ax.imshow(hist2d.T, extent=extents[k], origin='lower', cmap=myColorMap[k], aspect='auto')
-        
-        
+
+
     ###### Draw contour lines in order to see contours lying on top of each other
     for k in range(nChains):
         for l in range(nConfidenceLevels):
@@ -813,7 +815,7 @@ def CustomCmap(to_rgb):
 
     cmap = LinearSegmentedColormap('custom_cmap', cdict)
     return cmap
-    
+
 def setCustomColorMaps(colors):
     customColorMaps = [CustomCmap(color[0]) for color in colors]
     return customColorMaps
