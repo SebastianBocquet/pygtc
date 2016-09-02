@@ -698,7 +698,7 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, filledPlots
             # create 1d histogram
             hist1d, edges = np.histogram(chains1d[k], weights=weights[k], normed=True, bins=nBins)
             # Bin center between histogram edges
-            centers = np.delete(edges+.5*(edges[1]-edges[0]), -1)
+            centers = (edges[1:]+edges[:-1])/2
             # Filter data
             plotData.append( scipy.ndimage.gaussian_filter1d((centers,hist1d), sigma=smoothingKernel) )
             if filledPlots:
@@ -764,8 +764,8 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, 
             chainLevels[k][nConfidenceLevels-1-l] = np.interp(temp, nBinsFlat, histOrdered)
 
         # Get bin center of histogram edges
-        xbins = np.delete(xedges+.5*(xedges[1]-xedges[0]), -1)
-        ybins = np.delete(yedges+.5*(yedges[1]-yedges[0]), -1)
+        xbins = (xedges[1:]+xedges[:-1])/2
+        ybins = (yedges[1:]+yedges[:-1])/2
 
         # Apply Gaussian smoothing and plot filled contours if requested
         if smoothingKernel>0:
