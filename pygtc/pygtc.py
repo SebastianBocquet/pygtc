@@ -459,12 +459,6 @@ def plotGTC(chains, **kwargs):
                         
                     ##### Global tick properties
                     ax.tick_params(direction='in', pad=4, colors=axisColor, size=4, width=.5, labelsize=6)
-                    
-                    ##### Rotate tick labels
-                    for xLabel in ax.get_xticklabels():
-                        xLabel.set_rotation(tickAngle)
-                    for yLabel in ax.get_yticklabels():
-                        yLabel.set_rotation(tickAngle)
 
                     ##### x limits to be applied to 1d histograms
                     panelXrange[j] = ax.get_xlim()
@@ -493,7 +487,17 @@ def plotGTC(chains, **kwargs):
                         idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0]
                         yTicks[i] = tickLocs[idx]
                     ax.yaxis.set_ticks(yTicks[i])
-                                        
+                    
+                    ##### Rotate tick labels                    
+                    for xLabel in ax.get_xticklabels():
+                        xLabel.set_rotation(tickAngle)
+                        if (any(xTicks[j]>=1000))|(any(xTicks[j]<=-100)):
+                            xLabel.set_horizontalalignment('right')
+                    for yLabel in ax.get_yticklabels():
+                        yLabel.set_rotation(tickAngle)
+                        if (any(yTicks[i]>=1000))|(any(yTicks[i]<=-100)):
+                            yLabel.set_verticalalignment('top')
+                        
                     ##### First column and last row are needed to align labels
                     if j==0:
                         axV.append(ax)
@@ -552,10 +556,6 @@ def plotGTC(chains, **kwargs):
                 ax.set_xlim(panelXrange[i])
                 ax.get_xaxis().set_ticklabels([])
 
-            ##### Rotate tick labels
-            for xLabel in ax.get_xticklabels():
-                xLabel.set_rotation(tickAngle)
-
             ##### Ticks x axis
             if i==nDim-1:
                 # 5 ticks max
@@ -569,6 +569,12 @@ def plotGTC(chains, **kwargs):
                 xTicks[i] = tickLocs[idx]
             ax.xaxis.set_ticks(xTicks[i])
 
+            ##### Rotate tick labels
+            for xLabel in ax.get_xticklabels():
+                xLabel.set_rotation(tickAngle)
+                if (any(xTicks[i]>=1000))|(any(xTicks[i]<=-100)):
+                    xLabel.set_horizontalalignment('right')
+                    
             ##### y label for top-left panel
             if i==0:
                 if doOnly1dPlot:
