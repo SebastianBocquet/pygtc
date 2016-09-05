@@ -16,7 +16,7 @@ Here's an example of a GTC::
                       truths=truths, truthLabels=truthLabels, priors=priors,
                       paramRanges=paramRanges, figureSize='MNRAS_page')
 
-.. image:: ./docs_static/demo_files/demo_8_0.png
+.. image:: ./docs/_static/demo_files/demo_8_0.png
 
 **But doesn't this already exist in ``corner``, ``distUtils``, etc...?***
 
