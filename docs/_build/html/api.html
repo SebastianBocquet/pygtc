@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>API &mdash; pygtc 0.2.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="pygtc 0.2.0 documentation" href="index.html"/>
+        <link rel="prev" title="Example: Making a GTC/triangle plot with pygtc" href="demo.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pygtc
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Example: Making a GTC/triangle plot with pygtc</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#plotgtc">plotGTC()</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">pygtc</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>API</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/api.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="api">
+<h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">pygtc</span></code> only has one user-facing function <code class="docutils literal"><span class="pre">pygtc.plotGTC()</span></code>, which generates
+the GTC/triangle plot. There are some helper functions that generate the individual
+panels in the main GTC, but <code class="docutils literal"><span class="pre">plotGTC</span></code> has options to access these, so they are
+not documented here.</p>
+<div class="section" id="plotgtc">
+<h2>plotGTC()<a class="headerlink" href="#plotgtc" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pygtc.plotGTC">
+<code class="descclassname">pygtc.</code><code class="descname">plotGTC</code><span class="sig-paren">(</span><em>chains</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pygtc.plotGTC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a great looking Giant Triangle Confusogram (GTC) with one line of code!
+A GTC is a lot like a triangle (or corner) plot, but you get to put as many
+sets of data, and overlay as many truths as you like. That&#8217;s what can make
+it so <em>confusing</em>!</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>chains</strong> (<em>array-like[nDims , samples] or a list[[nDims, samples1], ...]</em>) &#8211; All chains (where a chain is [nDims, samples]) in the list must have
+the same number of dimensions. Note: If you are using <code class="docutils literal"><span class="pre">emcee</span></code>
+(<a class="reference external" href="http://dan.iel.fm/emcee/current/">http://dan.iel.fm/emcee/current/</a>) - and you should! - each element
+of chains is an <code class="docutils literal"><span class="pre">EnsembleSampler.flatchain</span></code> object.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Keyword Arguments:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><ul class="first">
+<li><p class="first"><strong>weights</strong> (<em>array-like[nSamples] or a list[[nSamples1], ...]</em>) &#8211; Weights for the sample points. If a 1d array is passed, the same
+weights are used for all dimension in chains. If a list of 1d arrays
+is passed, there must be a weights array for each dimension of
+<cite>chains</cite>. Default weight is 1.</p>
+</li>
+<li><p class="first"><strong>chainLabels</strong> (<em>array-like[nChains]</em>) &#8211; A list of text labels describing each chain passed to chains.
+len(chainLabels) must equal len(chains). chainLabels supports LaTex
+commands enclosed in $..$. Additionally, you can pass None as a
+label. Default is <code class="docutils literal"><span class="pre">None</span></code>.</p>
+</li>
+<li><p class="first"><strong>paramNames</strong> (<em>list-like[nDims]</em>) &#8211; A list of text labels describing each dimension of chains.
+len(paramNames) must equal len(chains[0]). paramNames supports LaTex
+commands enclosed in $..$. Additionally, you can pass None as a
+label. Default is None, however if you pass a <code class="docutils literal"><span class="pre">pandas.DataFrame</span></code>
+object, <cite>paramNames</cite> defaults to the <code class="docutils literal"><span class="pre">DataFrame</span></code> column names.</p>
+</li>
+<li><p class="first"><strong>truths</strong> (<em>list-like[nDims] or [[nDims], ...]</em>) &#8211; A list of parameter values, one for each parameter in <cite>chains</cite> to
+hilite in the GTC parameter space, or a list of lists of values to
+hilite in the parameter space. For each set of truths passed to
+<cite>truths</cite>, there must be a value corresponding to every dimension
+in <cite>chains</cite>, although any value may be <cite>None</cite>. Default is
+<code class="docutils literal"><span class="pre">None</span></code>.</p>
+</li>
+<li><p class="first"><strong>truthLabels</strong> (<em>list-like[nTruths]</em>) &#8211; A list of labels, one for each list passed to truths. truthLabels
+supports LaTex commands enclosed in $..$. Additionally, you can pass
+<code class="docutils literal"><span class="pre">None</span></code> as a label. Default is <code class="docutils literal"><span class="pre">None</span></code>.</p>
+</li>
+<li><p class="first"><strong>truthColors</strong> (<em>list-like[nTruths]</em>) &#8211; User-defined colors for the truth lines, must be one per set of
+truths passed to <cite>truths</cite>. Default color is gray <code class="docutils literal"><span class="pre">#4d4d4d</span></code>
+for up to three lines.</p>
+</li>
+<li><p class="first"><strong>truthLineStyles</strong> (<em>list-like[nTruths]</em>) &#8211; User-defined line styles for the truth lines, must be one per set of
+truths passed to <cite>truths</cite>. Default line styles
+are <code class="docutils literal"><span class="pre">['--',':','dashdot']</span></code>.</p>
+</li>
+<li><p class="first"><strong>priors</strong> (<em>list of tuples [(mu1, sigma1), ...]</em>) &#8211; Each tuple describes a Gaussian to be plotted over that parameter&#8217;s
+histogram. The number of priors must equal the number of dimensions
+in <cite>chains</cite>. Default is <code class="docutils literal"><span class="pre">None</span></code>.</p>
+</li>
+<li><p class="first"><strong>plotName</strong> (<em>string</em>) &#8211; A path to save the GTC to in pdf form. Default is <code class="docutils literal"><span class="pre">None</span></code>.</p>
+</li>
+<li><p class="first"><strong>nConfidenceLevels</strong> (<em>int</em>) &#8211; The number of contours to plot in the 2d histograms. Each contour
+corresponds to a sigma. May be 1, 2, or 3. Default is 2.</p>
+</li>
+<li><p class="first"><strong>GaussianConfLevels</strong> (<em>bool</em>) &#8211; Whether you want non-standard 2d Gaussian &#8220;sigma&#8221; confidence levels
+instead of the usual 68%, 95%, 99% confidence levels. Default is <code class="docutils literal"><span class="pre">False</span></code>.</p>
+</li>
+<li><p class="first"><strong>nBins</strong> (<em>int</em>) &#8211; An integer describing the number of bins used to compute the
+histograms. Default is 30.</p>
+</li>
+<li><p class="first"><strong>smoothingKernel</strong> (<em>float</em>) &#8211; A number describing the size of the Gaussian smoothing kernel in
+bins. Default is 1. Set to 0 for no smoothing.</p>
+</li>
+<li><p class="first"><strong>filledPlots</strong> (<em>bool</em>) &#8211; Whether you want the 2d contours and the 1d histograms to be
+filled. Default is <code class="docutils literal"><span class="pre">True</span></code>.</p>
+</li>
+<li><p class="first"><strong>plotDensity</strong> (<em>bool</em>) &#8211; Whether you want to see the 2d density of points. Default is <code class="docutils literal"><span class="pre">False</span></code>.</p>
+</li>
+<li><p class="first"><strong>figureSize</strong> (<em>float or string</em>) &#8211; A number in inches describing the length = width of the GTC, or a
+string indicating a predefined journal setting and whether the
+figure will span one column or the full page width. Default is 70/dpi
+where <code class="docutils literal"><span class="pre">dpi</span> <span class="pre">=</span> <span class="pre">plt.rcParams['figure.dpi']</span></code>. Options to choose from
+are <code class="docutils literal"><span class="pre">'APJ_column'</span></code>, <code class="docutils literal"><span class="pre">'APJ_page'</span></code>, <code class="docutils literal"><span class="pre">'MNRAS_column'</span></code>,</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">'MNRAS_page'</span></code>, <code class="docutils literal"><span class="pre">'AandA_column'</span></code>, <code class="docutils literal"><span class="pre">'AandA_page'</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>panelSpacing</strong> (<em>string</em>) &#8211; Options are <code class="docutils literal"><span class="pre">'loose'</span></code> or <code class="docutils literal"><span class="pre">'tight'</span></code>. Determines whether there is
+some space between the subplots of the GTC or not. Default is
+<code class="docutils literal"><span class="pre">'tight'</span></code>.</p>
+</li>
+<li><p class="first"><strong>legendMarker</strong> (<em>string</em>) &#8211; Options are <code class="docutils literal"><span class="pre">'All'</span></code>, <code class="docutils literal"><span class="pre">'None'</span></code>, <code class="docutils literal"><span class="pre">'Auto'</span></code>. <code class="docutils literal"><span class="pre">'All'</span></code> and <code class="docutils literal"><span class="pre">'None'</span></code>
+force-show or force-hide all label markers. <code class="docutils literal"><span class="pre">'Auto'</span></code> shows label
+markers if two or more truths are plotted.</p>
+</li>
+<li><p class="first"><strong>paramRanges</strong> (<em>list of tuples [nDim]</em>) &#8211; Set the boundaries of each paramter range. Must provide a tuples for
+each dimension of <cite>chains</cite>. If <code class="docutils literal"><span class="pre">None</span></code> is provided for a
+parameter, the range defaults to the width of the histogram.</p>
+</li>
+<li><p class="first"><strong>colorsOrder</strong> (<em>list-like[nDims]</em>) &#8211; The color order for chains passed to <cite>chains</cite>. Default is
+<code class="docutils literal"><span class="pre">['blues',</span> <span class="pre">'greens',</span> <span class="pre">'yellows',</span> <span class="pre">'reds',</span> <span class="pre">'purples']</span></code>. Currently,
+<code class="docutils literal"><span class="pre">pygtc</span></code> is limited to these color values, so you can reorder them,
+but can&#8217;t yet define your own colors.</p>
+</li>
+<li><p class="first"><strong>do1dPlots</strong> (<em>bool</em>) &#8211; Whether or not 1d histrograms are plotted on the diagonal. Default
+is <code class="docutils literal"><span class="pre">True</span></code>.</p>
+</li>
+<li><p class="first"><strong>doOnly1dPlot</strong> (<em>bool</em>) &#8211; Plot only ONE 1d histogram. If this is True, then chains must have
+shape <code class="docutils literal"><span class="pre">(samples,1)</span></code>. Default is <code class="docutils literal"><span class="pre">False</span></code>.</p>
+</li>
+<li><p class="first"><strong>mathTextFontSet</strong> (<em>string</em>) &#8211; Set consistent font family in rcParams. Default is <code class="docutils literal"><span class="pre">stixsans</span></code>. Set
+to <code class="docutils literal"><span class="pre">'None'</span></code> to use the setting in your matplotlib rc.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>fig</strong> &#8211; You can do all sorts of fun things with this in terms of
+customization after it gets returned. If you are using a <code class="docutils literal"><span class="pre">JuPyter</span></code>
+notebook with inline plotting enabled, you should assign a variable
+to catch the return or else the figure will plot twice.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="docutils literal"><span class="pre">matplotlib.figure</span></code> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="demo.html" class="btn btn-neutral" title="Example: Making a GTC/triangle plot with pygtc" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Sebastian Bocquet and Faustin W. Carter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
