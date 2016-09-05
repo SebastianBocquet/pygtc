@@ -798,8 +798,6 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, 
 
     return ax
 
-
-
 #################### Custom colormap for density plots
 def CustomCmap(to_rgb):
     # from color r,g,b
@@ -817,9 +815,6 @@ def CustomCmap(to_rgb):
 def setCustomColorMaps(colors):
     customColorMaps = [CustomCmap(color[0]) for color in colors]
     return customColorMaps
-
-
-
 
 #################### Check for basestring in python 2/3 compatible way
 def __isstr(s):

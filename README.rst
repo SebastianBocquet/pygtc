@@ -1,14 +1,46 @@
 pygtc.py
 =========
 
-Make a sweet giant triangle confusogram (GTC) plot with just one line of code. A
-GTC is basically a corner (or triangle) plot, but more exciting!
+**What is a Giant Triangle Confusogram?**
 
-Read `the documentation <http://pygtc.readthedocs.io/>`_, or check out `demo.ipynp <https://github.com/SebastianBocquet/pygtc/blob/master/demo.ipynb>`_.
+A Giant-Triangle-Confusogram (GTC, aka triangle/corner plot) is a way of
+displaying the results of a Monte-Carlo Markov Chain (MCMC) sampling or similar
+analysis. (For a discussion of MCMC analysis, see the excellent ``emcee``
+package.) The recovered parameter constraints are displayed on a grid in which
+the diagonal shows the one-dimensional posteriors and the lower-left triangle
+shows the pairwise projections.
 
-Works great with the output from ``emcee``.
+Here's an example of a GTC::
 
-Install with pip: ``pip install pygtc``
+  pygtc.plotGTC(chains=[samples1,samples2], paramNames=names, chainLabels=chainLabels,
+                      truths=truths, truthLabels=truthLabels, priors=priors,
+                      paramRanges=paramRanges, figureSize='MNRAS_page')
+
+.. image:: ./docs_static/demo_files/demo_8_0.png
+
+**But doesn't this already exist in ``corner``, ``distUtils``, etc...?***
+
+Although several other packages exists to make such a plot, we were unsatisfied
+with the amount of extra work required to massage the result into something we
+were happy to publish. With ``pygtc``, we hope to take that extra legwork out of
+the equation by providing a package that gives a figure that is publication
+ready on the first try! You should try all the packages and use the one you like
+most; for us, that is ``pygtc``!
+
+Installation
+------------
+For a quick start, you can just use ``pip``. It will install the required
+dependencies for you (``numpy`` and ``matplotlib``)::
+
+  pip install pygtc
+
+For more installation details, see the `documentation <http://pygtc.readthedocs.io/>`_.
+
+Documentation
+-------------
+Documentation is hosted at `ReadTheDocs <http://pygtc.readthedocs.io/>`_,
+or check out `demo.ipynp <https://github.com/SebastianBocquet/pygtc/blob/master/demo.ipynb>`_,
+in this repository, for a working example.
 
 
 Copyright 2016, Sebastian Bocquet and Faustin W. Carter

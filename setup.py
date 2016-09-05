@@ -4,7 +4,7 @@ import pygtc
 setup(
     name = 'pygtc',
     description = 'Make an awesome giant triangle confusogram (gtc)!',
-    version = '0.1.1',
+    version = '0.2.0',
     author = 'Sebastian Bocquet and Faustin Carter',
     author_email = 'sebastian.bocquet@gmail.com',
     license = 'MIT',
@@ -13,8 +13,7 @@ setup(
     long_description = open('README.rst').read(),
     install_requires = [
         'numpy>=1.5',
-        'matplotlib>=1.5',
-        'scipy>=0.14'
+        'matplotlib>=1.5'
     ],
     classifiers = [
         'Development Status :: 4 - Beta',
