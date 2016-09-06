@@ -7,12 +7,12 @@ A Giant-Triangle-Confusogram (GTC, aka triangle/corner plot) is a way of
 displaying the results of a Monte-Carlo Markov Chain (MCMC) sampling or similar
 analysis. (For a discussion of MCMC analysis, see the excellent ``emcee``
 package.) The recovered parameter constraints are displayed on a grid in which
-the diagonal shows the one-dimensional posteriors and the lower-left triangle
-shows the pairwise projections. You might want to look at a plot like this if
-you are fitting model to data and want to see the parameter covariances along
-with the priors.
+the diagonal shows the one-dimensional posteriors (and, optionally, priors) and
+the lower-left triangle shows the pairwise projections. You might want to look
+at a plot like this if you are fitting model to data and want to see the
+parameter covariances along with the priors.
 
-Here's an example of a GTC::
+Here's an example of a GTC with some random data and arbitrary labels::
 
   pygtc.plotGTC(chains=[samples1,samples2], paramNames=names, chainLabels=chainLabels,
                       truths=truths, truthLabels=truthLabels, priors=priors,
