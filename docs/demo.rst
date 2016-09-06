@@ -60,7 +60,8 @@ Note that all these must match number of parameters!
 
     # List of parameter names, supports latex
     # NOTE: For capital greek letters in latex mode, use \mathsf{}
-    names = ['param name', '$B_\mathrm{\lambda}$', '$E$', '$\\lambda$', 'C', 'D', '$\mathsf{\Omega}$', '$\\gamma$']
+    names = ['param name','$B_\mathrm{\lambda}$', '$E$',
+                '$\\lambda$', 'C', 'D', '$\mathsf{\Omega}$', '$\\gamma$']
 
     # Labels for the different chains
     chainLabels = ["data1 $\lambda$", "data 2"]
@@ -72,13 +73,15 @@ Note that all these must match number of parameters!
     # List of truth values, to mark best-fit or input values
     # NOT a python array because of different lengths
     # Here we choose two sets of truth values
-    truths = ((4, .5, None, .1, 0, None, None, 0), (None, None, .3, 1, None, None, None, None))
+    truths = ((4, .5, None, .1, 0, None, None, 0),
+              (None, None, .3, 1, None, None, None, None))
 
     # Labels for the different truths
     truthLabels = ( 'the truth', 'also true')
 
     # Do the magic
-    GTC = pygtc.plotGTC(chains=[samples1,samples2], paramNames=names, chainLabels=chainLabels,
+    GTC = pygtc.plotGTC(chains=[samples1,samples2],
+                        paramNames=names, chainLabels=chainLabels,
                         truths=truths, truthLabels=truthLabels, priors=priors)
 
 
@@ -104,7 +107,8 @@ Make figure publication ready
     paramRanges = (None,(-5,4),(),(-3,3), None, None, None, None)
 
     # Do the magic
-    GTC = pygtc.plotGTC(chains=[samples1,samples2], paramNames=names, chainLabels=chainLabels,
+    GTC = pygtc.plotGTC(chains=[samples1,samples2],
+                        paramNames=names, chainLabels=chainLabels,
                         truths=truths, truthLabels=truthLabels, priors=priors,
                         paramRanges=paramRanges, figureSize='MNRAS_page')
 
@@ -129,14 +133,16 @@ Let's look in more detail! Here, we'll want single-column figures.
     truths2d = (0,None)
 
     # The 2d panel and the 1d histograms
-    GTC = pygtc.plotGTC(chains=[samples1[:,4:6],samples2[:,4:6]], paramNames=names[4:6],
-                        chainLabels=chainLabels, truths=truths2d, truthLabels=truthLabels[0],
+    GTC = pygtc.plotGTC(chains=[samples1[:,4:6],samples2[:,4:6]],
+                        paramNames=names[4:6], chainLabels=chainLabels,
+                        truths=truths2d, truthLabels=truthLabels[0],
                         priors=priors2d, figureSize='MNRAS_column')
 
     # Only the 2d panel
     Range2d = ((-3,5),(-3,7)) # To make sure there's enough space for the legend
-    GTC = pygtc.plotGTC(chains=[samples1[:,4:6],samples2[:,4:6]], paramNames=names[4:6],
-                        chainLabels=chainLabels, truths=truths2d, truthLabels=truthLabels[0],
+    GTC = pygtc.plotGTC(chains=[samples1[:,4:6],samples2[:,4:6]],
+                        paramNames=names[4:6], chainLabels=chainLabels,
+                        truths=truths2d, truthLabels=truthLabels[0],
                         priors=priors2d, paramRanges=Range2d,
                         figureSize='MNRAS_column', do1dPlots=False)
 
@@ -159,8 +165,9 @@ Finally, let's just plot the posterior on C
     # Bit tricky, but remember each data set needs shape of (Npoints, nDim)
     inputarr = [np.array([samples1[:,4]]).T, np.array([samples2[:,4]]).T]
     truth1d = [0.]
-    GTC = pygtc.plotGTC(chains=inputarr, paramNames=names[4], chainLabels=chainLabels,
-                        truths=truth1d, truthLabels=truthLabels[0],
+    GTC = pygtc.plotGTC(chains=inputarr, paramNames=names[4],
+                        chainLabels=chainLabels, truths=truth1d,
+                        truthLabels=truthLabels[0],
                         figureSize='MNRAS_column', doOnly1dPlot=True)
 
 

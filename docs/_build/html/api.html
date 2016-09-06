@@ -174,12 +174,11 @@ commands enclosed in $..$. Additionally, you can pass None as a
 label. Default is None, however if you pass a <code class="docutils literal"><span class="pre">pandas.DataFrame</span></code>
 object, <cite>paramNames</cite> defaults to the <code class="docutils literal"><span class="pre">DataFrame</span></code> column names.</p>
 </li>
-<li><p class="first"><strong>truths</strong> (<em>list-like[nDims] or [[nDims], ...]</em>) &#8211; A list of parameter values, one for each parameter in <cite>chains</cite> to
-hilite in the GTC parameter space, or a list of lists of values to
-hilite in the parameter space. For each set of truths passed to
-<cite>truths</cite>, there must be a value corresponding to every dimension
-in <cite>chains</cite>, although any value may be <cite>None</cite>. Default is
-<code class="docutils literal"><span class="pre">None</span></code>.</p>
+<li><p class="first"><strong>truths</strong> (<em>list-like[nDims] or [[nDims], ...]</em>) &#8211; A list of parameter values, one for each parameter in <cite>chains</cite> to hilite
+in the GTC parameter space, or a list of lists of values to hilite in
+the parameter space. For each set of truths passed to <cite>truths</cite>, there
+must be a value corresponding to every dimension in <cite>chains</cite>, although
+any value may be <code class="docutils literal"><span class="pre">None</span></code>. Default is <code class="docutils literal"><span class="pre">None</span></code>.</p>
 </li>
 <li><p class="first"><strong>truthLabels</strong> (<em>list-like[nTruths]</em>) &#8211; A list of labels, one for each list passed to truths. truthLabels
 supports LaTex commands enclosed in $..$. Additionally, you can pass
@@ -318,6 +317,7 @@ to catch the return or else the figure will plot twice.</p>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

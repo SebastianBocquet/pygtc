@@ -24,7 +24,7 @@ Here's an example of a GTC:
 .. image:: _static/demo_files/demo_8_0.png
 
 Contents:
-
+---------
 .. toctree::
    :maxdepth: 2
 
@@ -34,5 +34,5 @@ Contents:
 
 
 Contributions, problems, questions, recommendations
---------
+---------------------------------------------------
 Please `report any problems on GitHub <https://github.com/SebastianBocquet/pygtc/issues>`_ where pygtc is being developed.

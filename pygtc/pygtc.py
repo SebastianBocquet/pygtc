@@ -52,12 +52,11 @@ def plotGTC(chains, **kwargs):
         object, `paramNames` defaults to the ``DataFrame`` column names.
 
     truths : list-like[nDims] or [[nDims], ...]
-        A list of parameter values, one for each parameter in `chains` to
-        hilite in the GTC parameter space, or a list of lists of values to
-        hilite in the parameter space. For each set of truths passed to
-        `truths`, there must be a value corresponding to every dimension
-        in `chains`, although any value may be `None`. Default is
-        ``None``.
+        A list of parameter values, one for each parameter in `chains` to hilite
+        in the GTC parameter space, or a list of lists of values to hilite in
+        the parameter space. For each set of truths passed to `truths`, there
+        must be a value corresponding to every dimension in `chains`, although
+        any value may be ``None``. Default is ``None``.
 
     truthLabels : list-like[nTruths]
         A list of labels, one for each list passed to truths. truthLabels

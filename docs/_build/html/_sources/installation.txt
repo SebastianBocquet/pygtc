@@ -15,7 +15,7 @@ pygtc is written in Python 2.7 and requires the following packages:
 Downloading and installing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The latest stable version of scraps is hosted at `PyPi
+The latest stable version of pygtc is hosted at `PyPi
 <http://pypi.python.org/pypi/pygtc/>`_.
 
 If you like pip, you can install with::
@@ -25,7 +25,7 @@ If you like pip, you can install with::
 Or, alternatively, download and extract the tarball from the above link and then
 install from source with::
 
-  cd directory_you_unpacked_scraps_into
+  cd directory_you_unpacked_ptgtc_into
   python setup.py install
 
 
