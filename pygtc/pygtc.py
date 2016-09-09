@@ -311,13 +311,14 @@ def plotGTC(chains, **kwargs):
         assert __isstr(plotName), "plotName must be a string type"
 
     # Define which confidence levels to show
-    nConfidenceLevels = kwargs.pop('nConfidenceLevels', 2) #How many of the above confidence levels to show
+    nConfidenceLevels = kwargs.pop('nConfidenceLevels', 2) #How many of the confidence levels to show
     assert nConfidenceLevels in [1,2,3], "nConfidenceLevels must be 1, 2, or 3"
 
     # 2d confidence levels: Gaussian or (68%, 95%, 99%)
     GaussianConfLevels = kwargs.pop('GaussianConfLevels', False)
     confLevels = (.3173, .0455, .0027)
     if GaussianConfLevels:
+        #1d confidence levels
         confLevels = (.6065, .1353, .0111)
 
 
@@ -422,7 +423,10 @@ def plotGTC(chains, **kwargs):
                     if truths is not None:
                         truthsForPlot2D = [[truths[k,i], truths[k,j]] for k in range(len(truths))]
                     # Plot!
-                    ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins, nBinsFlat, smoothingKernel, filledPlots, colors, nConfidenceLevels, confLevels, truthsForPlot2D, truthColors, truthLineStyles, plotDensity, myColorMap)
+                    ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins,
+                                nBinsFlat, smoothingKernel, filledPlots, colors,
+                                nConfidenceLevels, confLevels, truthsForPlot2D,
+                                truthColors, truthLineStyles, plotDensity, myColorMap)
 
                     ##### Range
                     if paramRanges is not None:
@@ -527,7 +531,9 @@ def plotGTC(chains, **kwargs):
                 if priors[i] and priors[i][1]>0:
                     prior1d = priors[i]
             # Plot!
-            ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins, smoothingKernel, filledPlots, colors, truthsForPlot1D, truthColors, truthLineStyles, prior1d, priorColor)
+            ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins,
+                        smoothingKernel, filledPlots, colors, truthsForPlot1D,
+                        truthColors, truthLineStyles, prior1d, priorColor)
 
 
             ##### Panel layout
@@ -687,7 +693,58 @@ def plotGTC(chains, **kwargs):
 
 #################### Create single 1d panel
 
-def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, filledPlots, colors, truths1d, truthColors, truthLineStyles, prior1d, priorColor):
+def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
+            filledPlots, colors, truths1d, truthColors, truthLineStyles,
+            prior1d, priorColor):
+    r"""Plot the 1d histogram and optional prior.
+
+    Parameters
+    ----------
+    ax : matplotlib.pyplot.axis
+        Axis on which to plot the histogram(s)
+
+    nChains : int
+        How many chains are you passing?
+
+    chains1d : list-like
+        A list of `nChains` 1d chains: [chain1, chain2, etc...]
+
+    weights : list-like
+        A list of `nChains` weights.
+
+    nBins : int
+        How many histogram bins?
+
+    smoothingKernel : int
+        Number of bins to smooth over
+
+    filledPlots : bool
+        Want the area under the curve filled in?
+
+    colors : list-like
+        List of `nChains` tuples. Each tuple must have at least two colors.
+
+    truths1d : list-like
+        List of truths to overplot on the histogram.
+
+    truthColors : list-like
+        One color for each truth.
+
+    truthLineStyles : list-like
+        One matplotlib linestyle specifier per truth.
+
+    prior1d : tuple
+        Normal distribution paramters (mu, sigma)
+
+    priorColor : color
+        The color to plot the prior.
+
+    Note
+    ----
+    You should really just call this from the plotGTC function unless you have
+    a strong need to work only with an axis instead of a figure...
+
+    """
 
     ##### 1D histogram
     plotData = []
@@ -735,8 +792,71 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel, filledPlots
 
 #################### Create single 2d panel
 
-def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel, filledPlots, colors, nConfidenceLevels, confLevels, truths2d, truthColors, truthLineStyles, plotDensity, myColorMap):
+def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel,
+            filledPlots, colors, nConfidenceLevels, confLevels, truths2d,
+            truthColors, truthLineStyles, plotDensity, myColorMap):
+    r"""Plot a 2D histogram in a an axis object and return the axis with plot.
 
+    Parameters
+    ----------
+
+    ax : matplotlib.pyplot.axis
+        The axis on which to plot the 2D histogram
+
+    nChains : int
+        The number of chains to plot
+
+    chains2d : list-like
+        A list of pairs of chains in the form:
+        [[chain1_x, chain1_y], [chain2_x, chain2_y], ...].
+
+    weights : list-like
+        Weights for the chains2d.
+
+    nBins : int
+        Number of bins for the 2d histogram
+
+    nBinsFlat : int
+        nBinsFlat = np.linspace(0., nBins**2, nBins**2)
+
+    smoothingKernel : int
+        number describing the size of the Gaussian smoothing kernel in
+        bins. Default is 1. Set to 0 for no smoothing.
+
+    filledPlots : bool
+        Just contours, or filled contours?
+
+    colors : list-like
+        List of `nChains` tuples. Each tuple must have at least nConfidenceLevels
+        colors.
+
+    nConfidenceLevels : int {2,1,3}
+        How many confidence levels? Default is 2.
+
+    confLevels : list-like
+        List of at least `nConfidenceLevels` values for confidence levels.
+
+    truths2d : list-like
+        A list of nChains tuples of the form: [(truth1_x, truth1_y), etc...].
+
+    truthColors : list-like
+        A list of colors for the truths.
+
+    truthLineStyles : list-like
+        A list of matplotlib linestyle descriptors, one for each truth.
+
+    plotDensity : bool
+        Whether to show points density in addition to contours. Default is False.
+
+    myColorMap : list-like
+        A list of `nChains` matplotlib colormap specifiers, or actual colormaps.
+
+    Note
+    ----
+    You should really just call this from the plotGTC function unless you have
+    a strong need to work only with an axis instead of a figure...
+
+    """
     # Empty arrays needed below
     chainLevels = np.ones((nChains,nConfidenceLevels+1))
     extents = np.empty((nChains,4))

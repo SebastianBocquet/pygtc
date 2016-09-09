@@ -2,6 +2,9 @@ pygtc.py
 ========
 Make a publication-ready giant-triangle-confusogram (GTC) with just one line of code!
 
+This documentation is for the ``pygtc`` package, which is hosted at
+`GitHub <https://github.com/SebastianBocquet/pygtc/issues>`_.
+
 
 **What is a Giant Triangle Confusogram?**
 
@@ -19,7 +22,8 @@ were happy to publish. With ``pygtc``, we hope to take that extra legwork out of
 the equation by providing a package that gives a figure that is publication
 ready on the first try!
 
-Here's an example of a GTC:
+Here's an example of a GTC (generated from some fake data, with some nonsensicle
+labels):
 
 .. image:: _static/demo_files/demo_8_0.png
 

@@ -85,6 +85,11 @@
 <li class="toctree-l1"><a class="reference internal" href="demo.html">Example: Making a GTC/triangle plot with pygtc</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#plotgtc">plotGTC()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#helper-functions">Helper functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#plot2d">__plot2d()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plot1d">__plot1d()</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -135,8 +140,8 @@
 <h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
 <p><code class="docutils literal"><span class="pre">pygtc</span></code> only has one user-facing function <code class="docutils literal"><span class="pre">pygtc.plotGTC()</span></code>, which generates
 the GTC/triangle plot. There are some helper functions that generate the individual
-panels in the main GTC, but <code class="docutils literal"><span class="pre">plotGTC</span></code> has options to access these, so they are
-not documented here.</p>
+panels in the main GTC, but <code class="docutils literal"><span class="pre">plotGTC</span></code> has options to access these, so they
+are only minimally documented here.</p>
 <div class="section" id="plotgtc">
 <h2>plotGTC()<a class="headerlink" href="#plotgtc" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -266,6 +271,89 @@ to catch the return or else the figure will plot twice.</p>
 </table>
 </dd></dl>
 
+</div>
+<div class="section" id="helper-functions">
+<h2>Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="plot2d">
+<h3>__plot2d()<a class="headerlink" href="#plot2d" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="pygtc.pygtc.__plot2d">
+<code class="descclassname">pygtc.pygtc.</code><code class="descname">__plot2d</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygtc.pygtc.__plot2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a 2D histogram in a an axis object and return the axis with plot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ax</strong> (<em>matplotlib.pyplot.axis</em>) &#8211; The axis on which to plot the 2D histogram</li>
+<li><strong>nChains</strong> (<em>int</em>) &#8211; The number of chains to plot</li>
+<li><strong>chains2d</strong> (<em>list-like</em>) &#8211; A list of pairs of chains in the form:
+[[chain1_x, chain1_y], [chain2_x, chain2_y], ...].</li>
+<li><strong>weights</strong> (<em>list-like</em>) &#8211; Weights for the chains2d.</li>
+<li><strong>nBins</strong> (<em>int</em>) &#8211; Number of bins for the 2d histogram</li>
+<li><strong>nBinsFlat</strong> (<em>int</em>) &#8211; nBinsFlat = np.linspace(0., nBins**2, nBins**2)</li>
+<li><strong>smoothingKernel</strong> (<em>int</em>) &#8211; number describing the size of the Gaussian smoothing kernel in
+bins. Default is 1. Set to 0 for no smoothing.</li>
+<li><strong>filledPlots</strong> (<em>bool</em>) &#8211; Just contours, or filled contours?</li>
+<li><strong>colors</strong> (<em>list-like</em>) &#8211; List of <cite>nChains</cite> tuples. Each tuple must have at least nConfidenceLevels
+colors.</li>
+<li><strong>nConfidenceLevels</strong> (<em>int {2,1,3}</em>) &#8211; How many confidence levels? Default is 2.</li>
+<li><strong>confLevels</strong> (<em>list-like</em>) &#8211; List of at least <cite>nConfidenceLevels</cite> values for confidence levels.</li>
+<li><strong>truths2d</strong> (<em>list-like</em>) &#8211; A list of nChains tuples of the form: [(truth1_x, truth1_y), etc...].</li>
+<li><strong>truthColors</strong> (<em>list-like</em>) &#8211; A list of colors for the truths.</li>
+<li><strong>truthLineStyles</strong> (<em>list-like</em>) &#8211; A list of matplotlib linestyle descriptors, one for each truth.</li>
+<li><strong>plotDensity</strong> (<em>bool</em>) &#8211; Whether to show points density in addition to contours. Default is False.</li>
+<li><strong>myColorMap</strong> (<em>list-like</em>) &#8211; A list of <cite>nChains</cite> matplotlib colormap specifiers, or actual colormaps.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You should really just call this from the plotGTC function unless you have
+a strong need to work only with an axis instead of a figure...</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="plot1d">
+<h3>__plot1d()<a class="headerlink" href="#plot1d" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="pygtc.pygtc.__plot1d">
+<code class="descclassname">pygtc.pygtc.</code><code class="descname">__plot1d</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygtc.pygtc.__plot1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the 1d histogram and optional prior.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ax</strong> (<em>matplotlib.pyplot.axis</em>) &#8211; Axis on which to plot the histogram(s)</li>
+<li><strong>nChains</strong> (<em>int</em>) &#8211; How many chains are you passing?</li>
+<li><strong>chains1d</strong> (<em>list-like</em>) &#8211; A list of <cite>nChains</cite> 1d chains: [chain1, chain2, etc...]</li>
+<li><strong>weights</strong> (<em>list-like</em>) &#8211; A list of <cite>nChains</cite> weights.</li>
+<li><strong>nBins</strong> (<em>int</em>) &#8211; How many histogram bins?</li>
+<li><strong>smoothingKernel</strong> (<em>int</em>) &#8211; Number of bins to smooth over</li>
+<li><strong>filledPlots</strong> (<em>bool</em>) &#8211; Want the area under the curve filled in?</li>
+<li><strong>colors</strong> (<em>list-like</em>) &#8211; List of <cite>nChains</cite> tuples. Each tuple must have at least two colors.</li>
+<li><strong>truths1d</strong> (<em>list-like</em>) &#8211; List of truths to overplot on the histogram.</li>
+<li><strong>truthColors</strong> (<em>list-like</em>) &#8211; One color for each truth.</li>
+<li><strong>truthLineStyles</strong> (<em>list-like</em>) &#8211; One matplotlib linestyle specifier per truth.</li>
+<li><strong>prior1d</strong> (<em>tuple</em>) &#8211; Normal distribution paramters (mu, sigma)</li>
+<li><strong>priorColor</strong> (<em>color</em>) &#8211; The color to plot the prior.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You should really just call this from the plotGTC function unless you have
+a strong need to work only with an axis instead of a figure...</p>
+</div>
+</dd></dl>
+
+</div>
 </div>
 </div>
 
