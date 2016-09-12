@@ -506,13 +506,13 @@ def plotGTC(chains, **kwargs):
                     for xLabel in ax.get_xticklabels():
                         if labelRotation[0]:
                             xLabel.set_rotation(tickAngle)
-                        if (any(xTicks[j]>=1000))|(any(xTicks[j]<=-100)):
-                            xLabel.set_horizontalalignment('right')
+                            if any(np.array([len(str(text)) for text in xTicks[j]])>4):
+                                xLabel.set_horizontalalignment('right')
                     for yLabel in ax.get_yticklabels():
                         if labelRotation[1]:
                             yLabel.set_rotation(tickAngle)
-                        if (any(yTicks[i]>=1000))|(any(yTicks[i]<=-100)):
-                            yLabel.set_verticalalignment('top')
+                            if any(np.array([len(str(text)) for text in yTicks[i]])>4):
+                                yLabel.set_verticalalignment('top')
 
                     ##### First column and last row are needed to align labels
                     if j==0:
@@ -591,8 +591,8 @@ def plotGTC(chains, **kwargs):
             for xLabel in ax.get_xticklabels():
                 if labelRotation[0]:
                     xLabel.set_rotation(tickAngle)
-                if (any(xTicks[i]>=1000))|(any(xTicks[i]<=-100)):
-                    xLabel.set_horizontalalignment('right')
+                    if any(np.array([len(str(text)) for text in xTicks[i]])>4):
+                        xLabel.set_horizontalalignment('right')
 
             ##### y label for top-left panel
             if i==0:
