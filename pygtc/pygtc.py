@@ -126,6 +126,12 @@ def plotGTC(chains, **kwargs):
         Set the boundaries of each paramter range. Must provide a tuples for
         each dimension of `chains`. If ``None`` is provided for a
         parameter, the range defaults to the width of the histogram.
+    
+    labelRotation : tuple [2]
+        Rotate the tick labels by 45 degrees for less overlap. Can be set for
+        the x- and y-axis separately. Options are ``(True,True)``,
+        ``(True,False)``, ``(False,True)``, ``(False,False)``. Default is
+        ``(True,True)``.
 
     colorsOrder : list-like[nDims]
         The color order for chains passed to `chains`. Default is
@@ -250,6 +256,9 @@ def plotGTC(chains, **kwargs):
     if paramRanges is not None:
         assert len(paramRanges)==nDim, "paramRanges must match number of parameters"
 
+    # Rotated tick labels
+    labelRotation = kwargs.pop('labelRotation', (True,True))
+    
     # User-defined color ordering
     customColorsOrder = kwargs.pop('colorsOrder', None) #Labels for multiple chains, goes in plot legend
     if customColorsOrder is not None:
@@ -495,11 +504,13 @@ def plotGTC(chains, **kwargs):
 
                     ##### Rotate tick labels
                     for xLabel in ax.get_xticklabels():
-                        xLabel.set_rotation(tickAngle)
+                        if labelRotation[0]:
+                            xLabel.set_rotation(tickAngle)
                         if (any(xTicks[j]>=1000))|(any(xTicks[j]<=-100)):
                             xLabel.set_horizontalalignment('right')
                     for yLabel in ax.get_yticklabels():
-                        yLabel.set_rotation(tickAngle)
+                        if labelRotation[1]:
+                            yLabel.set_rotation(tickAngle)
                         if (any(yTicks[i]>=1000))|(any(yTicks[i]<=-100)):
                             yLabel.set_verticalalignment('top')
 
