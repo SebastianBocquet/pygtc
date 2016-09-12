@@ -589,7 +589,8 @@ def plotGTC(chains, **kwargs):
 
             ##### Rotate tick labels
             for xLabel in ax.get_xticklabels():
-                xLabel.set_rotation(tickAngle)
+                if labelRotation[0]:
+                    xLabel.set_rotation(tickAngle)
                 if (any(xTicks[i]>=1000))|(any(xTicks[i]<=-100)):
                     xLabel.set_horizontalalignment('right')
 
