@@ -39,4 +39,4 @@ Contents:
 
 Contributions, problems, questions, recommendations
 ---------------------------------------------------
-Please `report any problems on GitHub <https://github.com/SebastianBocquet/pygtc/issues>`_ where pygtc is being developed.
+Please report any problems or pitch new ideas on `GitHub <https://github.com/SebastianBocquet/pygtc/issues>`_ where pygtc is being developed. Bugs will be squashed ASAP and feature requests will be seriously considered.

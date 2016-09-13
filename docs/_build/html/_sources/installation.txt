@@ -47,4 +47,4 @@ or from source::
   python setup.py develop
 
 If you like this project and want to contribute, send a message over at the
-github repo and you can be added as a collaborator!
+github repo and get involved!

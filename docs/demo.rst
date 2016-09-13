@@ -1,12 +1,14 @@
 ==============================================
 Example: Making a GTC/triangle plot with pygtc
 ==============================================
+This example was generated from an IPython notebook!
 
 Import dependencies
 ===================
 
 .. code:: python
-
+    #This lets an IPython notebook display inline plots. Comment out if not
+    #using a notebook.
     %matplotlib inline
 
     import numpy as np

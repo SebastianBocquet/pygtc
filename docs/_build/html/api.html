@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>API &mdash; pygtc 0.2.0 documentation</title>
+  <title>API &mdash; pygtc 0.2 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="pygtc 0.2.0 documentation" href="index.html"/>
+    <link rel="top" title="pygtc 0.2 documentation" href="index.html"/>
         <link rel="prev" title="Example: Making a GTC/triangle plot with pygtc" href="demo.html"/> 
 
   
@@ -155,7 +155,8 @@ it so <em>confusing</em>!</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>chains</strong> (<em>array-like[nDims , samples] or a list[[nDims, samples1], ...]</em>) &#8211; All chains (where a chain is [nDims, samples]) in the list must have
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>chains</strong> (<em>array-like[nSamples,nDims] or a</em>) &#8211; list[[nSamples1,nDims], [nSamples2,nDims], ...]
+All chains (where a chain is [nSamples,nDims]) in the list must have
 the same number of dimensions. Note: If you are using <code class="docutils literal"><span class="pre">emcee</span></code>
 (<a class="reference external" href="http://dan.iel.fm/emcee/current/">http://dan.iel.fm/emcee/current/</a>) - and you should! - each element
 of chains is an <code class="docutils literal"><span class="pre">EnsembleSampler.flatchain</span></code> object.</p>
@@ -163,10 +164,9 @@ of chains is an <code class="docutils literal"><span class="pre">EnsembleSampler
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">Keyword Arguments:</th></tr>
 <tr class="field-even field"><td>&nbsp;</td><td class="field-body"><ul class="first">
-<li><p class="first"><strong>weights</strong> (<em>array-like[nSamples] or a list[[nSamples1], ...]</em>) &#8211; Weights for the sample points. If a 1d array is passed, the same
-weights are used for all dimension in chains. If a list of 1d arrays
-is passed, there must be a weights array for each dimension of
-<cite>chains</cite>. Default weight is 1.</p>
+<li><p class="first"><strong>weights</strong> (<em>array-like[nSamples] or a list[[nSamples1], ...]</em>) &#8211; Weights for the sample points. The number of 1d arrays passed
+must correspond to the number of <cite>chains</cite>, and each <cite>weights</cite> array
+must have the same length nSamples as its corresponding chain.</p>
 </li>
 <li><p class="first"><strong>chainLabels</strong> (<em>array-like[nChains]</em>) &#8211; A list of text labels describing each chain passed to chains.
 len(chainLabels) must equal len(chains). chainLabels supports LaTex
@@ -174,15 +174,16 @@ commands enclosed in $..$. Additionally, you can pass None as a
 label. Default is <code class="docutils literal"><span class="pre">None</span></code>.</p>
 </li>
 <li><p class="first"><strong>paramNames</strong> (<em>list-like[nDims]</em>) &#8211; A list of text labels describing each dimension of chains.
-len(paramNames) must equal len(chains[0]). paramNames supports LaTex
-commands enclosed in $..$. Additionally, you can pass None as a
-label. Default is None, however if you pass a <code class="docutils literal"><span class="pre">pandas.DataFrame</span></code>
-object, <cite>paramNames</cite> defaults to the <code class="docutils literal"><span class="pre">DataFrame</span></code> column names.</p>
+len(paramNames) must equal nDims=chains[0].shape[1].
+paramNames supports LaTex commands enclosed in $..$.
+Additionally, you can pass None as a label. Default is None,
+however if you pass a <code class="docutils literal"><span class="pre">pandas.DataFrame</span></code> object, <cite>paramNames</cite>
+defaults to the <code class="docutils literal"><span class="pre">DataFrame</span></code> column names.</p>
 </li>
-<li><p class="first"><strong>truths</strong> (<em>list-like[nDims] or [[nDims], ...]</em>) &#8211; A list of parameter values, one for each parameter in <cite>chains</cite> to hilite
-in the GTC parameter space, or a list of lists of values to hilite in
-the parameter space. For each set of truths passed to <cite>truths</cite>, there
-must be a value corresponding to every dimension in <cite>chains</cite>, although
+<li><p class="first"><strong>truths</strong> (<em>list-like[nDims] or [[nDims], ...]</em>) &#8211; A list of parameter values, one for each parameter in <cite>chains</cite> to
+highlight in the GTC parameter space, or a list of lists of values to
+highlight in the parameter space. For each set of truths passed to <cite>truths</cite>,
+there must be a value corresponding to every dimension in <cite>chains</cite>, although
 any value may be <code class="docutils literal"><span class="pre">None</span></code>. Default is <code class="docutils literal"><span class="pre">None</span></code>.</p>
 </li>
 <li><p class="first"><strong>truthLabels</strong> (<em>list-like[nTruths]</em>) &#8211; A list of labels, one for each list passed to truths. truthLabels
@@ -203,11 +204,11 @@ in <cite>chains</cite>. Default is <code class="docutils literal"><span class="p
 </li>
 <li><p class="first"><strong>plotName</strong> (<em>string</em>) &#8211; A path to save the GTC to in pdf form. Default is <code class="docutils literal"><span class="pre">None</span></code>.</p>
 </li>
-<li><p class="first"><strong>nConfidenceLevels</strong> (<em>int</em>) &#8211; The number of contours to plot in the 2d histograms. Each contour
-corresponds to a sigma. May be 1, 2, or 3. Default is 2.</p>
+<li><p class="first"><strong>nConfidenceLevels</strong> (<em>int</em>) &#8211; The number of contour levels to plot in the 2d histograms. May be 1, 2,
+or 3. Default is 2.</p>
 </li>
-<li><p class="first"><strong>GaussianConfLevels</strong> (<em>bool</em>) &#8211; Whether you want non-standard 2d Gaussian &#8220;sigma&#8221; confidence levels
-instead of the usual 68%, 95%, 99% confidence levels. Default is <code class="docutils literal"><span class="pre">False</span></code>.</p>
+<li><p class="first"><strong>GaussianConfLevels</strong> (<em>bool</em>) &#8211; Whether you want 2d Gaussian &#8220;sigma&#8221; confidence levels (39%, 86%, 99%) instead of the
+standard 1d confidence levels (68%, 95%, 99%). Default is <code class="docutils literal"><span class="pre">False</span></code>.</p>
 </li>
 <li><p class="first"><strong>nBins</strong> (<em>int</em>) &#8211; An integer describing the number of bins used to compute the
 histograms. Default is 30.</p>
@@ -241,6 +242,11 @@ markers if two or more truths are plotted.</p>
 each dimension of <cite>chains</cite>. If <code class="docutils literal"><span class="pre">None</span></code> is provided for a
 parameter, the range defaults to the width of the histogram.</p>
 </li>
+<li><p class="first"><strong>labelRotation</strong> (<em>tuple [2]</em>) &#8211; Rotate the tick labels by 45 degrees for less overlap. Can be set for
+the x- and y-axis separately. Options are <code class="docutils literal"><span class="pre">(True,True)</span></code>,
+<code class="docutils literal"><span class="pre">(True,False)</span></code>, <code class="docutils literal"><span class="pre">(False,True)</span></code>, <code class="docutils literal"><span class="pre">(False,False)</span></code>. Default is
+<code class="docutils literal"><span class="pre">(True,True)</span></code>.</p>
+</li>
 <li><p class="first"><strong>colorsOrder</strong> (<em>list-like[nDims]</em>) &#8211; The color order for chains passed to <cite>chains</cite>. Default is
 <code class="docutils literal"><span class="pre">['blues',</span> <span class="pre">'greens',</span> <span class="pre">'yellows',</span> <span class="pre">'reds',</span> <span class="pre">'purples']</span></code>. Currently,
 <code class="docutils literal"><span class="pre">pygtc</span></code> is limited to these color values, so you can reorder them,
@@ -252,8 +258,21 @@ is <code class="docutils literal"><span class="pre">True</span></code>.</p>
 <li><p class="first"><strong>doOnly1dPlot</strong> (<em>bool</em>) &#8211; Plot only ONE 1d histogram. If this is True, then chains must have
 shape <code class="docutils literal"><span class="pre">(samples,1)</span></code>. Default is <code class="docutils literal"><span class="pre">False</span></code>.</p>
 </li>
-<li><p class="first"><strong>mathTextFontSet</strong> (<em>string</em>) &#8211; Set consistent font family in rcParams. Default is <code class="docutils literal"><span class="pre">stixsans</span></code>. Set
-to <code class="docutils literal"><span class="pre">'None'</span></code> to use the setting in your matplotlib rc.</p>
+<li><p class="first"><strong>mathTextFontSet</strong> (<em>string</em>) &#8211; Set font family for rendering LaTex. Default is <code class="docutils literal"><span class="pre">'stixsans'</span></code>. Set
+to <code class="docutils literal"><span class="pre">None</span></code> to use the default setting in your matplotlib rc. See Notes
+for known issues regarding this keyword.</p>
+</li>
+<li><p class="first"><strong>customLabelFont</strong> (<code class="docutils literal"><span class="pre">matplotlib.fontdict</span></code>) &#8211; Full customization of label fonts. See matplotlib for full
+documentation. Default: <code class="docutils literal"><span class="pre">customLabelFont</span> <span class="pre">=</span> <span class="pre">{'size':9}</span></code></p>
+</li>
+<li><p class="first"><strong>customLegendFont</strong> (<code class="docutils literal"><span class="pre">matplotlib.fontdict</span></code>) &#8211; Full customization of legend fonts. See matplotlib for full
+documentation. Default: <code class="docutils literal"><span class="pre">customLabelFont</span> <span class="pre">=</span> <span class="pre">{'size':9}</span></code></p>
+</li>
+<li><p class="first"><strong>holdRC</strong> (<em>bool</em>) &#8211; Whether or not to reset rcParams back to default. You may wish to set
+this to <code class="docutils literal"><span class="pre">False</span></code> if you are working in interactive mode (ie with
+IPython or in a JuPyter notebook) and you want the plots that display to
+be identical to the plots that save in the pdf. See Notes below for more
+information.</p>
 </li>
 </ul>
 </td>
@@ -269,6 +288,27 @@ to catch the return or else the figure will plot twice.</p>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>If you are calling <code class="docutils literal"><span class="pre">plotGTC</span></code> from within an interactive python session (ie
+via IPython or in a JuPyter notebook), the label font in the saved pdf may
+differ from the plot that appears when calling <code class="docutils literal"><span class="pre">matplotlib.pyplot.show()</span></code>.</p>
+<p class="last">This will happen if the mathTextFontSet keyword sets a value that is
+different than the one stored in <code class="docutils literal"><span class="pre">rcParams['mathtext.fontset']</span></code> and you
+are using equations in your labels by enclosing them in $..$. The output pdf
+will display correctly, but the interactive plot will use whatever is stored
+in the rcParams default to render the text that is inside the $..$.
+Unfortunately, this is an oversight in matplotlib&#8217;s design, which only
+allows one global location for specifying this setting. As a workaround, you
+can set <code class="docutils literal"><span class="pre">holdRC</span> <span class="pre">=</span> <span class="pre">True</span></code> when calling <code class="docutils literal"><span class="pre">plotGTC</span></code> and it will <em>not</em> reset
+your rcParams back to their default state. Thus, when the figure renders in
+interactive mode, it will match the saved pdf. If you wish to reset your
+rcParams back to default at any point, you can call
+<code class="docutils literal"><span class="pre">matplotlib.rcdefaults()</span></code>. However, if you are in a jupyter notebook and
+have set <code class="docutils literal"><span class="pre">%matplotlib</span> <span class="pre">inline</span></code>,  then calling <code class="docutils literal"><span class="pre">matplotlib.rcdefaults()</span></code>
+may not set things back the way they were, but rerunning the line magic
+will.</p>
+</div>
 </dd></dl>
 
 </div>
@@ -396,7 +436,7 @@ a strong need to work only with an axis instead of a figure...</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.2.0',
+            VERSION:'0.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

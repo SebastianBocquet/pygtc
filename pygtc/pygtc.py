@@ -87,8 +87,8 @@ def plotGTC(chains, **kwargs):
         or 3. Default is 2.
 
     GaussianConfLevels : bool
-        Whether you want 2d Gaussian "sigma" confidence levels instead of the
-        standard 68%, 95%, 99% confidence levels. Default is ``False``.
+        Whether you want 2d Gaussian "sigma" confidence levels (39%, 86%, 99%) instead of the
+        standard 1d confidence levels (68%, 95%, 99%). Default is ``False``.
 
     nBins : int
         An integer describing the number of bins used to compute the
@@ -127,7 +127,7 @@ def plotGTC(chains, **kwargs):
         Set the boundaries of each paramter range. Must provide a tuples for
         each dimension of `chains`. If ``None`` is provided for a
         parameter, the range defaults to the width of the histogram.
-    
+
     labelRotation : tuple [2]
         Rotate the tick labels by 45 degrees for less overlap. Can be set for
         the x- and y-axis separately. Options are ``(True,True)``,
@@ -149,8 +149,24 @@ def plotGTC(chains, **kwargs):
         shape ``(samples,1)``. Default is ``False``.
 
     mathTextFontSet : string
-        Set consistent font family in rcParams. Default is ``stixsans``. Set
-        to ``'None'`` to use the setting in your matplotlib rc.
+        Set font family for rendering LaTex. Default is ``'stixsans'``. Set
+        to ``None`` to use the default setting in your matplotlib rc. See Notes
+        for known issues regarding this keyword.
+
+    customLabelFont : ``matplotlib.fontdict``
+        Full customization of label fonts. See matplotlib for full
+        documentation. Default: ``customLabelFont = {'size':9}``
+
+    customLegendFont : ``matplotlib.fontdict``
+        Full customization of legend fonts. See matplotlib for full
+        documentation. Default: ``customLabelFont = {'size':9}``
+
+    holdRC : bool
+        Whether or not to reset rcParams back to default. You may wish to set
+        this to ``False`` if you are working in interactive mode (ie with
+        IPython or in a JuPyter notebook) and you want the plots that display to
+        be identical to the plots that save in the pdf. See Notes below for more
+        information.
 
     Returns
     -------
@@ -159,6 +175,28 @@ def plotGTC(chains, **kwargs):
         customization after it gets returned. If you are using a ``JuPyter``
         notebook with inline plotting enabled, you should assign a variable
         to catch the return or else the figure will plot twice.
+
+    Note
+    ----
+    If you are calling ``plotGTC`` from within an interactive python session (ie
+    via IPython or in a JuPyter notebook), the label font in the saved pdf may
+    differ from the plot that appears when calling ``matplotlib.pyplot.show()``.
+
+    This will happen if the mathTextFontSet keyword sets a value that is
+    different than the one stored in ``rcParams['mathtext.fontset']`` and you
+    are using equations in your labels by enclosing them in $..$. The output pdf
+    will display correctly, but the interactive plot will use whatever is stored
+    in the rcParams default to render the text that is inside the $..$.
+    Unfortunately, this is an oversight in matplotlib's design, which only
+    allows one global location for specifying this setting. As a workaround, you
+    can set ``holdRC = True`` when calling ``plotGTC`` and it will *not* reset
+    your rcParams back to their default state. Thus, when the figure renders in
+    interactive mode, it will match the saved pdf. If you wish to reset your
+    rcParams back to default at any point, you can call
+    ``matplotlib.rcdefaults()``. However, if you are in a jupyter notebook and
+    have set ``%matplotlib inline``,  then calling ``matplotlib.rcdefaults()``
+    may not set things back the way they were, but rerunning the line magic
+    will.
 
     """
 
@@ -259,7 +297,7 @@ def plotGTC(chains, **kwargs):
 
     # Rotated tick labels
     labelRotation = kwargs.pop('labelRotation', (True,True))
-    
+
     # User-defined color ordering
     customColorsOrder = kwargs.pop('colorsOrder', None) #Labels for multiple chains, goes in plot legend
     if customColorsOrder is not None:
@@ -385,10 +423,26 @@ def plotGTC(chains, **kwargs):
             assert chains[i].shape[1]==1, "Provide chains of shape(Npoints,1) if you only want the 1d histogram"
         do1dPlots = True
 
-    # Set font in rcParams
+    # Set font in rcParams (Not in the default file, but just in the running kernel)
+    mathtextTypes = ['cm', 'stix', 'custom', 'stixsans']
+
     mathTextFontSet = kwargs.pop('mathTextFontSet', 'stixsans')
-    if not mathTextFontSet=='None':
+    assert mathTextFontSet in mathtextTypes, "mathTextFont set must be one of 'cm', 'stix', 'custom', 'stixsans', None."
+
+    oldMathTextFontSet = plt.rcParams['mathtext.fontset']
+
+    if mathTextFontSet is not None:
         plt.rcParams['mathtext.fontset'] = mathTextFontSet
+
+    #Grab the custom fontdicts
+    #Default size is 9 for all labels.
+    defaultFontSize = 9
+    customLabelFont = kwargs.pop('customLabelFont', {})
+    if 'size' not in customLabelFont.keys():
+        customLabelFont['size'] = defaultFontSize
+    customLegendFont = kwargs.pop('customLegendFont', {})
+    if 'size' not in customLegendFont.keys():
+        customLabelFont['size'] = defaultFontSize
 
     # Check to see if there are any remaining keyword arguments
     keys = ''
@@ -454,14 +508,14 @@ def plotGTC(chains, **kwargs):
                     ##### x-labels at bottom of plot only
                     if i==nDim-1:
                         if paramNames is not None:
-                            ax.set_xlabel(paramNames[j], fontsize=9)
+                            ax.set_xlabel(paramNames[j], fontdict=customLabelFont)
                     else:
                         ax.get_xaxis().set_ticklabels([])
 
                     ##### y-labels for left-most panels only
                     if j==0:
                         if paramNames is not None:
-                            ax.set_ylabel(paramNames[i], fontsize=9)
+                            ax.set_ylabel(paramNames[i], fontdict=customLabelFont)
                     else:
                         ax.get_yaxis().set_ticklabels([])
 
@@ -570,7 +624,7 @@ def plotGTC(chains, **kwargs):
             ##### x-label for bottom-right panel only
             if i==nDim-1:
                 if paramNames is not None:
-                    ax.set_xlabel(paramNames[i], fontsize=9)
+                    ax.set_xlabel(paramNames[i], fontdict=customLabelFont)
             else:
                 ax.set_xlim(panelXrange[i])
                 ax.get_xaxis().set_ticklabels([])
@@ -600,7 +654,7 @@ def plotGTC(chains, **kwargs):
                 if doOnly1dPlot:
                     ax.set_ylabel('Probability')
                 elif paramNames is not None:
-                    ax.set_ylabel(paramNames[i], fontsize=9)
+                    ax.set_ylabel(paramNames[i], fontdict=customLabelFont)
 
             ##### First column and last row are needed to align labels
             if i==0:
@@ -673,7 +727,7 @@ def plotGTC(chains, **kwargs):
 
 
         ##### Legend and label colors according to plot
-        leg = plt.legend(loc='upper right', fancybox=True, handlelength=3, fontsize=9)
+        leg = plt.legend(loc='upper right', fancybox=True, handlelength=3, fontdict=customLegendFont)
         leg.get_frame().set_alpha(0.)
         for color,text in zip(labelColors,leg.get_texts()):
             text.set_color(color)
@@ -697,8 +751,9 @@ def plotGTC(chains, **kwargs):
     if plotName is not None:
         plt.savefig(plotName, bbox_inches='tight')
 
-    # Revert to default rcParams
-    #plt.rcdefaults()
+    # Revert to default rcParams (unless user asks not to)
+    if revertRC:
+        plt.rcParams['mathtext.fontset'] = oldMathTextFontSet
 
     return fig
 
