@@ -87,16 +87,16 @@ def plotGTC(chains, **kwargs):
         or 3. Default is 2.
 
     GaussianConfLevels : bool
-        Whether you want 2d Gaussian "sigma" confidence levels (39%, 86%, 99%) instead of the
-        standard 1d confidence levels (68%, 95%, 99%). Default is ``False``.
+        Whether you want 2d Gaussian "sigma" confidence levels (39%, 86%, 99%) instead
+        of the standard 1d confidence levels (68%, 95%, 99%). Default is ``False``.
 
     nBins : int
         An integer describing the number of bins used to compute the
         histograms. Default is 30.
 
     smoothingKernel : float
-        A number describing the size of the Gaussian smoothing kernel in
-        bins. Default is 1. Set to 0 for no smoothing.
+        Size of the Gaussian smoothing kernel in bins. Default is 1.
+        Set to 0 for no smoothing.
 
     filledPlots : bool
         Whether you want the 2d contours and the 1d histograms to be
@@ -124,15 +124,15 @@ def plotGTC(chains, **kwargs):
         markers if two or more truths are plotted.
 
     paramRanges : list of tuples [nDim]
-        Set the boundaries of each paramter range. Must provide a tuples for
+        Set the boundaries of each parameter range. Must provide a tuple for
         each dimension of `chains`. If ``None`` is provided for a
         parameter, the range defaults to the width of the histogram.
 
     labelRotation : tuple [2]
-        Rotate the tick labels by 45 degrees for less overlap. Can be set for
+        Rotate the tick labels by 45 degrees for less overlap. Sets
         the x- and y-axis separately. Options are ``(True,True)``,
-        ``(True,False)``, ``(False,True)``, ``(False,False)``. Default is
-        ``(True,True)``.
+        ``(True,False)``, ``(False,True)``, ``(False,False)``, ``None``.
+        Using ``None`` sets to default ``(True,True)``.
 
     colorsOrder : list-like[nDims]
         The color order for chains passed to `chains`. Default is
@@ -458,9 +458,6 @@ def plotGTC(chains, **kwargs):
     fig = plt.figure(figsize=(figureWidth,figureWidth))
     axV, axH = [], []
 
-    # These are needed to compute the confidence levels
-    nBinsFlat = np.linspace(0., nBins**2, nBins**2)
-
     # Left and right panel boundaries
     panelXrange = np.empty((nDim,2))
     xTicks, yTicks = nDim*[None], nDim*[None]
@@ -485,9 +482,9 @@ def plotGTC(chains, **kwargs):
                         truthsForPlot2D = [[truths[k,i], truths[k,j]] for k in range(len(truths))]
                     # Plot!
                     ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins,
-                                nBinsFlat, smoothingKernel, filledPlots, colors,
-                                nConfidenceLevels, confLevels, truthsForPlot2D,
-                                truthColors, truthLineStyles, plotDensity, myColorMap)
+                                smoothingKernel, filledPlots, colors, nConfidenceLevels,
+                                confLevels, truthsForPlot2D, truthColors, truthLineStyles,
+                                plotDensity, myColorMap)
 
                     ##### Range
                     if paramRanges is not None:
@@ -778,7 +775,7 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
         How many histogram bins?
 
     smoothingKernel : int
-        Number of bins to smooth over
+        Number of bins to smooth over, 0 for no smoothing.
 
     filledPlots : bool
         Want the area under the curve filled in?
@@ -854,7 +851,7 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
 
 #################### Create single 2d panel
 
-def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel,
+def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
             filledPlots, colors, nConfidenceLevels, confLevels, truths2d,
             truthColors, truthLineStyles, plotDensity, myColorMap):
     r"""Plot a 2D histogram in a an axis object and return the axis with plot.
@@ -866,24 +863,20 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel,
         The axis on which to plot the 2D histogram
 
     nChains : int
-        The number of chains to plot
+        The number of chains to plot.
 
     chains2d : list-like
-        A list of pairs of chains in the form:
+        A list of pairs of sample points in the form:
         [[chain1_x, chain1_y], [chain2_x, chain2_y], ...].
 
     weights : list-like
         Weights for the chains2d.
 
     nBins : int
-        Number of bins for the 2d histogram
-
-    nBinsFlat : int
-        nBinsFlat = np.linspace(0., nBins**2, nBins**2)
+        Number of bins (per side) for the 2d histogram.
 
     smoothingKernel : int
-        number describing the size of the Gaussian smoothing kernel in
-        bins. Default is 1. Set to 0 for no smoothing.
+        Size of the Gaussian smoothing kernel in bins. Set to 0 for no smoothing.
 
     filledPlots : bool
         Just contours, or filled contours?
@@ -892,8 +885,8 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel,
         List of `nChains` tuples. Each tuple must have at least nConfidenceLevels
         colors.
 
-    nConfidenceLevels : int {2,1,3}
-        How many confidence levels? Default is 2.
+    nConfidenceLevels : int {1,2,3}
+        How many confidence levels?
 
     confLevels : list-like
         List of at least `nConfidenceLevels` values for confidence levels.
@@ -908,7 +901,7 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel,
         A list of matplotlib linestyle descriptors, one for each truth.
 
     plotDensity : bool
-        Whether to show points density in addition to contours. Default is False.
+        Whether to show points density in addition to contours.
 
     myColorMap : list-like
         A list of `nChains` matplotlib colormap specifiers, or actual colormaps.
@@ -923,6 +916,9 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, nBinsFlat, smoothingKernel,
     chainLevels = np.ones((nChains,nConfidenceLevels+1))
     extents = np.empty((nChains,4))
 
+    # These are needed to compute the confidence levels
+    nBinsFlat = np.linspace(0., nBins**2, nBins**2)
+    
     ##### The filled contour plots
     plotData = []
     # Draw filled contours in reversed order to have first chain in list on top
