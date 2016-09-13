@@ -430,6 +430,9 @@ def plotGTC(chains, **kwargs):
     oldMathTextFontSet = plt.rcParams['mathtext.fontset']
     if mathTextFontSet is not None:
         plt.rcParams['mathtext.fontset'] = mathTextFontSet
+        
+    holdRC = kwargs.pop('holdRC', False)
+    assert holdRC in [True, False], "holdRC must be True or False."
 
     #Grab the custom fontdicts
     #Default size is 9 for all labels.
@@ -646,7 +649,7 @@ def plotGTC(chains, **kwargs):
             ##### y label for top-left panel
             if i==0:
                 if doOnly1dPlot:
-                    ax.set_ylabel('Probability')
+                    ax.set_ylabel('Probability', fontdict=customLabelFont)
                 elif paramNames is not None:
                     ax.set_ylabel(paramNames[i], fontdict=customLabelFont)
 
@@ -745,6 +748,9 @@ def plotGTC(chains, **kwargs):
     if plotName is not None:
         plt.savefig(plotName, bbox_inches='tight')
 
+    if not holdRC:
+        plt.rcParams['mathtext.fontset'] = oldMathTextFontSet
+        
 
     return fig
 
