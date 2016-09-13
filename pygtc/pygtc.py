@@ -24,8 +24,9 @@ def plotGTC(chains, **kwargs):
 
     Parameters
     ----------
-    chains : array-like[nDims , samples] or a list[[nDims, samples1], ...]
-        All chains (where a chain is [nDims, samples]) in the list must have
+    chains : array-like[nSamples,nDims] or a
+            list[[nSamples1,nDims], [nSamples2,nDims], ...]
+        All chains (where a chain is [nSamples,nDims]) in the list must have
         the same number of dimensions. Note: If you are using ``emcee``
         (http://dan.iel.fm/emcee/current/) - and you should! - each element
         of chains is an ``EnsembleSampler.flatchain`` object.
@@ -33,10 +34,9 @@ def plotGTC(chains, **kwargs):
     Keyword Arguments
     -----------------
     weights : array-like[nSamples] or a list[[nSamples1], ...]
-        Weights for the sample points. If a 1d array is passed, the same
-        weights are used for all dimension in chains. If a list of 1d arrays
-        is passed, there must be a weights array for each dimension of
-        `chains`. Default weight is 1.
+        Weights for the sample points. The number of 1d arrays passed
+        must correspond to the number of `chains`, and each `weights` array
+        must have the same length nSamples as its corresponding chain.
 
     chainLabels : array-like[nChains]
         A list of text labels describing each chain passed to chains.
@@ -46,16 +46,17 @@ def plotGTC(chains, **kwargs):
 
     paramNames : list-like[nDims]
         A list of text labels describing each dimension of chains.
-        len(paramNames) must equal len(chains[0]). paramNames supports LaTex
-        commands enclosed in $..$. Additionally, you can pass None as a
-        label. Default is None, however if you pass a ``pandas.DataFrame``
-        object, `paramNames` defaults to the ``DataFrame`` column names.
+        len(paramNames) must equal nDims=chains[0].shape[1].
+        paramNames supports LaTex commands enclosed in $..$.
+        Additionally, you can pass None as a label. Default is None,
+        however if you pass a ``pandas.DataFrame`` object, `paramNames`
+        defaults to the ``DataFrame`` column names.
 
     truths : list-like[nDims] or [[nDims], ...]
-        A list of parameter values, one for each parameter in `chains` to hilite
-        in the GTC parameter space, or a list of lists of values to hilite in
-        the parameter space. For each set of truths passed to `truths`, there
-        must be a value corresponding to every dimension in `chains`, although
+        A list of parameter values, one for each parameter in `chains` to
+        highlight in the GTC parameter space, or a list of lists of values to
+        highlight in the parameter space. For each set of truths passed to `truths`,
+        there must be a value corresponding to every dimension in `chains`, although
         any value may be ``None``. Default is ``None``.
 
     truthLabels : list-like[nTruths]
@@ -82,12 +83,12 @@ def plotGTC(chains, **kwargs):
         A path to save the GTC to in pdf form. Default is ``None``.
 
     nConfidenceLevels : int
-        The number of contours to plot in the 2d histograms. Each contour
-        corresponds to a sigma. May be 1, 2, or 3. Default is 2.
+        The number of contour levels to plot in the 2d histograms. May be 1, 2,
+        or 3. Default is 2.
 
     GaussianConfLevels : bool
-        Whether you want non-standard 2d Gaussian "sigma" confidence levels
-        instead of the usual 68%, 95%, 99% confidence levels. Default is ``False``.
+        Whether you want 2d Gaussian "sigma" confidence levels instead of the
+        standard 68%, 95%, 99% confidence levels. Default is ``False``.
 
     nBins : int
         An integer describing the number of bins used to compute the
