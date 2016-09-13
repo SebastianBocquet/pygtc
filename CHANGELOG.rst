@@ -5,9 +5,9 @@ Version 0.2.0:
   * scipy is now an optional dependency
   * Can choose to fill contours and 1d histograms independently
   * Can plot the actual data-point density underneath the contours
-  * Full control over fonts for labels and legend
+  * Full control over fonts for labels, ticks, and legend
   * Use built-in matplotlib LaTex renderer for equations in labels so no LaTex
-    distro is required locally.
+    installation is required locally.
 
 Version 0.1.1:
   * Prettier truth colors
