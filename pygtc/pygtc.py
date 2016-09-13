@@ -442,7 +442,7 @@ def plotGTC(chains, **kwargs):
         customLabelFont['size'] = defaultFontSize
     customLegendFont = kwargs.pop('customLegendFont', {})
     if 'size' not in customLegendFont.keys():
-        customLabelFont['size'] = defaultFontSize
+        customLegendFont['size'] = defaultFontSize
 
     # Check to see if there are any remaining keyword arguments
     keys = ''
