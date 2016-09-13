@@ -425,12 +425,9 @@ def plotGTC(chains, **kwargs):
 
     # Set font in rcParams (Not in the default file, but just in the running kernel)
     mathtextTypes = ['cm', 'stix', 'custom', 'stixsans']
-
     mathTextFontSet = kwargs.pop('mathTextFontSet', 'stixsans')
     assert mathTextFontSet in mathtextTypes, "mathTextFont set must be one of 'cm', 'stix', 'custom', 'stixsans', None."
-
     oldMathTextFontSet = plt.rcParams['mathtext.fontset']
-
     if mathTextFontSet is not None:
         plt.rcParams['mathtext.fontset'] = mathTextFontSet
 
@@ -727,7 +724,7 @@ def plotGTC(chains, **kwargs):
 
 
         ##### Legend and label colors according to plot
-        leg = plt.legend(loc='upper right', fancybox=True, handlelength=3, fontdict=customLegendFont)
+        leg = plt.legend(loc='upper right', fancybox=True, handlelength=3, prop=customLegendFont)
         leg.get_frame().set_alpha(0.)
         for color,text in zip(labelColors,leg.get_texts()):
             text.set_color(color)
@@ -751,9 +748,6 @@ def plotGTC(chains, **kwargs):
     if plotName is not None:
         plt.savefig(plotName, bbox_inches='tight')
 
-    # Revert to default rcParams (unless user asks not to)
-    if revertRC:
-        plt.rcParams['mathtext.fontset'] = oldMathTextFontSet
 
     return fig
 
