@@ -1,10 +1,15 @@
 from setuptools import setup
+import os
 import pygtc
+
+version_file = open(os.path.join('.', 'VERSION.txt'))
+version_number = version_file.read().strip()
+version_file.close()
 
 setup(
     name = 'pygtc',
     description = 'Make an awesome giant triangle confusogram (gtc)!',
-    version = '0.2.0',
+    version = version_number,
     author = 'Sebastian Bocquet and Faustin Carter',
     author_email = 'sebastian.bocquet@gmail.com',
     license = 'MIT',
