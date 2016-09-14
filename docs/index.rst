@@ -31,7 +31,7 @@ labels):
 In the above example, you see two sets of contour levels. These show the 68%
 and 95% *confidence levels* (in addition, pygtc could also show the 99% confidence
 level if you want). Note that these are indeed the 68% and 95% confidence levels,
-and not Gaussian 1, 2, and 3 sigma levels (in two dimensions, these correspond to
+and not Gaussian 1, 2, and 3 sigma levels (which, in two dimensions, correspond to
 the 39%, 86%, and 99% confidence levels). Your posterior distributions will in
 general not be Gaussian, and so we argue that there is no right or wrong in choosing
 one or the other definition. We therefore recommend that you stick to the definition that is
