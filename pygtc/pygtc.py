@@ -172,7 +172,8 @@ def plotGTC(chains, **kwargs):
 
     customTickFont : ``matplotlib.fontdict``
         Full customization of tick label fonts. See matplotlib for full
-        documentation. Default is ``{'family':'Arial', 'size':6}``.
+        documentation. Default is ``{'family':'Arial', 'size':6}``. Attempting
+        to set the color will result in an error.
 
     holdRC : bool
         Whether or not to reset rcParams back to default. You may wish to set
