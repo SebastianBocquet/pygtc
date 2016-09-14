@@ -1,9 +1,10 @@
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
-#from matplotlib.colors import LogNorm
+import matplotlib as mpl
 import matplotlib.colors as mplcolors
 import numpy as np
 import matplotlib.ticker as mtik
+import types
 try:
     import scipy.ndimage
     from scipy.stats import norm
@@ -134,6 +135,14 @@ def plotGTC(chains, **kwargs):
         ``(True,False)``, ``(False,True)``, ``(False,False)``, ``None``.
         Using ``None`` sets to default ``(True,True)``.
 
+    tickShifts : tuple [2]
+        Shift the x/y tick labels horizontally/vertically by a fraction of the
+        tick spacing. Example tickShifts = (0.1, 0.05) shifts the x-tick labels
+        right by ten percent of the tick spacing and shifts the y-tick labels up
+        by five percent of the tick spacing. Default is (0.1, 0.1). If tick
+        rotation is turned off for either axis, then the corresponding shift is
+        set to zero.
+
     colorsOrder : list-like[nDims]
         The color order for chains passed to `chains`. Default is
         ``['blues', 'greens', 'yellows', 'reds', 'purples']``. Currently,
@@ -155,11 +164,15 @@ def plotGTC(chains, **kwargs):
 
     customLabelFont : ``matplotlib.fontdict``
         Full customization of label fonts. See matplotlib for full
-        documentation. Default: ``customLabelFont = {'size':9}``
+        documentation. Default is ``{'family':'Arial', 'size':9}``.
 
     customLegendFont : ``matplotlib.fontdict``
         Full customization of legend fonts. See matplotlib for full
-        documentation. Default: ``customLabelFont = {'size':9}``
+        documentation. Default is ``{'family':'Arial', 'size':9}``.
+
+    customTickFont : ``matplotlib.fontdict``
+        Full customization of tick label fonts. See matplotlib for full
+        documentation. Default is ``{'family':'Arial', 'size':6}``.
 
     holdRC : bool
         Whether or not to reset rcParams back to default. You may wish to set
@@ -298,6 +311,15 @@ def plotGTC(chains, **kwargs):
     # Rotated tick labels
     labelRotation = kwargs.pop('labelRotation', (True,True))
 
+    # Shifted tick labels, Default is nudge by 0.1 * tick spacing
+    shiftX, shiftY = kwargs.pop('tickShifts', (0.1, 0.1))
+
+    #If the rotation is turned off, then don't shift the labels
+    if not labelRotation[0]:
+        shiftX = 0
+    if not labelRotation[1]:
+        shiftY = 0
+
     # User-defined color ordering
     customColorsOrder = kwargs.pop('colorsOrder', None) #Labels for multiple chains, goes in plot legend
     if customColorsOrder is not None:
@@ -430,19 +452,36 @@ def plotGTC(chains, **kwargs):
     oldMathTextFontSet = plt.rcParams['mathtext.fontset']
     if mathTextFontSet is not None:
         plt.rcParams['mathtext.fontset'] = mathTextFontSet
-        
+
     holdRC = kwargs.pop('holdRC', False)
     assert holdRC in [True, False], "holdRC must be True or False."
 
     #Grab the custom fontdicts
     #Default size is 9 for all labels.
-    defaultFontSize = 9
+    defaultFontFamily = 'Arial'
+    defaultLabelFontSize = 9
+    defaultTickFontSize = 6
+
     customLabelFont = kwargs.pop('customLabelFont', {})
     if 'size' not in customLabelFont.keys():
-        customLabelFont['size'] = defaultFontSize
+        customLabelFont['size'] = defaultLabelFontSize
+    if 'family' not in customLabelFont.keys():
+        customLabelFont['family'] = defaultFontFamily
+
     customLegendFont = kwargs.pop('customLegendFont', {})
     if 'size' not in customLegendFont.keys():
-        customLegendFont['size'] = defaultFontSize
+        customLegendFont['size'] = defaultLabelFontSize
+    if 'family' not in customLegendFont.keys():
+        customLegendFont['family'] = defaultFontFamily
+
+    customTickFont = kwargs.pop('customTickFont', {})
+    if 'size' not in customTickFont.keys():
+        customTickFont['size'] = defaultTickFontSize
+    if 'family' not in customTickFont.keys():
+        customTickFont['family'] = defaultFontFamily
+
+    #Ticks require a FontProperties instead of a font dict
+    tickFontProps = mpl.font_manager.FontProperties(**customTickFont)
 
     # Check to see if there are any remaining keyword arguments
     keys = ''
@@ -526,45 +565,92 @@ def plotGTC(chains, **kwargs):
                     ##### Global tick properties
                     ax.tick_params(direction='in', pad=4, colors=axisColor, size=4, width=.5, labelsize=6)
 
-                    ##### x limits to be applied to 1d histograms
+                    ##### get x limits
                     panelXrange[j] = ax.get_xlim()
+                    deltaX = panelXrange[j,1]-panelXrange[j,0]
 
                     ##### Ticks x axis
                     if xTicks[j] is None:
                         # 5 ticks max
                         ax.xaxis.set_major_locator(mtik.MaxNLocator(5))
                         # Remove xticks that are too close (5% of panel size) to panel edge
-                        deltaX = panelXrange[j,1]-panelXrange[j,0]
                         LoHi = (panelXrange[j,0]+.05*deltaX, panelXrange[j,1]-.05*deltaX)
                         tickLocs = ax.xaxis.get_ticklocs()
                         idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0]
                         xTicks[j] = tickLocs[idx]
+
                     ax.xaxis.set_ticks(xTicks[j])
+
+                    ##### get y limits
+                    panelYrange = ax.get_ylim()
+                    deltaY = panelYrange[1]-panelYrange[0]
 
                     ##### Ticks y axis
                     if yTicks[i] is None:
                         # 5 ticks max
                         ax.yaxis.set_major_locator(mtik.MaxNLocator(5))
                         # Remove xticks that are too close (5% of panel size) to panel edge
-                        panelYrange = ax.get_ylim()
-                        deltaY = panelYrange[1]-panelYrange[0]
                         LoHi = (panelYrange[0]+.05*deltaY, panelYrange[1]-.05*deltaY)
                         tickLocs = ax.yaxis.get_ticklocs()
                         idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0]
                         yTicks[i] = tickLocs[idx]
+
                     ax.yaxis.set_ticks(yTicks[i])
+
+
+                    ##### Calculate the position for shifting the x-axis tick labels
+                    #Bump all the labels over just a tiny bit so
+                    #it looks good! Default is 0.1 * tick spacing
+
+                    #Get the number of ticks to convert
+                    #to coordinates of fraction of tick separation
+                    numTicksX = len(xTicks[j])-1
+
+                    #Transform the shift to data coords
+                    shiftXdata = 1.0*shiftX*deltaX/numTicksX
 
                     ##### Rotate tick labels
                     for xLabel in ax.get_xticklabels():
                         if labelRotation[0]:
                             xLabel.set_rotation(tickAngle)
-                            if any(np.array([len(str(text)) for text in xTicks[j]])>4):
-                                xLabel.set_horizontalalignment('right')
+                            xLabel.set_horizontalalignment('right')
+
+                        #Add a custom attribute to the tick label object
+                        xLabel.custom_shift = shiftXdata
+
+                        #Now monkey patch the label's set_x method to force it to
+                        #shift the x labels when it gets called during render
+                        xLabel.set_x = types.MethodType(lambda self, x: mpl.text.Text.set_x(self, x+self.custom_shift),
+                                    xLabel, mpl.text.Text)
+
+                        #Update the font if needed
+                        xLabel.set_fontproperties(tickFontProps)
+
+                    ##### Calculate the position for shifting the y-axis tick labels
+                    #Bump all the labels over just a tiny bit so
+                    #it looks good! Default is 0.1 * tick spacing
+
+                    #Get the number of ticks to convert
+                    #to coordinates of fraction of tick separation
+                    numTicksY = len(yTicks[i])-1
+
+                    shiftYdata = 1.0*shiftY*deltaY/numTicksY
+
                     for yLabel in ax.get_yticklabels():
                         if labelRotation[1]:
                             yLabel.set_rotation(tickAngle)
-                            if any(np.array([len(str(text)) for text in yTicks[i]])>4):
-                                yLabel.set_verticalalignment('top')
+                            yLabel.set_verticalalignment('top')
+
+                        #Add a custom attribute to the tick label object
+                        yLabel.custom_shift = shiftYdata
+
+                        #Now monkey patch the label's set_x method to force it to
+                        #shift the x labels when it gets called during render
+                        yLabel.set_y = types.MethodType(lambda self, y: mpl.text.Text.set_y(self, y+self.custom_shift),
+                                                    yLabel, mpl.text.Text )
+
+                        #Update the font if needed
+                        yLabel.set_fontproperties(tickFontProps)
 
                     ##### First column and last row are needed to align labels
                     if j==0:
@@ -626,25 +712,50 @@ def plotGTC(chains, **kwargs):
                 ax.set_xlim(panelXrange[i])
                 ax.get_xaxis().set_ticklabels([])
 
+            #### Calculate limits and tick spacing
+            panelXrange[i] = ax.get_xlim()
+            deltaX = panelXrange[i,1]-panelXrange[i,0]
+
             ##### Ticks x axis
             if i==nDim-1:
                 # 5 ticks max
                 ax.xaxis.set_major_locator(mtik.MaxNLocator(5))
                 # Remove xticks that are too close (5% of panel size) to panel edge
-                panelXrange[i] = ax.get_xlim()
-                deltaX = panelXrange[i,1]-panelXrange[i,0]
                 LoHi = (panelXrange[i,0]+.05*deltaX, panelXrange[i,1]-.05*deltaX)
                 tickLocs = ax.xaxis.get_ticklocs()
                 idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0]
                 xTicks[i] = tickLocs[idx]
             ax.xaxis.set_ticks(xTicks[i])
 
+
+            ##### Calculate the position for shifting the x-axis tick labels
+            #Bump all the labels over just a tiny bit so
+            #it looks good! Default is 0.1 * tick spacing
+
+            #Get the number of ticks to convert
+            #to coordinates of fraction of tick separation
+            numTicksX = len(xTicks[i])-1
+
+            shiftXdata = 1.0*shiftX*deltaX/numTicksX
+
+
+
             ##### Rotate tick labels
             for xLabel in ax.get_xticklabels():
                 if labelRotation[0]:
                     xLabel.set_rotation(tickAngle)
-                    if any(np.array([len(str(text)) for text in xTicks[i]])>4):
-                        xLabel.set_horizontalalignment('right')
+                    xLabel.set_horizontalalignment('right')
+
+                #Add a custom attribute to the tick label object
+                xLabel.custom_shift = shiftXdata
+
+                #Now monkey patch the label's set_x method to force it to
+                #shift the x labels when it gets called during render
+                xLabel.set_x = types.MethodType(lambda self, x: mpl.text.Text.set_x(self, x+self.custom_shift),
+                                            xLabel, mpl.text.Text )
+
+                #Update the font if needed
+                xLabel.set_fontproperties(tickFontProps)
 
             ##### y label for top-left panel
             if i==0:
@@ -750,7 +861,7 @@ def plotGTC(chains, **kwargs):
 
     if not holdRC:
         plt.rcParams['mathtext.fontset'] = oldMathTextFontSet
-        
+
 
     return fig
 
@@ -924,7 +1035,7 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
 
     # These are needed to compute the confidence levels
     nBinsFlat = np.linspace(0., nBins**2, nBins**2)
-    
+
     ##### The filled contour plots
     plotData = []
     # Draw filled contours in reversed order to have first chain in list on top
