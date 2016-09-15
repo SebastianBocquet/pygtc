@@ -8,7 +8,7 @@ This documentation is for the ``pygtc`` package, which is hosted at
 
 **What is a Giant Triangle Confusogram?**
 
-A Giant-Triangle-Confusogram (GTC, aka triangle/corner plot) is a way of
+A Giant-Triangle-Confusogram (GTC, aka triangle plot) is a way of
 displaying the results of a Monte-Carlo Markov Chain (MCMC) sampling or similar
 analysis. The recovered parameter constraints are displayed on a grid in which
 the diagonal shows the one-dimensional posteriors (and, optionally, priors) and
