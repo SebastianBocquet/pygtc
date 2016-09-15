@@ -3,7 +3,7 @@ pygtc.py
 Make a publication-ready giant-triangle-confusogram (GTC) with just one line of code!
 
 This documentation is for the ``pygtc`` package, which is hosted at
-`GitHub <https://github.com/SebastianBocquet/pygtc/issues>`_.
+`GitHub <https://github.com/SebastianBocquet/pygtc>`_.
 
 
 **What is a Giant Triangle Confusogram?**
