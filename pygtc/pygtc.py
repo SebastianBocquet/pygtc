@@ -177,10 +177,10 @@ def plotGTC(chains, **kwargs):
 
     holdRC : bool
         Whether or not to reset rcParams back to default. You may wish to set
-        this to ``False`` if you are working in interactive mode (ie with
+        this to ``True`` if you are working in interactive mode (ie with
         IPython or in a JuPyter notebook) and you want the plots that display to
         be identical to the plots that save in the pdf. See Notes below for more
-        information.
+        information. Default is ``False``.
 
     Returns
     -------
