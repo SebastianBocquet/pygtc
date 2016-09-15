@@ -1,5 +1,5 @@
 ==============================================
-Example: Making a GTC/triangle plot with pygtc
+Example 1: Making a GTC/triangle plot with pygtc
 ==============================================
 This example was generated from an IPython notebook!
 

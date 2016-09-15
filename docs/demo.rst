@@ -1,5 +1,5 @@
 ==============================================
-Example: Making a GTC/triangle plot with pygtc
+Example 1: Making a GTC/triangle plot with pygtc
 ==============================================
 This example was generated from an IPython notebook!
 
@@ -10,6 +10,10 @@ Import dependencies
     #This lets an IPython notebook display inline plots. Comment out if not
     #using a notebook.
     %matplotlib inline
+
+    #This lets users with retina screens get the right dpi in the png output.
+    #Comment out if not using a notebook and/or a retina screen.
+    %config InlineBackend.figure_format = 'retina'
 
     import numpy as np
     import pygtc

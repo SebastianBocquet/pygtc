@@ -47,6 +47,7 @@ Contents:
 
    installation.rst
    demo.rst
+   demo2.rst
    api.rst
 
 
