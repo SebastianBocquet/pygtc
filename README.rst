@@ -14,11 +14,16 @@ parameter covariances along with the priors.
 
 Here's an example of a GTC with some random data and arbitrary labels::
 
-  pygtc.plotGTC(chains=[samples1,samples2], paramNames=names, chainLabels=chainLabels,
-                      truths=truths, truthLabels=truthLabels, priors=priors,
-                      paramRanges=paramRanges, figureSize='MNRAS_page')
+  pygtc.plotGTC(chains=[samples1,samples2],
+                paramNames=names,
+                chainLabels=chainLabels,
+                truths=truths,
+                truthLabels=truthLabels,
+                priors=priors,
+                paramRanges=paramRanges,
+                figureSize='MNRAS_page')
 
-.. image:: ./docs/_static/demo_files/demo_8_0.png
+.. image:: ./docs/_static/demo_files/demo_9_0.png
 
 **But doesn't this already exist in ``corner.py``, ``distUtils``, etc...?**
 
