@@ -1,6 +1,6 @@
-===========================================================
-Example 2: Making a GTC/triangle plot Planck and WMAP data!
-===========================================================
+================================================================
+Example 2: Making a GTC/triangle plot with Planck and WMAP data!
+================================================================
 This example was generated from an IPython notebook!
 
 Download the Planck and WMAP data
