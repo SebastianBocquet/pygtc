@@ -51,3 +51,7 @@ in this repository, for a working example.
 
 
 Copyright 2016, Sebastian Bocquet and Faustin W. Carter
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.154122.svg
+   :target: https://doi.org/10.5281/zenodo.154122
+   
