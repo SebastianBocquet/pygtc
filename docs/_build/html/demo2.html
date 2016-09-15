@@ -32,7 +32,7 @@
   
     <link rel="top" title="pygtc 0.2 documentation" href="index.html"/>
         <link rel="next" title="API" href="api.html"/>
-        <link rel="prev" title="Example: Making a GTC/triangle plot with pygtc" href="demo.html"/> 
+        <link rel="prev" title="Example 1: Making a GTC/triangle plot with pygtc" href="demo.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -83,7 +83,7 @@
             
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo.html">Example: Making a GTC/triangle plot with pygtc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Example 1: Making a GTC/triangle plot with pygtc</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Example 2: Making a GTC/triangle plot Planck and WMAP data!</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#download-the-planck-and-wmap-data">Download the Planck and WMAP data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#import-modules">Import modules</a></li>
@@ -155,6 +155,10 @@ following code:</p>
 <span class="c1">#using a notebook.</span>
 <span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
 
+<span class="c1">#This lets users with retina screens get the right dpi in the png output.</span>
+<span class="c1">#Comment out if not using a notebook and/or a retina screen.</span>
+<span class="o">%</span><span class="n">config</span> <span class="n">InlineBackend</span><span class="o">.</span><span class="n">figure_format</span> <span class="o">=</span> <span class="s1">&#39;retina&#39;</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">import</span> <span class="nn">pygtc</span>
@@ -224,7 +228,7 @@ to find the parameters you are interested in.</p>
         <a href="api.html" class="btn btn-neutral float-right" title="API" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="demo.html" class="btn btn-neutral" title="Example: Making a GTC/triangle plot with pygtc" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="demo.html" class="btn btn-neutral" title="Example 1: Making a GTC/triangle plot with pygtc" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
