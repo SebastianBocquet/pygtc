@@ -85,8 +85,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo.html">Example 1: Making a GTC/triangle plot with pygtc</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Example 2: Making a GTC/triangle plot with Planck and WMAP data!</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#download-the-planck-and-wmap-data">Download the Planck and WMAP data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#import-modules">Import modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#download-the-data">Download the data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#read-in-and-format-the-data">Read in and format the data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#select-the-parameters-and-make-labels">Select the parameters and make labels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#make-the-gtc">Make the GTC!</a></li>
@@ -140,35 +139,18 @@
   <div class="section" id="example-2-making-a-gtc-triangle-plot-with-planck-and-wmap-data">
 <h1>Example 2: Making a GTC/triangle plot with Planck and WMAP data!<a class="headerlink" href="#example-2-making-a-gtc-triangle-plot-with-planck-and-wmap-data" title="Permalink to this headline">¶</a></h1>
 <p>This example was generated from an IPython notebook!</p>
-<div class="section" id="download-the-planck-and-wmap-data">
-<h2>Download the Planck and WMAP data<a class="headerlink" href="#download-the-planck-and-wmap-data" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="download-the-data">
+<h2>Download the data<a class="headerlink" href="#download-the-data" title="Permalink to this headline">¶</a></h2>
 <p>The full set of chains from the Planck 2015 release is available at
 <a class="reference external" href="http://pla.esac.esa.int/pla/#cosmology">http://pla.esac.esa.int/pla/#cosmology</a>. You will want to download
 <code class="docutils literal"><span class="pre">COM_CosmoParams_fullGrid_R2.00.tar.gz</span></code>. Careful, that&#8217;s a huge file
 to download (3.6 GB)!</p>
-<p>Extract everything into a directory, cd into that directory, and then run the
-following code:</p>
-</div>
-<div class="section" id="import-modules">
-<h2>Import modules<a class="headerlink" href="#import-modules" title="Permalink to this headline">¶</a></h2>
-<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1">#This lets an IPython notebook display inline plots. Comment out if not</span>
-<span class="c1">#using a notebook.</span>
-<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
-
-<span class="c1">#This lets users with retina screens get the right dpi in the png output.</span>
-<span class="c1">#Comment out if not using a notebook and/or a retina screen.</span>
-<span class="o">%</span><span class="n">config</span> <span class="n">InlineBackend</span><span class="o">.</span><span class="n">figure_format</span> <span class="o">=</span> <span class="s1">&#39;retina&#39;</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">import</span> <span class="nn">pygtc</span>
-</pre></div>
-</div>
+<p>Extract everything into a directory, cd into that directory, and run
+this notebook.</p>
 </div>
 <div class="section" id="read-in-and-format-the-data">
 <h2>Read in and format the data<a class="headerlink" href="#read-in-and-format-the-data" title="Permalink to this headline">¶</a></h2>
-<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Read in the WMAP and Planck chains</span>
-<span class="n">WMAP</span><span class="p">,</span> <span class="n">Planck</span> <span class="o">=</span> <span class="p">[],[]</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">WMAP</span><span class="p">,</span> <span class="n">Planck</span> <span class="o">=</span> <span class="p">[],[]</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
     <span class="n">WMAP</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;./base/WMAP/base_WMAP_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span><span class="p">))</span>
     <span class="n">Planck</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;./base/plikHM_TT_lowTEB/base_plikHM_TT_lowTEB_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span><span class="p">))</span>
@@ -188,7 +170,7 @@ to find the parameters you are interested in.</p>
 <span class="n">Planckplot</span> <span class="o">=</span> <span class="n">Planckall</span><span class="p">[:,[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">23</span><span class="p">,</span><span class="mi">29</span><span class="p">]]</span>
 </pre></div>
 </div>
-<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Labels</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Labels, pyGTC supports Tex enclosed in $..$</span>
 <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;$\Omega_\mathrm</span><span class="si">{b}</span><span class="s1">h^2$&#39;</span><span class="p">,</span>
           <span class="s1">&#39;$\Omega_\mathrm</span><span class="si">{c}</span><span class="s1">h^2$&#39;</span><span class="p">,</span>
           <span class="s1">&#39;$100</span><span class="se">\\</span><span class="s1">theta_\mathrm</span><span class="si">{MC}</span><span class="s1">$&#39;</span><span class="p">,</span>
@@ -203,18 +185,18 @@ to find the parameters you are interested in.</p>
 </div>
 <div class="section" id="make-the-gtc">
 <h2>Make the GTC!<a class="headerlink" href="#make-the-gtc" title="Permalink to this headline">¶</a></h2>
+<p>Produce the plot and save it as <code class="docutils literal"><span class="pre">Planck-vs-WMAP.pdf</span></code>.</p>
 <div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">GTC</span> <span class="o">=</span> <span class="n">pygtc</span><span class="o">.</span><span class="n">plotGTC</span><span class="p">(</span><span class="n">chains</span><span class="o">=</span><span class="p">[</span><span class="n">Planckplot</span><span class="p">,</span><span class="n">WMAPplot</span><span class="p">],</span>
-                    <span class="n">weights</span><span class="o">=</span><span class="p">[</span><span class="n">Planckall</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">WMAPall</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]],</span>
+                    <span class="n">weights</span><span class="o">=</span><span class="p">[</span><span class="n">Planckall</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">WMAPall</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]],</span>
                     <span class="n">paramNames</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
                     <span class="n">chainLabels</span><span class="o">=</span><span class="n">chainLabels</span><span class="p">,</span>
                     <span class="n">colorsOrder</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;greens&#39;</span><span class="p">,</span><span class="s1">&#39;blues&#39;</span><span class="p">),</span>
-                    <span class="n">figureSize</span><span class="o">=</span><span class="s1">&#39;APJ_page&#39;</span><span class="p">)</span>
-
-<span class="c1">#Save the figure!</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;GTC.pdf&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+                    <span class="n">figureSize</span><span class="o">=</span><span class="s1">&#39;APJ_page&#39;</span><span class="p">,</span>
+                    <span class="n">plotName</span><span class="o">=</span><span class="s1">&#39;Planck-vs-WMAP.pdf&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/demo2_7_0.png" src="_images/demo2_7_0.png" />
+<img alt="_images/demo2_9_0.png" src="_images/demo2_9_0.png" />
 </div>
 </div>
 

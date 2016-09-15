@@ -31,7 +31,7 @@
 
   
     <link rel="top" title="pygtc 0.2 documentation" href="index.html"/>
-        <link rel="next" title="Example 2: Making a GTC/triangle plot Planck and WMAP data!" href="demo2.html"/>
+        <link rel="next" title="Example 2: Making a GTC/triangle plot with Planck and WMAP data!" href="demo2.html"/>
         <link rel="prev" title="Installation" href="installation.html"/> 
 
   
@@ -93,7 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#single-1d-panel">Single 1d panel</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="demo2.html">Example 2: Making a GTC/triangle plot Planck and WMAP data!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo2.html">Example 2: Making a GTC/triangle plot with Planck and WMAP data!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 
@@ -144,6 +144,15 @@
 <p>This example was generated from an IPython notebook!</p>
 <div class="section" id="import-dependencies">
 <h2>Import dependencies<a class="headerlink" href="#import-dependencies" title="Permalink to this headline">¶</a></h2>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1">#If not using a JuPyter notebook, comment out the next two lines</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="o">%</span><span class="n">config</span> <span class="n">InlineBackend</span><span class="o">.</span><span class="n">figure_format</span> <span class="o">=</span> <span class="s1">&#39;retina&#39;</span> <span class="c1"># For mac users with Retina display</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pygtc</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="generate-fake-data">
 <h2>Generate fake data<a class="headerlink" href="#generate-fake-data" title="Permalink to this headline">¶</a></h2>
@@ -171,7 +180,7 @@ that chains are allowed to have different lengths.</p>
 <div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">GTC</span> <span class="o">=</span> <span class="n">pygtc</span><span class="o">.</span><span class="n">plotGTC</span><span class="p">(</span><span class="n">chains</span><span class="o">=</span><span class="p">[</span><span class="n">samples1</span><span class="p">,</span><span class="n">samples2</span><span class="p">])</span>
 </pre></div>
 </div>
-<img alt="_images/demo_4_0.png" src="_images/demo_4_0.png" />
+<img alt="_images/demo_5_0.png" src="_images/demo_5_0.png" />
 </div>
 <div class="section" id="complete-the-figure">
 <h2>Complete the figure<a class="headerlink" href="#complete-the-figure" title="Permalink to this headline">¶</a></h2>
@@ -181,15 +190,29 @@ that could indicate Gaussian priors we assumed</p>
 <p>Note that all these must match number of parameters!</p>
 <div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1"># List of parameter names, supports latex</span>
 <span class="c1"># NOTE: For capital greek letters in latex mode, use \mathsf{}</span>
-<span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;param name&#39;</span><span class="p">,</span><span class="s1">&#39;$B_\mathrm{\lambda}$&#39;</span><span class="p">,</span> <span class="s1">&#39;$E$&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">lambda$&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;$\mathsf{\Omega}$&#39;</span><span class="p">,</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">gamma$&#39;</span><span class="p">]</span>
+<span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;param name&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;$B_\mathrm{\lambda}$&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;$E$&#39;</span><span class="p">,</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">lambda$&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;C&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;D&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;$\mathsf{\Omega}$&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">gamma$&#39;</span><span class="p">]</span>
 
 <span class="c1"># Labels for the different chains</span>
-<span class="n">chainLabels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;data1 $\lambda$&quot;</span><span class="p">,</span> <span class="s2">&quot;data 2&quot;</span><span class="p">]</span>
+<span class="n">chainLabels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;data1 $\lambda$&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;data 2&quot;</span><span class="p">]</span>
 
-<span class="c1"># List of Gaussian curves to plot (to represent priors): mean, width</span>
+<span class="c1"># List of Gaussian curves to plot</span>
+<span class="c1">#(to represent priors): mean, width</span>
 <span class="c1"># Empty () or None if no prior to plot</span>
-<span class="n">priors</span> <span class="o">=</span> <span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">.</span><span class="mi">4</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">priors</span> <span class="o">=</span> <span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+          <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+          <span class="p">(),</span>
+          <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">.</span><span class="mi">4</span><span class="p">),</span>
+          <span class="kc">None</span><span class="p">,</span>
+          <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+          <span class="kc">None</span><span class="p">,</span>
+          <span class="kc">None</span><span class="p">)</span>
 
 <span class="c1"># List of truth values, to mark best-fit or input values</span>
 <span class="c1"># NOT a python array because of different lengths</span>
@@ -198,15 +221,19 @@ that could indicate Gaussian priors we assumed</p>
           <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="o">.</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
 <span class="c1"># Labels for the different truths</span>
-<span class="n">truthLabels</span> <span class="o">=</span> <span class="p">(</span> <span class="s1">&#39;the truth&#39;</span><span class="p">,</span> <span class="s1">&#39;also true&#39;</span><span class="p">)</span>
+<span class="n">truthLabels</span> <span class="o">=</span> <span class="p">(</span> <span class="s1">&#39;the truth&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;also true&#39;</span><span class="p">)</span>
 
 <span class="c1"># Do the magic</span>
 <span class="n">GTC</span> <span class="o">=</span> <span class="n">pygtc</span><span class="o">.</span><span class="n">plotGTC</span><span class="p">(</span><span class="n">chains</span><span class="o">=</span><span class="p">[</span><span class="n">samples1</span><span class="p">,</span><span class="n">samples2</span><span class="p">],</span>
-                    <span class="n">paramNames</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">chainLabels</span><span class="o">=</span><span class="n">chainLabels</span><span class="p">,</span>
-                    <span class="n">truths</span><span class="o">=</span><span class="n">truths</span><span class="p">,</span> <span class="n">truthLabels</span><span class="o">=</span><span class="n">truthLabels</span><span class="p">,</span> <span class="n">priors</span><span class="o">=</span><span class="n">priors</span><span class="p">)</span>
+                    <span class="n">paramNames</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
+                    <span class="n">chainLabels</span><span class="o">=</span><span class="n">chainLabels</span><span class="p">,</span>
+                    <span class="n">truths</span><span class="o">=</span><span class="n">truths</span><span class="p">,</span>
+                    <span class="n">truthLabels</span><span class="o">=</span><span class="n">truthLabels</span><span class="p">,</span>
+                    <span class="n">priors</span><span class="o">=</span><span class="n">priors</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/demo_6_0.png" src="_images/demo_6_0.png" />
+<img alt="_images/demo_7_0.png" src="_images/demo_7_0.png" />
 </div>
 <div class="section" id="make-figure-publication-ready">
 <h2>Make figure publication ready<a class="headerlink" href="#make-figure-publication-ready" title="Permalink to this headline">¶</a></h2>
@@ -219,21 +246,33 @@ styles in the legend (<code class="docutils literal"><span class="pre">legendMar
 <li>Finally, let&#8217;s make the figure size publication ready for MNRAS.
 Given that we&#8217;re showing eight parameters, we&#8217;ll want to choose
 <code class="docutils literal"><span class="pre">figureSize='MNRAS_page'</span></code> and show a full page-width figure.</li>
+<li>Save the figure as <code class="docutils literal"><span class="pre">fullGTC.pdf</span></code> and paste it into your
+publication!</li>
 </ul>
-<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1"># List of parameter ranges to show, empty () or None to let pyGTC decide</span>
-<span class="n">paramRanges</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">),(),(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1"># List of parameter ranges to show,</span>
+<span class="c1"># empty () or None to let pyGTC decide</span>
+<span class="n">paramRanges</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span>
+               <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span>
+               <span class="p">(),</span>
+               <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span>
+               <span class="kc">None</span><span class="p">,</span>
+               <span class="kc">None</span><span class="p">,</span>
+               <span class="kc">None</span><span class="p">,</span>
+               <span class="kc">None</span><span class="p">)</span>
 
 <span class="c1"># Do the magic</span>
 <span class="n">GTC</span> <span class="o">=</span> <span class="n">pygtc</span><span class="o">.</span><span class="n">plotGTC</span><span class="p">(</span><span class="n">chains</span><span class="o">=</span><span class="p">[</span><span class="n">samples1</span><span class="p">,</span><span class="n">samples2</span><span class="p">],</span>
-                    <span class="n">paramNames</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">chainLabels</span><span class="o">=</span><span class="n">chainLabels</span><span class="p">,</span>
-                    <span class="n">truths</span><span class="o">=</span><span class="n">truths</span><span class="p">,</span> <span class="n">truthLabels</span><span class="o">=</span><span class="n">truthLabels</span><span class="p">,</span> <span class="n">priors</span><span class="o">=</span><span class="n">priors</span><span class="p">,</span>
-                    <span class="n">paramRanges</span><span class="o">=</span><span class="n">paramRanges</span><span class="p">,</span> <span class="n">figureSize</span><span class="o">=</span><span class="s1">&#39;MNRAS_page&#39;</span><span class="p">)</span>
-
-<span class="c1"># At this point, let&#39;s save the publication-ready plot</span>
-<span class="n">GTC</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;fullGTC.pdf&#39;</span><span class="p">,</span><span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+                    <span class="n">paramNames</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
+                    <span class="n">chainLabels</span><span class="o">=</span><span class="n">chainLabels</span><span class="p">,</span>
+                    <span class="n">truths</span><span class="o">=</span><span class="n">truths</span><span class="p">,</span>
+                    <span class="n">truthLabels</span><span class="o">=</span><span class="n">truthLabels</span><span class="p">,</span>
+                    <span class="n">priors</span><span class="o">=</span><span class="n">priors</span><span class="p">,</span>
+                    <span class="n">paramRanges</span><span class="o">=</span><span class="n">paramRanges</span><span class="p">,</span>
+                    <span class="n">figureSize</span><span class="o">=</span><span class="s1">&#39;MNRAS_page&#39;</span><span class="p">,</span>
+                    <span class="n">plotName</span><span class="o">=</span><span class="s1">&#39;fullGTC.pdf&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/demo_8_0.png" src="_images/demo_8_0.png" />
+<img alt="_images/demo_9_0.png" src="_images/demo_9_0.png" />
 </div>
 <div class="section" id="single-2d-panel">
 <h2>Single 2d panel<a class="headerlink" href="#single-2d-panel" title="Permalink to this headline">¶</a></h2>
@@ -244,36 +283,48 @@ Let&#8217;s look in more detail! Here, we&#8217;ll want single-column figures.</
 <span class="n">truths2d</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
 
 <span class="c1"># The 2d panel and the 1d histograms</span>
-<span class="n">GTC</span> <span class="o">=</span> <span class="n">pygtc</span><span class="o">.</span><span class="n">plotGTC</span><span class="p">(</span><span class="n">chains</span><span class="o">=</span><span class="p">[</span><span class="n">samples1</span><span class="p">[:,</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span><span class="n">samples2</span><span class="p">[:,</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">]],</span>
-                    <span class="n">paramNames</span><span class="o">=</span><span class="n">names</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">chainLabels</span><span class="o">=</span><span class="n">chainLabels</span><span class="p">,</span>
-                    <span class="n">truths</span><span class="o">=</span><span class="n">truths2d</span><span class="p">,</span> <span class="n">truthLabels</span><span class="o">=</span><span class="n">truthLabels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                    <span class="n">priors</span><span class="o">=</span><span class="n">priors2d</span><span class="p">,</span> <span class="n">figureSize</span><span class="o">=</span><span class="s1">&#39;MNRAS_column&#39;</span><span class="p">)</span>
+<span class="n">GTC</span> <span class="o">=</span> <span class="n">pygtc</span><span class="o">.</span><span class="n">plotGTC</span><span class="p">(</span><span class="n">chains</span><span class="o">=</span><span class="p">[</span><span class="n">samples1</span><span class="p">[:,</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">samples2</span><span class="p">[:,</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">]],</span>
+                    <span class="n">paramNames</span><span class="o">=</span><span class="n">names</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span>
+                    <span class="n">chainLabels</span><span class="o">=</span><span class="n">chainLabels</span><span class="p">,</span>
+                    <span class="n">truths</span><span class="o">=</span><span class="n">truths2d</span><span class="p">,</span>
+                    <span class="n">truthLabels</span><span class="o">=</span><span class="n">truthLabels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">priors</span><span class="o">=</span><span class="n">priors2d</span><span class="p">,</span>
+                    <span class="n">figureSize</span><span class="o">=</span><span class="s1">&#39;MNRAS_column&#39;</span><span class="p">)</span>
 
 <span class="c1"># Only the 2d panel</span>
 <span class="n">Range2d</span> <span class="o">=</span> <span class="p">((</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">),(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span> <span class="c1"># To make sure there&#39;s enough space for the legend</span>
+
 <span class="n">GTC</span> <span class="o">=</span> <span class="n">pygtc</span><span class="o">.</span><span class="n">plotGTC</span><span class="p">(</span><span class="n">chains</span><span class="o">=</span><span class="p">[</span><span class="n">samples1</span><span class="p">[:,</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span><span class="n">samples2</span><span class="p">[:,</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">]],</span>
-                    <span class="n">paramNames</span><span class="o">=</span><span class="n">names</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">chainLabels</span><span class="o">=</span><span class="n">chainLabels</span><span class="p">,</span>
-                    <span class="n">truths</span><span class="o">=</span><span class="n">truths2d</span><span class="p">,</span> <span class="n">truthLabels</span><span class="o">=</span><span class="n">truthLabels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                    <span class="n">priors</span><span class="o">=</span><span class="n">priors2d</span><span class="p">,</span> <span class="n">paramRanges</span><span class="o">=</span><span class="n">Range2d</span><span class="p">,</span>
-                    <span class="n">figureSize</span><span class="o">=</span><span class="s1">&#39;MNRAS_column&#39;</span><span class="p">,</span> <span class="n">do1dPlots</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">paramNames</span><span class="o">=</span><span class="n">names</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span>
+                    <span class="n">chainLabels</span><span class="o">=</span><span class="n">chainLabels</span><span class="p">,</span>
+                    <span class="n">truths</span><span class="o">=</span><span class="n">truths2d</span><span class="p">,</span>
+                    <span class="n">truthLabels</span><span class="o">=</span><span class="n">truthLabels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">priors</span><span class="o">=</span><span class="n">priors2d</span><span class="p">,</span>
+                    <span class="n">paramRanges</span><span class="o">=</span><span class="n">Range2d</span><span class="p">,</span>
+                    <span class="n">figureSize</span><span class="o">=</span><span class="s1">&#39;MNRAS_column&#39;</span><span class="p">,</span>
+                    <span class="n">do1dPlots</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/demo_10_0.png" src="_images/demo_10_0.png" />
-<img alt="_images/demo_10_1.png" src="_images/demo_10_1.png" />
+<img alt="_images/demo_11_0.png" src="_images/demo_11_0.png" />
+<img alt="_images/demo_11_1.png" src="_images/demo_11_1.png" />
 </div>
 <div class="section" id="single-1d-panel">
 <h2>Single 1d panel<a class="headerlink" href="#single-1d-panel" title="Permalink to this headline">¶</a></h2>
 <p>Finally, let&#8217;s just plot the posterior on C</p>
 <div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Bit tricky, but remember each data set needs shape of (Npoints, nDim)</span>
-<span class="n">inputarr</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">samples1</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">samples2</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
+<span class="n">inputarr</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">samples1</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">samples2</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
 <span class="n">truth1d</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]</span>
-<span class="n">GTC</span> <span class="o">=</span> <span class="n">pygtc</span><span class="o">.</span><span class="n">plotGTC</span><span class="p">(</span><span class="n">chains</span><span class="o">=</span><span class="n">inputarr</span><span class="p">,</span> <span class="n">paramNames</span><span class="o">=</span><span class="n">names</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
-                    <span class="n">chainLabels</span><span class="o">=</span><span class="n">chainLabels</span><span class="p">,</span> <span class="n">truths</span><span class="o">=</span><span class="n">truth1d</span><span class="p">,</span>
+<span class="n">GTC</span> <span class="o">=</span> <span class="n">pygtc</span><span class="o">.</span><span class="n">plotGTC</span><span class="p">(</span><span class="n">chains</span><span class="o">=</span><span class="n">inputarr</span><span class="p">,</span>
+                    <span class="n">paramNames</span><span class="o">=</span><span class="n">names</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                    <span class="n">chainLabels</span><span class="o">=</span><span class="n">chainLabels</span><span class="p">,</span>
+                    <span class="n">truths</span><span class="o">=</span><span class="n">truth1d</span><span class="p">,</span>
                     <span class="n">truthLabels</span><span class="o">=</span><span class="n">truthLabels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                    <span class="n">figureSize</span><span class="o">=</span><span class="s1">&#39;MNRAS_column&#39;</span><span class="p">,</span> <span class="n">doOnly1dPlot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">figureSize</span><span class="o">=</span><span class="s1">&#39;MNRAS_column&#39;</span><span class="p">,</span>
+                    <span class="n">doOnly1dPlot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/demo_12_0.png" src="_images/demo_12_0.png" />
+<img alt="_images/demo_13_0.png" src="_images/demo_13_0.png" />
 </div>
 </div>
 
@@ -284,7 +335,7 @@ Let&#8217;s look in more detail! Here, we&#8217;ll want single-column figures.</
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="demo2.html" class="btn btn-neutral float-right" title="Example 2: Making a GTC/triangle plot Planck and WMAP data!" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="demo2.html" class="btn btn-neutral float-right" title="Example 2: Making a GTC/triangle plot with Planck and WMAP data!" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="installation.html" class="btn btn-neutral" title="Installation" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -131,11 +131,12 @@
             
   <div class="section" id="pygtc-py">
 <h1>pygtc.py<a class="headerlink" href="#pygtc-py" title="Permalink to this headline">¶</a></h1>
-<p>Make a publication-ready giant-triangle-confusogram (GTC) with just one line of code!</p>
+<p>Make a publication-ready giant-triangle-confusogram (GTC) with just one line of
+code!</p>
 <p>This documentation is for the <code class="docutils literal"><span class="pre">pygtc</span></code> package, which is hosted at
-<a class="reference external" href="https://github.com/SebastianBocquet/pygtc/issues">GitHub</a>.</p>
+<a class="reference external" href="https://github.com/SebastianBocquet/pygtc">GitHub</a>.</p>
 <p><strong>What is a Giant Triangle Confusogram?</strong></p>
-<p>A Giant-Triangle-Confusogram (GTC, aka triangle/corner plot) is a way of
+<p>A Giant-Triangle-Confusogram (GTC, aka triangle plot) is a way of
 displaying the results of a Monte-Carlo Markov Chain (MCMC) sampling or similar
 analysis. The recovered parameter constraints are displayed on a grid in which
 the diagonal shows the one-dimensional posteriors (and, optionally, priors) and
@@ -147,20 +148,20 @@ with the amount of extra work required to massage the result into something we
 were happy to publish. With <code class="docutils literal"><span class="pre">pygtc</span></code>, we hope to take that extra legwork out of
 the equation by providing a package that gives a figure that is publication
 ready on the first try!</p>
-<p>Here&#8217;s an example of a GTC (generated from some fake data, with some nonsensicle
-labels):</p>
-<img alt="_images/demo_8_0.png" src="_images/demo_8_0.png" />
+<p>Here&#8217;s an example of a GTC (generated from Planck and WMAP data):</p>
+<img alt="_images/demo2_9_0.png" src="_images/demo2_9_0.png" />
 <p><strong>Note about contour levels</strong>
-In the above example, you see two sets of contour levels. These show the 68%
-and 95% <em>confidence levels</em> (in addition, pygtc could also show the 99% confidence
-level if you want). Note that these are indeed the 68% and 95% confidence levels,
-and not Gaussian 1, 2, and 3 sigma levels (which, in two dimensions, correspond to
-the 39%, 86%, and 99% confidence levels). Your posterior distributions will in
-general not be Gaussian, and so we argue that there is no right or wrong in choosing
-one or the other definition. We therefore recommend that you stick to the definition that is
-commonly used in your field, and clearly state what quantities you are showing
-in your figure caption. You can switch to displaying Gaussian sigma levels
-by setting <cite>GaussianConfLevels</cite> to <cite>True</cite>.</p>
+In the above example, you see two sets of contour levels. These show the 68% and
+95% <em>confidence levels</em> (in addition, pygtc could also show the 99% confidence
+level if you want). Note that these are indeed the 68% and 95% confidence
+levels, and not Gaussian 1, 2, and 3 sigma levels (which, in two dimensions,
+correspond to the 39%, 86%, and 99% confidence levels). Your posterior
+distributions will in general not be Gaussian, and so we argue that there is no
+right or wrong in choosing one or the other definition. We therefore recommend
+that you stick to the definition that is commonly used in your field, and
+clearly state what quantities you are showing in your figure caption. You can
+switch to displaying Gaussian sigma levels by setting <cite>GaussianConfLevels</cite> to
+<cite>True</cite>.</p>
 <div class="section" id="contents">
 <h2>Contents:<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
@@ -182,8 +183,7 @@ by setting <cite>GaussianConfLevels</cite> to <cite>True</cite>.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="demo2.html">Example 2: Making a GTC/triangle plot with Planck and WMAP data!</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="demo2.html#download-the-planck-and-wmap-data">Download the Planck and WMAP data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="demo2.html#import-modules">Import modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo2.html#download-the-data">Download the data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="demo2.html#read-in-and-format-the-data">Read in and format the data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="demo2.html#select-the-parameters-and-make-labels">Select the parameters and make labels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="demo2.html#make-the-gtc">Make the GTC!</a></li>
@@ -199,7 +199,9 @@ by setting <cite>GaussianConfLevels</cite> to <cite>True</cite>.</p>
 </div>
 <div class="section" id="contributions-problems-questions-recommendations">
 <h2>Contributions, problems, questions, recommendations<a class="headerlink" href="#contributions-problems-questions-recommendations" title="Permalink to this headline">¶</a></h2>
-<p>Please report any problems or pitch new ideas on <a class="reference external" href="https://github.com/SebastianBocquet/pygtc/issues">GitHub</a> where pygtc is being developed. Bugs will be squashed ASAP and feature requests will be seriously considered.</p>
+<p>Please report any problems or pitch new ideas on <a class="reference external" href="https://github.com/SebastianBocquet/pygtc/issues">GitHub</a> where pygtc is being
+developed. Bugs will be squashed ASAP and feature requests will be seriously
+considered.</p>
 </div>
 </div>
 

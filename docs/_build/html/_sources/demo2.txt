@@ -3,28 +3,21 @@ Example 2: Making a GTC/triangle plot with Planck and WMAP data!
 ================================================================
 This example was generated from an IPython notebook!
 
-Download the Planck and WMAP data
-=================================
+Download the data
+=================
 
 The full set of chains from the Planck 2015 release is available at
 http://pla.esac.esa.int/pla/#cosmology. You will want to download
 ``COM_CosmoParams_fullGrid_R2.00.tar.gz``. Careful, that's a huge file
 to download (3.6 GB)!
 
-Extract everything into a directory, cd into that directory, and then run the
-following code:
+Extract everything into a directory, cd into that directory, and run
+this notebook.
 
-Import modules
-==============
 .. code:: python
-
-    #This lets an IPython notebook display inline plots. Comment out if not
-    #using a notebook.
+    #If not using a JuPyter notebook, comment out the next two lines
     %matplotlib inline
-
-    #This lets users with retina screens get the right dpi in the png output.
-    #Comment out if not using a notebook and/or a retina screen.
-    %config InlineBackend.figure_format = 'retina'
+    %config InlineBackend.figure_format = 'retina' # For mac users with Retina display
 
     import numpy as np
     from matplotlib import pyplot as plt
@@ -35,7 +28,6 @@ Read in and format the data
 
 .. code:: python
 
-    # Read in the WMAP and Planck chains
     WMAP, Planck = [],[]
     for i in range(1,5):
         WMAP.append(np.loadtxt('./base/WMAP/base_WMAP_'+str(i)+'.txt'))
@@ -60,7 +52,7 @@ to find the parameters you are interested in.
 
 .. code:: python
 
-    # Labels
+    # Labels, pyGTC supports Tex enclosed in $..$
     params = ('$\Omega_\mathrm{b}h^2$',
               '$\Omega_\mathrm{c}h^2$',
               '$100\\theta_\mathrm{MC}$',
@@ -74,16 +66,19 @@ to find the parameters you are interested in.
 Make the GTC!
 =============
 
+Produce the plot and save it as ``Planck-vs-WMAP.pdf``.
+
 .. code:: python
 
     GTC = pygtc.plotGTC(chains=[Planckplot,WMAPplot],
-                        weights=[Planckall[:,0],WMAPall[:,0]],
+                        weights=[Planckall[:,0],
+                        WMAPall[:,0]],
                         paramNames=params,
                         chainLabels=chainLabels,
                         colorsOrder=('greens','blues'),
-                        figureSize='APJ_page')
+                        figureSize='APJ_page',
+                        plotName='Planck-vs-WMAP.pdf')
 
-    #Save the figure!
-    plt.savefig('GTC.pdf', bbox_inches='tight')
 
-.. image:: _static/demo2_files/demo2_7_0.png
+
+.. image:: _static/demo2_files/demo2_9_0.png

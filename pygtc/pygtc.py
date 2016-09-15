@@ -212,6 +212,9 @@ def plotGTC(chains, **kwargs):
     may not set things back the way they were, but rerunning the line magic
     will.
 
+    This is all due to a bug in matplotlib that is slated to be fixed in the
+    upcoming 2.0 release.
+
     """
 
     ##### Figure setting
