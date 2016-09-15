@@ -20,7 +20,7 @@ Here's an example of a GTC with some random data and arbitrary labels::
 
 .. image:: ./docs/_static/demo_files/demo_8_0.png
 
-**But doesn't this already exist in corner.py, distUtils, etc...?**
+**But doesn't this already exist in ``corner.py``, ``distUtils``, etc...?**
 
 Although several other packages exists to make such a plot, we were unsatisfied
 with the amount of extra work required to massage the result into something we
