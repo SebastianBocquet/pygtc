@@ -208,7 +208,7 @@ in <cite>chains</cite>. Default is <code class="docutils literal"><span class="p
 <li><p class="first"><strong>nConfidenceLevels</strong> (<em>int</em>) &#8211; The number of contour levels to plot in the 2d histograms. May be 1, 2,
 or 3. Default is 2.</p>
 </li>
-<li><p class="first"><strong>GaussianConfLevels</strong> (<em>bool</em>) &#8211; Whether you want 2d Gaussian &#8220;sigma&#8221; confidence levels (39%, 86%, 99%) instead
+<li><p class="first"><strong>gaussianConfLevels</strong> (<em>bool</em>) &#8211; Whether you want 2d Gaussian &#8220;sigma&#8221; confidence levels (39%, 86%, 99%) instead
 of the standard 1d confidence levels (68%, 95%, 99%). Default is <code class="docutils literal"><span class="pre">False</span></code>.</p>
 </li>
 <li><p class="first"><strong>nBins</strong> (<em>int</em>) &#8211; An integer describing the number of bins used to compute the
@@ -305,7 +305,7 @@ to catch the return or else the figure will plot twice.</p>
 <p>If you are calling <code class="docutils literal"><span class="pre">plotGTC</span></code> from within an interactive python session (ie
 via IPython or in a JuPyter notebook), the label font in the saved pdf may
 differ from the plot that appears when calling <code class="docutils literal"><span class="pre">matplotlib.pyplot.show()</span></code>.</p>
-<p class="last">This will happen if the mathTextFontSet keyword sets a value that is
+<p>This will happen if the mathTextFontSet keyword sets a value that is
 different than the one stored in <code class="docutils literal"><span class="pre">rcParams['mathtext.fontset']</span></code> and you
 are using equations in your labels by enclosing them in $..$. The output pdf
 will display correctly, but the interactive plot will use whatever is stored
@@ -320,6 +320,8 @@ rcParams back to default at any point, you can call
 have set <code class="docutils literal"><span class="pre">%matplotlib</span> <span class="pre">inline</span></code>,  then calling <code class="docutils literal"><span class="pre">matplotlib.rcdefaults()</span></code>
 may not set things back the way they were, but rerunning the line magic
 will.</p>
+<p class="last">This is all due to a bug in matplotlib that is slated to be fixed in the
+upcoming 2.0 release.</p>
 </div>
 </dd></dl>
 

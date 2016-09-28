@@ -87,7 +87,7 @@ def plotGTC(chains, **kwargs):
         The number of contour levels to plot in the 2d histograms. May be 1, 2,
         or 3. Default is 2.
 
-    GaussianConfLevels : bool
+    gaussianConfLevels : bool
         Whether you want 2d Gaussian "sigma" confidence levels (39%, 86%, 99%) instead
         of the standard 1d confidence levels (68%, 95%, 99%). Default is ``False``.
 
@@ -389,9 +389,9 @@ def plotGTC(chains, **kwargs):
     assert nConfidenceLevels in [1,2,3], "nConfidenceLevels must be 1, 2, or 3"
 
     # 2d confidence levels: Gaussian or (68%, 95%, 99%)
-    GaussianConfLevels = kwargs.pop('GaussianConfLevels', False)
+    gaussianConfLevels = kwargs.pop('gaussianConfLevels', False)
     confLevels = (.3173, .0455, .0027)
-    if GaussianConfLevels:
+    if gaussianConfLevels:
         #1d confidence levels
         confLevels = (.6065, .1353, .0111)
 
