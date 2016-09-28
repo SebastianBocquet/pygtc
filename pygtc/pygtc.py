@@ -395,6 +395,12 @@ def plotGTC(chains, **kwargs):
         #1d confidence levels
         confLevels = (.6065, .1353, .0111)
 
+    #Maintain support for older naming convention. TODO: Remove in next major version
+    deprecated_ConfLevels = kwargs.pop('GaussianConfLevels', False)
+    if deprecated_ConfLevels:
+        import warnings
+        warnings.warn("GaussianConfLevels has been replaced by gaussianConfLevels", DeprecationWarning)
+        confLevels = (.6065, .1353, .0111)
 
     # Data binning and smoothing
     nBins = kwargs.pop('nBins', 30) # Number of bins for 1d and 2d histograms. 30 works...
