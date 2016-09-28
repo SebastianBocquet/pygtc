@@ -456,7 +456,7 @@ def plotGTC(chains, **kwargs):
         do1dPlots = True
 
     # Set font in rcParams (Not in the default file, but just in the running kernel)
-    mathtextTypes = ['cm', 'stix', 'custom', 'stixsans']
+    mathtextTypes = ['cm', 'stix', 'custom', 'stixsans', None]
     mathTextFontSet = kwargs.pop('mathTextFontSet', 'stixsans')
     assert mathTextFontSet in mathtextTypes, "mathTextFont set must be one of 'cm', 'stix', 'custom', 'stixsans', None."
     oldMathTextFontSet = plt.rcParams['mathtext.fontset']
