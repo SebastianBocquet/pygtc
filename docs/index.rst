@@ -30,16 +30,16 @@ Here's an example of a GTC (generated from Planck and WMAP data):
 .. image:: _static/demo2_files/demo2_9_0.png
 
 **Note about contour levels**
-In the above example, you see two sets of contour levels. These show the 68% and
-95% *confidence levels* (in addition, pygtc could also show the 99% confidence
-level if you want). Note that these are indeed the 68% and 95% confidence
-levels, and not Gaussian 1, 2, and 3 sigma levels (which, in two dimensions,
-correspond to the 39%, 86%, and 99% confidence levels). Your posterior
-distributions will in general not be Gaussian, and so we argue that there is no
+In the above example, you see two sets of contour levels at 68% and
+95% (in addition, pygtc could also show the 99% contour
+level if you want). Note that these are indeed the 68% and 95% contour
+levels, and not 1, 2, and 3 sigma levels (which, in two dimensions,
+correspond to the 39%, 86%, and 99% contour levels). Your posterior
+distributions will in general not be Gaussian, and so there is no
 right or wrong in choosing one or the other definition. We therefore recommend
 that you stick to the definition that is commonly used in your field, and
 clearly state what quantities you are showing in your figure caption. You can
-switch to displaying Gaussian sigma levels by setting `GaussianConfLevels` to
+switch to displaying sigma levels by setting `sigmaContourLevels` to
 `True`.
 
 

@@ -87,9 +87,9 @@ def plotGTC(chains, **kwargs):
         The number of contour levels to plot in the 2d histograms. May be 1, 2,
         or 3. Default is 2.
 
-    gaussianConfLevels : bool
-        Whether you want 2d Gaussian "sigma" confidence levels (39%, 86%, 99%) instead
-        of the standard 1d confidence levels (68%, 95%, 99%). Default is ``False``.
+    sigmaContourLevels : bool
+        Whether you want 2d "sigma" contour levels (39%, 86%, 99%) instead
+        of the standard contour levels (68%, 95%, 99%). Default is ``False``.
 
     nBins : int
         An integer describing the number of bins used to compute the
@@ -388,20 +388,25 @@ def plotGTC(chains, **kwargs):
     nConfidenceLevels = kwargs.pop('nConfidenceLevels', 2) #How many of the confidence levels to show
     assert nConfidenceLevels in [1,2,3], "nConfidenceLevels must be 1, 2, or 3"
 
-    # 2d confidence levels: Gaussian or (68%, 95%, 99%)
-    gaussianConfLevels = kwargs.pop('gaussianConfLevels', False)
+    # 2d confidence levels: sigma or (68%, 95%, 99%)
     confLevels = (.3173, .0455, .0027)
-    if gaussianConfLevels:
+    sigmaContourLevels = kwargs.pop('sigmaContourLevels', False)
+    if sigmaContourLevels:
         #1d confidence levels
         confLevels = (.6065, .1353, .0111)
 
     #Maintain support for older naming convention. TODO: Remove in next major version
+    deprecated_ConfLevels = kwargs.pop('gaussianConfLevels', False)
+    if deprecated_ConfLevels:
+        import warnings
+        warnings.warn("gaussianConfLevels has been replaced by sigmaContourLevels", DeprecationWarning)
+        confLevels = (.6065, .1353, .0111)
     deprecated_ConfLevels = kwargs.pop('GaussianConfLevels', False)
     if deprecated_ConfLevels:
         import warnings
-        warnings.warn("GaussianConfLevels has been replaced by gaussianConfLevels", DeprecationWarning)
+        warnings.warn("GaussianConfLevels has been replaced by sigmaContourLevels", DeprecationWarning)
         confLevels = (.6065, .1353, .0111)
-
+    
     # Data binning and smoothing
     nBins = kwargs.pop('nBins', 30) # Number of bins for 1d and 2d histograms. 30 works...
     smoothingKernel = kwargs.pop('smoothingKernel', 1) #Don't you like smooth data?
