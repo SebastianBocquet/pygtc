@@ -83,7 +83,7 @@ def plotGTC(chains, **kwargs):
     plotName : string
         A path to save the GTC to in pdf form. Default is ``None``.
 
-    nConfidenceLevels : int
+    nContourLevels : int
         The number of contour levels to plot in the 2d histograms. May be 1, 2,
         or 3. Default is 2.
 
@@ -384,18 +384,25 @@ def plotGTC(chains, **kwargs):
     if plotName is not None:
         assert __isstr(plotName), "plotName must be a string type"
 
-    # Define which confidence levels to show
-    nConfidenceLevels = kwargs.pop('nConfidenceLevels', 2) #How many of the confidence levels to show
-    assert nConfidenceLevels in [1,2,3], "nConfidenceLevels must be 1, 2, or 3"
+    # Which contour levels to show
+    nContourLevels = kwargs.pop('nContourLevels', 2)
+    assert nContourLevels in [1,2,3], "nContourLevels must be 1, 2, or 3"
+    
+    # Maintain support for older naming convention. TODO: Remove in next major version
+    deprecated_nContourLevels = kwargs.pop('nConfidenceLevels', False)
+    if deprecated_ConfLevels:
+        import warnings
+        warnings.warn("nConfidenceLevels has been replaced by nContourLevels", DeprecationWarning)
+        nContourLevels = deprecated_ConfLevels
+        assert nContourLevels in [1,2,3], "nContourLevels must be 1, 2, or 3"
 
-    # 2d confidence levels: sigma or (68%, 95%, 99%)
+    # 2d contour levels: (68%, 95%, 99%) or sigma (39%, 86%, 99%)
     confLevels = (.3173, .0455, .0027)
     sigmaContourLevels = kwargs.pop('sigmaContourLevels', False)
     if sigmaContourLevels:
-        #1d confidence levels
         confLevels = (.6065, .1353, .0111)
 
-    #Maintain support for older naming convention. TODO: Remove in next major version
+    # Maintain support for older naming convention. TODO: Remove in next major version
     deprecated_ConfLevels = kwargs.pop('gaussianConfLevels', False)
     if deprecated_ConfLevels:
         import warnings
@@ -539,7 +546,7 @@ def plotGTC(chains, **kwargs):
                         truthsForPlot2D = [[truths[k,i], truths[k,j]] for k in range(len(truths))]
                     # Plot!
                     ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins,
-                                smoothingKernel, filledPlots, colors, nConfidenceLevels,
+                                smoothingKernel, filledPlots, colors, nContourLevels,
                                 confLevels, truthsForPlot2D, truthColors, truthLineStyles,
                                 plotDensity, myColorMap)
 
@@ -984,7 +991,7 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
 #################### Create single 2d panel
 
 def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
-            filledPlots, colors, nConfidenceLevels, confLevels, truths2d,
+            filledPlots, colors, nContourLevels, confLevels, truths2d,
             truthColors, truthLineStyles, plotDensity, myColorMap):
     r"""Plot a 2D histogram in a an axis object and return the axis with plot.
 
@@ -1014,14 +1021,14 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
         Just contours, or filled contours?
 
     colors : list-like
-        List of `nChains` tuples. Each tuple must have at least nConfidenceLevels
+        List of `nChains` tuples. Each tuple must have at least nContourLevels
         colors.
 
-    nConfidenceLevels : int {1,2,3}
-        How many confidence levels?
+    nContourLevels : int {1,2,3}
+        How many contour levels?
 
     confLevels : list-like
-        List of at least `nConfidenceLevels` values for confidence levels.
+        List of at least `nContourLevels` values for contour levels.
 
     truths2d : list-like
         A list of nChains tuples of the form: [(truth1_x, truth1_y), etc...].
@@ -1045,10 +1052,10 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
 
     """
     # Empty arrays needed below
-    chainLevels = np.ones((nChains,nConfidenceLevels+1))
+    chainLevels = np.ones((nChains,nContourLevels+1))
     extents = np.empty((nChains,4))
 
-    # These are needed to compute the confidence levels
+    # These are needed to compute the contour levels
     nBinsFlat = np.linspace(0., nBins**2, nBins**2)
 
     ##### The filled contour plots
@@ -1065,12 +1072,12 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
         histOrdered = np.sort(hist2d.flat)
         histCumulative = np.cumsum(histOrdered)
 
-        # Compute confidence levels (from low to high for technical reasons)
-        for l in range(nConfidenceLevels):
-            # Find location of confidence level in 1d histCumulative
+        # Compute contour levels (from low to high for technical reasons)
+        for l in range(nContourLevels):
+            # Find location of contour level in 1d histCumulative
             temp = np.interp(confLevels[l], histCumulative, nBinsFlat)
-            # Find "height" of confidence level
-            chainLevels[k][nConfidenceLevels-1-l] = np.interp(temp, nBinsFlat, histOrdered)
+            # Find "height" of contour level
+            chainLevels[k][nContourLevels-1-l] = np.interp(temp, nBinsFlat, histOrdered)
 
         # Apply Gaussian smoothing and plot filled contours if requested
         if smoothingKernel>0:
@@ -1080,7 +1087,7 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
         if filledPlots:
             xbins = (xedges[1:]+xedges[:-1])/2
             ybins = (yedges[1:]+yedges[:-1])/2
-            ax.contourf(xbins, ybins, plotData[-1], levels=chainLevels[k], colors=colors[k][:nConfidenceLevels][::-1])
+            ax.contourf(xbins, ybins, plotData[-1], levels=chainLevels[k], colors=colors[k][:nContourLevels][::-1])
 
         # Plot density
         if plotDensity:
@@ -1092,8 +1099,8 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
 
     ###### Draw contour lines in order to see contours lying on top of each other
     for k in range(nChains):
-        for l in range(nConfidenceLevels):
-            ax.contour(plotData[nChains-1-k], [chainLevels[k][nConfidenceLevels-1-l]], extent=extents[k], origin='lower', linewidths=1, colors=colors[k][l])
+        for l in range(nContourLevels):
+            ax.contour(plotData[nChains-1-k], [chainLevels[k][nContourLevels-1-l]], extent=extents[k], origin='lower', linewidths=1, colors=colors[k][l])
 
     ##### Truth lines
     if truths2d is not None:
