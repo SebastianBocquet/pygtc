@@ -127,15 +127,15 @@ def test_GTC_priors():
 
 #TODO: Think up a good way to test plotName
 
-@image_comparison(baseline_images=['nConfidenceLevels'], extensions=['png'], savefig_kwarg=SFKWARGS)
-def test_GTC_nConfidenceLevels():
+@image_comparison(baseline_images=['nContourLevels'], extensions=['png'], savefig_kwarg=SFKWARGS)
+def test_GTC_nContourLevels():
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
-                    nConfidenceLevels = 3)
+                    nContourLevels = 3)
 
-@image_comparison(baseline_images=['gaussianConfLevels'], extensions=['png'], savefig_kwarg=SFKWARGS)
-def test_GTC_gaussianConfLevels():
+@image_comparison(baseline_images=['sigmaContourLevels'], extensions=['png'], savefig_kwarg=SFKWARGS)
+def test_GTC_sigmaContourLevels():
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
-                    gaussianConfLevels = True)
+                    sigmaContourLevels = True)
 
 @image_comparison(baseline_images=['nBins'], extensions=['png'], savefig_kwarg=SFKWARGS)
 def test_GTC_nBins():
