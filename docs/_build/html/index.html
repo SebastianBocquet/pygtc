@@ -146,21 +146,21 @@ parameter covariances along with the priors.</p>
 <p>Although several other packages exists to make such a plot, we were unsatisfied
 with the amount of extra work required to massage the result into something we
 were happy to publish. With <code class="docutils literal"><span class="pre">pygtc</span></code>, we hope to take that extra legwork out of
-the equation by providing a package that gives a figure that is publication
-ready on the first try!</p>
+the equation by providing a package that gives a figure that is
+publication-ready on the first try!</p>
 <p>Here&#8217;s an example of a GTC (generated from Planck and WMAP data):</p>
 <img alt="_images/demo2_9_0.png" src="_images/demo2_9_0.png" />
 <p><strong>Note about contour levels</strong>
-In the above example, you see two sets of contour levels. These show the 68% and
-95% <em>confidence levels</em> (in addition, pygtc could also show the 99% confidence
-level if you want). Note that these are indeed the 68% and 95% confidence
-levels, and not Gaussian 1, 2, and 3 sigma levels (which, in two dimensions,
-correspond to the 39%, 86%, and 99% confidence levels). Your posterior
-distributions will in general not be Gaussian, and so we argue that there is no
+In the above example, you see two sets of contour levels at 68% and
+95% (in addition, pygtc could also show the 99% contour
+level if you want). Note that these are indeed the 68% and 95% contour
+levels, and not 1, 2, and 3 sigma levels (which, in two dimensions,
+correspond to the 39%, 86%, and 99% contour levels). Your posterior
+distributions will in general not be Gaussian, and so there is no
 right or wrong in choosing one or the other definition. We therefore recommend
 that you stick to the definition that is commonly used in your field, and
 clearly state what quantities you are showing in your figure caption. You can
-switch to displaying Gaussian sigma levels by setting <cite>GaussianConfLevels</cite> to
+switch to displaying sigma levels by setting <cite>sigmaContourLevels</cite> to
 <cite>True</cite>.</p>
 <div class="section" id="contents">
 <h2>Contents:<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
@@ -170,6 +170,8 @@ switch to displaying Gaussian sigma levels by setting <cite>GaussianConfLevels</
 <li class="toctree-l2"><a class="reference internal" href="installation.html#required-packages">Required packages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#downloading-and-installing">Downloading and installing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#development">Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#running-tests">Running tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#contribution-and-or-bug-reports">Contribution and/or bug reports</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="demo.html">Example 1: Making a GTC/triangle plot with pygtc</a><ul>
@@ -202,6 +204,7 @@ switch to displaying Gaussian sigma levels by setting <cite>GaussianConfLevels</
 <p>Please report any problems or pitch new ideas on <a class="reference external" href="https://github.com/SebastianBocquet/pygtc/issues">GitHub</a> where pygtc is being
 developed. Bugs will be squashed ASAP and feature requests will be seriously
 considered.</p>
+<a class="reference external image-reference" href="https://doi.org/10.5281/zenodo.154122"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.154122.svg" /></a>
 </div>
 </div>
 

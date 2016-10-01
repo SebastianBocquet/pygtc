@@ -31,7 +31,7 @@
 
   
     <link rel="top" title="pygtc 0.2 documentation" href="index.html"/>
-        <link rel="next" title="Example: Making a GTC/triangle plot with pygtc" href="demo.html"/>
+        <link rel="next" title="Example 1: Making a GTC/triangle plot with pygtc" href="demo.html"/>
         <link rel="prev" title="pygtc.py" href="index.html"/> 
 
   
@@ -86,9 +86,12 @@
 <li class="toctree-l2"><a class="reference internal" href="#required-packages">Required packages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#downloading-and-installing">Downloading and installing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#development">Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-tests">Running tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contribution-and-or-bug-reports">Contribution and/or bug reports</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="demo.html">Example: Making a GTC/triangle plot with pygtc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Example 1: Making a GTC/triangle plot with pygtc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo2.html">Example 2: Making a GTC/triangle plot with Planck and WMAP data!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 
@@ -175,8 +178,31 @@ clone the repo with:</p>
 <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">develop</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="running-tests">
+<h2>Running tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">¶</a></h2>
+<p>For tests to <em>for sure</em> run properly, you&#8217;ll want to have matplotlib v1.5.3
+installed, as they fixed a bug in their <code class="docutils literal"><span class="pre">image_comparison</span></code> decorator. You&#8217;ll
+need <code class="docutils literal"><span class="pre">nose</span></code> installed to run the tests, although pygtc functions fine without
+it. There are two ways to do the test suite. You can use the nosetests utility:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nosetests</span> <span class="n">directory_cloned_pygtc_into</span>
+</pre></div>
+</div>
+<p>Or, you can run the tests as a script:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">directory_cloned_pygtc_into</span><span class="o">/</span><span class="n">pygtc</span><span class="o">/</span><span class="n">tests</span>
+<span class="n">python</span> <span class="n">test_plotGTC</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>In either case, there are 25 tests to run, and it should take between 20-30
+seconds to run them all. If the first test fails, there is likely something
+wrong with your matplotlib install in general (or maybe something weird in your
+rcParams).</p>
+</div>
+<div class="section" id="contribution-and-or-bug-reports">
+<h2>Contribution and/or bug reports<a class="headerlink" href="#contribution-and-or-bug-reports" title="Permalink to this headline">¶</a></h2>
 <p>If you like this project and want to contribute, send a message over at the
-github repo and get involved!</p>
+gitHub repo and get involved. If you find a bug, please open an issue at gitHub.
+Better yet, you can try and fix the bug and submit a pull request!</p>
 </div>
 </div>
 
@@ -187,7 +213,7 @@ github repo and get involved!</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="demo.html" class="btn btn-neutral float-right" title="Example: Making a GTC/triangle plot with pygtc" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="demo.html" class="btn btn-neutral float-right" title="Example 1: Making a GTC/triangle plot with pygtc" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral" title="pygtc.py" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
