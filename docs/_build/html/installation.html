@@ -182,9 +182,9 @@ clone the repo with:</p>
 <div class="section" id="running-tests">
 <h2>Running tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">¶</a></h2>
 <p>For tests to <em>for sure</em> run properly, you&#8217;ll want to have matplotlib v1.5.3
-installed, as they fixed a bug in their <code class="docutils literal"><span class="pre">image_comparison</span></code> decorator. In any
-case, you&#8217;ll need <code class="docutils literal"><span class="pre">nose</span></code> installed to run the tests. There are two ways to do
-the test suite. You can use the nosetests utility:</p>
+installed, as they fixed a bug in their <code class="docutils literal"><span class="pre">image_comparison</span></code> decorator. You&#8217;ll
+need <code class="docutils literal"><span class="pre">nose</span></code> installed to run the tests, although pygtc functions fine without
+it. There are two ways to do the test suite. You can use the nosetests utility:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nosetests</span> <span class="n">directory_cloned_pygtc_into</span>
 </pre></div>
 </div>
@@ -195,7 +195,8 @@ the test suite. You can use the nosetests utility:</p>
 </div>
 <p>In either case, there are 25 tests to run, and it should take between 20-30
 seconds to run them all. If the first test fails, there is likely something
-wrong with matplotlib in general.</p>
+wrong with your matplotlib install in general (or maybe something weird in your
+rcParams).</p>
 </div>
 <div class="section" id="contribution-and-or-bug-reports">
 <h2>Contribution and/or bug reports<a class="headerlink" href="#contribution-and-or-bug-reports" title="Permalink to this headline">¶</a></h2>

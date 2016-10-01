@@ -50,9 +50,9 @@ Running tests
 ~~~~~~~~~~~~~
 
 For tests to *for sure* run properly, you'll want to have matplotlib v1.5.3
-installed, as they fixed a bug in their ``image_comparison`` decorator. In any
-case, you'll need ``nose`` installed to run the tests. There are two ways to do
-the test suite. You can use the nosetests utility::
+installed, as they fixed a bug in their ``image_comparison`` decorator. You'll
+need ``nose`` installed to run the tests, although pygtc functions fine without
+it. There are two ways to do the test suite. You can use the nosetests utility::
 
   nosetests directory_cloned_pygtc_into
 
@@ -63,7 +63,8 @@ Or, you can run the tests as a script::
 
 In either case, there are 25 tests to run, and it should take between 20-30
 seconds to run them all. If the first test fails, there is likely something
-wrong with matplotlib in general.
+wrong with your matplotlib install in general (or maybe something weird in your
+rcParams).
 
 Contribution and/or bug reports
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

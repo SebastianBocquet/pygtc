@@ -205,11 +205,11 @@ in <cite>chains</cite>. Default is <code class="docutils literal"><span class="p
 </li>
 <li><p class="first"><strong>plotName</strong> (<em>string</em>) &#8211; A path to save the GTC to in pdf form. Default is <code class="docutils literal"><span class="pre">None</span></code>.</p>
 </li>
-<li><p class="first"><strong>nConfidenceLevels</strong> (<em>int</em>) &#8211; The number of contour levels to plot in the 2d histograms. May be 1, 2,
+<li><p class="first"><strong>nContourLevels</strong> (<em>int</em>) &#8211; The number of contour levels to plot in the 2d histograms. May be 1, 2,
 or 3. Default is 2.</p>
 </li>
-<li><p class="first"><strong>gaussianConfLevels</strong> (<em>bool</em>) &#8211; Whether you want 2d Gaussian &#8220;sigma&#8221; confidence levels (39%, 86%, 99%) instead
-of the standard 1d confidence levels (68%, 95%, 99%). Default is <code class="docutils literal"><span class="pre">False</span></code>.</p>
+<li><p class="first"><strong>sigmaContourLevels</strong> (<em>bool</em>) &#8211; Whether you want 2d &#8220;sigma&#8221; contour levels (39%, 86%, 99%) instead
+of the standard contour levels (68%, 95%, 99%). Default is <code class="docutils literal"><span class="pre">False</span></code>.</p>
 </li>
 <li><p class="first"><strong>nBins</strong> (<em>int</em>) &#8211; An integer describing the number of bins used to compute the
 histograms. Default is 30.</p>
@@ -347,10 +347,10 @@ upcoming 2.0 release.</p>
 <li><strong>nBins</strong> (<em>int</em>) &#8211; Number of bins (per side) for the 2d histogram.</li>
 <li><strong>smoothingKernel</strong> (<em>int</em>) &#8211; Size of the Gaussian smoothing kernel in bins. Set to 0 for no smoothing.</li>
 <li><strong>filledPlots</strong> (<em>bool</em>) &#8211; Just contours, or filled contours?</li>
-<li><strong>colors</strong> (<em>list-like</em>) &#8211; List of <cite>nChains</cite> tuples. Each tuple must have at least nConfidenceLevels
+<li><strong>colors</strong> (<em>list-like</em>) &#8211; List of <cite>nChains</cite> tuples. Each tuple must have at least nContourLevels
 colors.</li>
-<li><strong>nConfidenceLevels</strong> (<em>int {1,2,3}</em>) &#8211; How many confidence levels?</li>
-<li><strong>confLevels</strong> (<em>list-like</em>) &#8211; List of at least <cite>nConfidenceLevels</cite> values for confidence levels.</li>
+<li><strong>nContourLevels</strong> (<em>int {1,2,3}</em>) &#8211; How many contour levels?</li>
+<li><strong>confLevels</strong> (<em>list-like</em>) &#8211; List of at least <cite>nContourLevels</cite> values for contour levels.</li>
 <li><strong>truths2d</strong> (<em>list-like</em>) &#8211; A list of nChains tuples of the form: [(truth1_x, truth1_y), etc...].</li>
 <li><strong>truthColors</strong> (<em>list-like</em>) &#8211; A list of colors for the truths.</li>
 <li><strong>truthLineStyles</strong> (<em>list-like</em>) &#8211; A list of matplotlib linestyle descriptors, one for each truth.</li>

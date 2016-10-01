@@ -17,8 +17,8 @@ setup(
     packages = ['pygtc'],
     long_description = open('README.rst').read(),
     install_requires = [
-        'numpy>=1.5',
-        'matplotlib>=1.5, <2.0'
+        'numpy',
+        'matplotlib'
     ],
     classifiers = [
         'Development Status :: 4 - Beta',
