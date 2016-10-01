@@ -390,10 +390,10 @@ def plotGTC(chains, **kwargs):
     
     # Maintain support for older naming convention. TODO: Remove in next major version
     deprecated_nContourLevels = kwargs.pop('nConfidenceLevels', False)
-    if deprecated_ConfLevels:
+    if deprecated_nContourLevels:
         import warnings
         warnings.warn("nConfidenceLevels has been replaced by nContourLevels", DeprecationWarning)
-        nContourLevels = deprecated_ConfLevels
+        nContourLevels = deprecated_nContourLevels
         assert nContourLevels in [1,2,3], "nContourLevels must be 1, 2, or 3"
 
     # 2d contour levels: (68%, 95%, 99%) or sigma (39%, 86%, 99%)
