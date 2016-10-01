@@ -1,3 +1,11 @@
+Version 0.2.1:
+  * Refactored code to make contour choice options more clear.
+  * Updated documentation with discussion about contour level choices.
+  * Added tests for most Keyword Argument options. Tests require nose.
+  * Updated documentation to include notes about testing.
+  * Added a requirements.txt file to the package specifying version numbers and
+    removed those specifications from setup.py.
+
 Version 0.2.0:
   * Option to turn off tick label rotation
   * Long tick labels are now lined up correctly with their ticks
