@@ -4,7 +4,7 @@
 # Python build
 *.pyc
 
-#Python packaging
+# Python packaging
 *.egg-info
 dist
 
@@ -15,5 +15,9 @@ dist
 # pdf files
 *.pdf
 
-#Data for editing notebooks
+# Data for editing notebooks
 /ExampleData
+
+# Test images
+result_images
+pygtc/result_images
