@@ -22,8 +22,8 @@ parameter covariances along with the priors.
 Although several other packages exists to make such a plot, we were unsatisfied
 with the amount of extra work required to massage the result into something we
 were happy to publish. With ``pygtc``, we hope to take that extra legwork out of
-the equation by providing a package that gives a figure that is publication
-ready on the first try!
+the equation by providing a package that gives a figure that is
+publication-ready on the first try!
 
 Here's an example of a GTC (generated from Planck and WMAP data):
 
