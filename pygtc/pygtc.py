@@ -1,3 +1,4 @@
+import warnings
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import matplotlib as mpl
@@ -362,11 +363,14 @@ def plotGTC(chains, **kwargs):
     # Show Gaussian PDF on 1d plots (to show Gaussian priors)
     priors = kwargs.pop('priors', None)
     if priors is not None:
-        assert haveScipy==True, "You need to have scipy installed to display Gaussian priors"
-        assert len(priors)==nDim, "List of priors must match number of parameters"
-        for i in range(nDim):
-            if priors[i]:
-                assert priors[i][1]>0, "Prior width must be positive"
+        if haveScipy:
+            assert len(priors)==nDim, "List of priors must match number of parameters"
+            for i in range(nDim):
+                if priors[i]:
+                    assert priors[i][1]>0, "Prior width must be positive"
+        else:
+            warnings.warn("You need to have scipy installed to display Gaussian priors, ignoring priors keyword.", UserWarning)
+            priors = None
 
     # Manage the sample point weights
     weights = kwargs.pop('weights', None)
@@ -387,11 +391,10 @@ def plotGTC(chains, **kwargs):
     # Which contour levels to show
     nContourLevels = kwargs.pop('nContourLevels', 2)
     assert nContourLevels in [1,2,3], "nContourLevels must be 1, 2, or 3"
-    
+
     # Maintain support for older naming convention. TODO: Remove in next major version
     deprecated_nContourLevels = kwargs.pop('nConfidenceLevels', False)
     if deprecated_nContourLevels:
-        import warnings
         warnings.warn("nConfidenceLevels has been replaced by nContourLevels", DeprecationWarning)
         nContourLevels = deprecated_nContourLevels
         assert nContourLevels in [1,2,3], "nContourLevels must be 1, 2, or 3"
@@ -405,23 +408,21 @@ def plotGTC(chains, **kwargs):
     # Maintain support for older naming convention. TODO: Remove in next major version
     deprecated_ConfLevels = kwargs.pop('gaussianConfLevels', False)
     if deprecated_ConfLevels:
-        import warnings
         warnings.warn("gaussianConfLevels has been replaced by sigmaContourLevels", DeprecationWarning)
         confLevels = (.6065, .1353, .0111)
     deprecated_ConfLevels = kwargs.pop('GaussianConfLevels', False)
     if deprecated_ConfLevels:
-        import warnings
         warnings.warn("GaussianConfLevels has been replaced by sigmaContourLevels", DeprecationWarning)
         confLevels = (.6065, .1353, .0111)
-    
+
     # Data binning and smoothing
     nBins = kwargs.pop('nBins', 30) # Number of bins for 1d and 2d histograms. 30 works...
     smoothingKernel = kwargs.pop('smoothingKernel', 1) #Don't you like smooth data?
-    if not haveScipy:
-        print "Warning: You don't have Scipy installed. Your curves will not be smoothed."
+    if (smoothingKernel != 0) and (not haveScipy):
+        warnings.warn("Warning: You don't have Scipy installed. Your curves will not be smoothed.", UserWarning)
         smoothingKernel = 0
     if smoothingKernel>=nBins/10:
-        print("Wow, that's a huge smoothing kernel! You sure you want its scale to be %.1f percent of the plot?!"%(100.*float(smoothingKernel)/float(nBins)))
+        warnings.warn("Wow, that's a huge smoothing kernel! You sure you want its scale to be %.1f percent of the plot?!"%(100.*float(smoothingKernel)/float(nBins)), UserWarning)
 
     # Filled contours and histograms
     filledPlots = kwargs.pop('filledPlots', True)

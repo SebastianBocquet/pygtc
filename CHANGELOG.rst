@@ -1,3 +1,9 @@
+Version 0.2.2:
+  * No longer fails if you ask for priors and scipy is missing. Instead, it
+    issues a warning and ignores the request.
+  * Test suite now skips tests that required pandas or scipy if pandas or scipy
+    is missing.
+
 Version 0.2.1:
   * Refactored code to make contour choice options more clear.
   * Updated documentation with discussion about contour level choices.
