@@ -48,11 +48,17 @@ or from source::
 
 Running tests
 ~~~~~~~~~~~~~
-
 For tests to *for sure* run properly, you'll want to have matplotlib v1.5.3
 installed, as they fixed a bug in their ``image_comparison`` decorator. You'll
 need ``nose`` installed to run the tests, although pygtc functions fine without
-it. There are two ways to do the test suite. You can use the nosetests utility::
+it. You also should have the Arial font installed, as that is pygtc's default
+font and tests will "fail" if matplotlib falls back on Bitstream Vera Sans (even
+though the images produced might look perfectly fine). Test base images were
+produced on Mac OSX and if you are on another system there is no guarantee that
+you will get a pixel-perfect copy of what the OSX backend produces. However, the
+images produced by the tests should still look great!
+
+There are two ways to run the test suite. You can use the nosetests utility::
 
   nosetests directory_cloned_pygtc_into
 
@@ -62,9 +68,13 @@ Or, you can run the tests as a script::
   python test_plotGTC.py
 
 In either case, there are 25 tests to run, and it should take between 20-30
-seconds to run them all. If the first test fails, there is likely something
-wrong with your matplotlib install in general (or maybe something weird in your
-rcParams).
+seconds to run them all. If the first test fails, there may be something wrong
+with your matplotlib install in general (or maybe something weird in your
+rcParams). If you are missing pandas or scipy, a few tests will be skipped. If
+you get a ton of errors make sure you read the first paragraph in this section
+and you have all the prerequisites installed. If matplotlib can't find Arial and
+you recently installed it, delete your matplotlib font cache and try
+again. If errors persist, let us know at GitHub.
 
 Contribution and/or bug reports
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -184,7 +184,13 @@ clone the repo with:</p>
 <p>For tests to <em>for sure</em> run properly, you&#8217;ll want to have matplotlib v1.5.3
 installed, as they fixed a bug in their <code class="docutils literal"><span class="pre">image_comparison</span></code> decorator. You&#8217;ll
 need <code class="docutils literal"><span class="pre">nose</span></code> installed to run the tests, although pygtc functions fine without
-it. There are two ways to do the test suite. You can use the nosetests utility:</p>
+it. You also should have the Arial font installed, as that is pygtc&#8217;s default
+font and tests will &#8220;fail&#8221; if matplotlib falls back on Bitstream Vera Sans (even
+though the images produced might look perfectly fine). Test base images were
+produced on Mac OSX and if you are on another system there is no guarantee that
+you will get a pixel-perfect copy of what the OSX backend produces. However, the
+images produced by the tests should still look great!</p>
+<p>There are two ways to run the test suite. You can use the nosetests utility:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nosetests</span> <span class="n">directory_cloned_pygtc_into</span>
 </pre></div>
 </div>
@@ -194,9 +200,13 @@ it. There are two ways to do the test suite. You can use the nosetests utility:<
 </pre></div>
 </div>
 <p>In either case, there are 25 tests to run, and it should take between 20-30
-seconds to run them all. If the first test fails, there is likely something
-wrong with your matplotlib install in general (or maybe something weird in your
-rcParams).</p>
+seconds to run them all. If the first test fails, there may be something wrong
+with your matplotlib install in general (or maybe something weird in your
+rcParams). If you are missing pandas or scipy, a few tests will be skipped. If
+you get a ton of errors make sure you read the first paragraph in this section
+and you have all the prerequisites installed. If matplotlib can&#8217;t find Arial and
+you recently installed it, delete your matplotlib font cache and try
+again. If errors persist, let us know at GitHub.</p>
 </div>
 <div class="section" id="contribution-and-or-bug-reports">
 <h2>Contribution and/or bug reports<a class="headerlink" href="#contribution-and-or-bug-reports" title="Permalink to this headline">¶</a></h2>

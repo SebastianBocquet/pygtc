@@ -61,5 +61,5 @@ Please report any problems or pitch new ideas on `GitHub
 developed. Bugs will be squashed ASAP and feature requests will be seriously
 considered.
 
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.154122.svg
-   :target: https://doi.org/10.5281/zenodo.154122
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.159091.svg
+   :target: https://doi.org/10.5281/zenodo.159091
