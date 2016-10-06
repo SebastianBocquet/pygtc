@@ -137,7 +137,7 @@ def test_GTC_truthLineStyles():
                     truthLineStyles = truthLineStyles,
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['priors'], extensions=['png'], tol=5e-4, savefig_kwarg=SFKWARGS)
+@image_comparison(baseline_images=['priors'], extensions=['png'], tol=5e-3, savefig_kwarg=SFKWARGS)
 def test_GTC_priors():
     if not HAS_SCIPY:
         warnings.warn("Can't test priors without scipy installed. Skipping test.", UserWarning)
