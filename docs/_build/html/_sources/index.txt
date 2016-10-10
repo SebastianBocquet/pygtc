@@ -53,7 +53,23 @@ Contents:
    demo2.rst
    api.rst
 
+Citation
+--------
+If you use pygtc to generate plots for a publication, please cite as::
 
+ @article{Bocquet2016,
+   doi = {10.21105/joss.00046},
+   url = {http://dx.doi.org/10.21105/joss.00046},
+   year  = {2016},
+   month = {oct},
+   publisher = {The Open Journal},
+   volume = {1},
+   number = {6},
+   author = {Sebastian Bocquet and Faustin W. Carter},
+   title = {pygtc: beautiful parameter covariance plots (aka. Giant Triangle Confusograms)},
+   journal = {The Journal of Open Source Software}
+ }
+ 
 Contributions, problems, questions, recommendations
 ---------------------------------------------------
 Please report any problems or pitch new ideas on `GitHub

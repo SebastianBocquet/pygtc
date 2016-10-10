@@ -49,9 +49,25 @@ Documentation is hosted at `ReadTheDocs <http://pygtc.readthedocs.io/>`_,
 or check out `demo.ipynp <https://github.com/SebastianBocquet/pygtc/blob/master/demo.ipynb>`_,
 in this repository, for a working example.
 
+Citation
+--------
+If you use pygtc to generate plots for a publication, please cite as::
+
+  @article{Bocquet2016,
+    doi = {10.21105/joss.00046},
+    url = {http://dx.doi.org/10.21105/joss.00046},
+    year  = {2016},
+    month = {oct},
+    publisher = {The Open Journal},
+    volume = {1},
+    number = {6},
+    author = {Sebastian Bocquet and Faustin W. Carter},
+    title = {pygtc: beautiful parameter covariance plots (aka. Giant Triangle Confusograms)},
+    journal = {The Journal of Open Source Software}
+  }
+
 
 Copyright 2016, Sebastian Bocquet and Faustin W. Carter
 
 .. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.159091.svg
    :target: https://doi.org/10.5281/zenodo.159091
-   
