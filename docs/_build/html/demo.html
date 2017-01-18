@@ -86,6 +86,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Example 1: Making a GTC/triangle plot with pygtc</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#import-dependencies">Import dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#generate-fake-data">Generate fake data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#omit-one-parameter-for-one-chain">Omit one parameter for one chain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#minimal-example">Minimal example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#complete-the-figure">Complete the figure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#make-figure-publication-ready">Make figure publication ready</a></li>
@@ -175,12 +176,21 @@ that chains are allowed to have different lengths.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="omit-one-parameter-for-one-chain">
+<h2>Omit one parameter for one chain<a class="headerlink" href="#omit-one-parameter-for-one-chain" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s assume the samples1 does not include the second to last parameter.
+In the figure, we only want to show this parameter for samples2. pygtc
+will omit parameters that only contain nan.</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">samples1</span><span class="p">[:,</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="minimal-example">
 <h2>Minimal example<a class="headerlink" href="#minimal-example" title="Permalink to this headline">¶</a></h2>
 <div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">GTC</span> <span class="o">=</span> <span class="n">pygtc</span><span class="o">.</span><span class="n">plotGTC</span><span class="p">(</span><span class="n">chains</span><span class="o">=</span><span class="p">[</span><span class="n">samples1</span><span class="p">,</span><span class="n">samples2</span><span class="p">])</span>
 </pre></div>
 </div>
-<img alt="_images/demo_5_0.png" src="_images/demo_5_0.png" />
+<img alt="_images/demo_7_0.png" src="_images/demo_7_0.png" />
 </div>
 <div class="section" id="complete-the-figure">
 <h2>Complete the figure<a class="headerlink" href="#complete-the-figure" title="Permalink to this headline">¶</a></h2>
@@ -233,7 +243,7 @@ that could indicate Gaussian priors we assumed</p>
                     <span class="n">priors</span><span class="o">=</span><span class="n">priors</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/demo_7_0.png" src="_images/demo_7_0.png" />
+<img alt="_images/demo_9_0.png" src="_images/demo_9_0.png" />
 </div>
 <div class="section" id="make-figure-publication-ready">
 <h2>Make figure publication ready<a class="headerlink" href="#make-figure-publication-ready" title="Permalink to this headline">¶</a></h2>
@@ -272,7 +282,7 @@ publication!</li>
                     <span class="n">plotName</span><span class="o">=</span><span class="s1">&#39;fullGTC.pdf&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/demo_9_0.png" src="_images/demo_9_0.png" />
+<img alt="_images/demo_11_0.png" src="_images/demo_11_0.png" />
 </div>
 <div class="section" id="single-2d-panel">
 <h2>Single 2d panel<a class="headerlink" href="#single-2d-panel" title="Permalink to this headline">¶</a></h2>
@@ -305,8 +315,8 @@ Let&#8217;s look in more detail! Here, we&#8217;ll want single-column figures.</
                     <span class="n">do1dPlots</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/demo_11_0.png" src="_images/demo_11_0.png" />
-<img alt="_images/demo_11_1.png" src="_images/demo_11_1.png" />
+<img alt="_images/demo_13_0.png" src="_images/demo_13_0.png" />
+<img alt="_images/demo_13_1.png" src="_images/demo_13_1.png" />
 </div>
 <div class="section" id="single-1d-panel">
 <h2>Single 1d panel<a class="headerlink" href="#single-1d-panel" title="Permalink to this headline">¶</a></h2>
@@ -324,7 +334,7 @@ Let&#8217;s look in more detail! Here, we&#8217;ll want single-column figures.</
                     <span class="n">doOnly1dPlot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/demo_13_0.png" src="_images/demo_13_0.png" />
+<img alt="_images/demo_15_0.png" src="_images/demo_15_0.png" />
 </div>
 </div>
 

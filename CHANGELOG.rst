@@ -1,3 +1,8 @@
+Version 0.2.3:
+  * It is now possible to omit a parameter from a chain by using None as a
+    placeholder. Demo notebook and documentation updated appropriately.
+  * Added changelog to manifest.
+
 Version 0.2.2:
   * No longer fails if you ask for priors and scipy is missing. Instead, it
     issues a warning and ignores the request.
