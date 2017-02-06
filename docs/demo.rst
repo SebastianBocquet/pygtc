@@ -40,6 +40,17 @@ that chains are allowed to have different lengths.
     samples1 = create_random_samples(8, 50000)
     samples2 = 1+create_random_samples(8, 70000)
 
+Omit one parameter for one chain
+================================
+
+Let's assume the samples1 does not include the second to last parameter.
+In the figure, we only want to show this parameter for samples2. pygtc
+will omit parameters that only contain nan.
+
+.. code:: python
+
+    samples1[:,6] = None
+
 Minimal example
 ===============
 
@@ -49,7 +60,7 @@ Minimal example
 
 
 
-.. image:: _static/demo_files/demo_5_0.png
+.. image:: _static/demo_files/demo_7_0.png
 
 
 Complete the figure
@@ -109,7 +120,7 @@ Note that all these must match number of parameters!
 
 
 
-.. image:: _static/demo_files/demo_7_0.png
+.. image:: _static/demo_files/demo_9_0.png
 
 
 Make figure publication ready
@@ -152,7 +163,7 @@ Make figure publication ready
 
 
 
-.. image:: _static/demo_files/demo_9_0.png
+.. image:: _static/demo_files/demo_11_0.png
 
 
 Single 2d panel
@@ -191,11 +202,11 @@ Let's look in more detail! Here, we'll want single-column figures.
 
 
 
-.. image:: _static/demo_files/demo_11_0.png
+.. image:: _static/demo_files/demo_13_0.png
 
 
 
-.. image:: _static/demo_files/demo_11_1.png
+.. image:: _static/demo_files/demo_13_1.png
 
 
 Single 1d panel
@@ -219,4 +230,4 @@ Finally, let's just plot the posterior on C
 
 
 
-.. image:: _static/demo_files/demo_13_0.png
+.. image:: _static/demo_files/demo_15_0.png

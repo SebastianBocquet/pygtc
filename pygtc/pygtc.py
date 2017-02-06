@@ -950,28 +950,37 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
     # With smoothing
     if smoothingKernel>0:
         for k in reversed(range(nChains)):
-            # create 1d histogram
-            hist1d, edges = np.histogram(chains1d[k], weights=weights[k], normed=True, bins=nBins)
-            # Bin center between histogram edges
-            centers = (edges[1:]+edges[:-1])/2
-            # Filter data
-            plotData.append( scipy.ndimage.gaussian_filter1d((centers,hist1d), sigma=smoothingKernel) )
-            if filledPlots:
-                # Filled smooth histogram
-                plt.fill_between(plotData[-1][0], plotData[-1][1], 0, color=colors[k][1])
+            # Is there a chain to plot?
+            if np.isnan(chains1d[k]).all():
+                plotData.append(None)
+            else:
+                # create 1d histogram
+                hist1d, edges = np.histogram(chains1d[k], weights=weights[k], normed=True, bins=nBins)
+                # Bin center between histogram edges
+                centers = (edges[1:]+edges[:-1])/2
+                # Filter data
+                plotData.append( scipy.ndimage.gaussian_filter1d((centers,hist1d), sigma=smoothingKernel) )
+                if filledPlots:
+                    # Filled smooth histogram
+                    plt.fill_between(plotData[-1][0], plotData[-1][1], 0, color=colors[k][1])
         # Line for hidden histogram
         for k in reversed(range(nChains)):
-            plt.plot(plotData[nChains-1-k][0], plotData[nChains-1-k][1], lw=1, ls='-', color=colors[k][1])
+            if plotData[nChains-1-k] is not None:
+                plt.plot(plotData[nChains-1-k][0], plotData[nChains-1-k][1], lw=1, ls='-', color=colors[k][1])
 
     # No smoothing
     else:
         if filledPlots:
             for k in reversed(range(nChains)):
-            # Filled stepfilled histograms
-                plt.hist(chains1d[k], weights=weights[k], normed=True, bins=nBins, histtype='stepfilled', edgecolor='None', color=colors[k][1])
+                # Is there a chain to plot?
+                if not np.isnan(chains1d[k]).all():
+                    # Filled stepfilled histograms
+                    plt.hist(chains1d[k], weights=weights[k], normed=True, bins=nBins, histtype='stepfilled', edgecolor='None', color=colors[k][1])
         for k in reversed(range(nChains)):
-            # Step curves for hidden histogram(s)
-            plt.hist(chains1d[k], weights=weights[k], normed=True, bins=nBins, histtype='step', color=colors[k][1])
+            # Is there a chain to plot?
+            if not np.isnan(chains1d[k]).all():
+                # Step curves for hidden histogram(s)
+                plt.hist(chains1d[k], weights=weights[k], normed=True, bins=nBins, histtype='step', color=colors[k][1])
 
     ##### Truth line
     if truths1d is not None:
@@ -1063,46 +1072,51 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
     plotData = []
     # Draw filled contours in reversed order to have first chain in list on top
     for k in reversed(range(nChains)):
-        # Create 2d histogram
-        hist2d, xedges, yedges = np.histogram2d(chains2d[k][0], chains2d[k][1], weights=weights[k], bins=nBins)
-        # image extent, needed below for contour lines
-        extents[k] = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
-        # Normalize
-        hist2d = hist2d/np.sum(hist2d)
-        # Cumulative 1d distribution
-        histOrdered = np.sort(hist2d.flat)
-        histCumulative = np.cumsum(histOrdered)
-
-        # Compute contour levels (from low to high for technical reasons)
-        for l in range(nContourLevels):
-            # Find location of contour level in 1d histCumulative
-            temp = np.interp(confLevels[l], histCumulative, nBinsFlat)
-            # Find "height" of contour level
-            chainLevels[k][nContourLevels-1-l] = np.interp(temp, nBinsFlat, histOrdered)
-
-        # Apply Gaussian smoothing and plot filled contours if requested
-        if smoothingKernel>0:
-            plotData.append( scipy.ndimage.gaussian_filter(hist2d.T, sigma=smoothingKernel) )
+        # Is there a chain to plot?
+        if (np.isnan(chains2d[k][0]).all())|(np.isnan(chains2d[k][1]).all()):
+            plotData.append(None)
         else:
-            plotData.append( hist2d.T )
-        if filledPlots:
-            xbins = (xedges[1:]+xedges[:-1])/2
-            ybins = (yedges[1:]+yedges[:-1])/2
-            ax.contourf(xbins, ybins, plotData[-1], levels=chainLevels[k], colors=colors[k][:nContourLevels][::-1])
+            # Create 2d histogram
+            hist2d, xedges, yedges = np.histogram2d(chains2d[k][0], chains2d[k][1], weights=weights[k], bins=nBins)
+            # image extent, needed below for contour lines
+            extents[k] = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+            # Normalize
+            hist2d = hist2d/np.sum(hist2d)
+            # Cumulative 1d distribution
+            histOrdered = np.sort(hist2d.flat)
+            histCumulative = np.cumsum(histOrdered)
 
-        # Plot density
-        if plotDensity:
-            if filledPlots:
-                ax.imshow(hist2d.T, extent=extents[k], origin='lower', cmap=myColorMap[k], aspect='auto', clim=(0,chainLevels[k][0]))
+            # Compute contour levels (from low to high for technical reasons)
+            for l in range(nContourLevels):
+                # Find location of contour level in 1d histCumulative
+                temp = np.interp(confLevels[l], histCumulative, nBinsFlat)
+                # Find "height" of contour level
+                chainLevels[k][nContourLevels-1-l] = np.interp(temp, nBinsFlat, histOrdered)
+
+            # Apply Gaussian smoothing and plot filled contours if requested
+            if smoothingKernel>0:
+                plotData.append( scipy.ndimage.gaussian_filter(hist2d.T, sigma=smoothingKernel) )
             else:
-                ax.imshow(hist2d.T, extent=extents[k], origin='lower', cmap=myColorMap[k], aspect='auto')
+                plotData.append( hist2d.T )
+            if filledPlots:
+                xbins = (xedges[1:]+xedges[:-1])/2
+                ybins = (yedges[1:]+yedges[:-1])/2
+                ax.contourf(xbins, ybins, plotData[-1], levels=chainLevels[k], colors=colors[k][:nContourLevels][::-1])
+
+            # Plot density
+            if plotDensity:
+                if filledPlots:
+                    ax.imshow(hist2d.T, extent=extents[k], origin='lower', cmap=myColorMap[k], aspect='auto', clim=(0,chainLevels[k][0]))
+                else:
+                    ax.imshow(hist2d.T, extent=extents[k], origin='lower', cmap=myColorMap[k], aspect='auto')
 
 
     ###### Draw contour lines in order to see contours lying on top of each other
     for k in range(nChains):
-        for l in range(nContourLevels):
-            ax.contour(plotData[nChains-1-k], [chainLevels[k][nContourLevels-1-l]], extent=extents[k], origin='lower', linewidths=1, colors=colors[k][l])
-
+        if plotData[nChains-1-k] is not None:
+            for l in range(nContourLevels):
+                ax.contour(plotData[nChains-1-k], [chainLevels[k][nContourLevels-1-l]], extent=extents[k], origin='lower', linewidths=1, colors=colors[k][l])
+            
     ##### Truth lines
     if truths2d is not None:
         for k in range(len(truths2d)):
