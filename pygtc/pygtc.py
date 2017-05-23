@@ -1,4 +1,5 @@
 import warnings
+import sys
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import matplotlib as mpl
@@ -12,6 +13,8 @@ try:
     haveScipy = True
 except ImportError:
     haveScipy = False
+
+PYVER = sys.version_info[0]
 
 __all__ = ['plotGTC']
 
@@ -643,8 +646,14 @@ def plotGTC(chains, **kwargs):
 
                         #Now monkey patch the label's set_x method to force it to
                         #shift the x labels when it gets called during render
-                        xLabel.set_x = types.MethodType(lambda self, x: mpl.text.Text.set_x(self, x+self.custom_shift),
-                                    xLabel, mpl.text.Text)
+
+                        #Python 3 changes how this gets called
+                        if PYVER >= 3:
+                            xLabel.set_x = types.MethodType(lambda self, x: mpl.text.Text.set_x(self, x+self.custom_shift),
+                                        xLabel)
+                        else:
+                            xLabel.set_x = types.MethodType(lambda self, x: mpl.text.Text.set_x(self, x+self.custom_shift),
+                                        xLabel, mpl.text.Text)
 
                         #Update the font if needed
                         xLabel.set_fontproperties(tickFontProps)
@@ -669,8 +678,12 @@ def plotGTC(chains, **kwargs):
 
                         #Now monkey patch the label's set_x method to force it to
                         #shift the x labels when it gets called during render
-                        yLabel.set_y = types.MethodType(lambda self, y: mpl.text.Text.set_y(self, y+self.custom_shift),
-                                                    yLabel, mpl.text.Text )
+                        if PYVER >= 3:
+                            yLabel.set_y = types.MethodType(lambda self, y: mpl.text.Text.set_y(self, y+self.custom_shift),
+                                                        yLabel)
+                        else:
+                            yLabel.set_y = types.MethodType(lambda self, y: mpl.text.Text.set_y(self, y+self.custom_shift),
+                                                        yLabel, mpl.text.Text)
 
                         #Update the font if needed
                         yLabel.set_fontproperties(tickFontProps)
@@ -774,8 +787,12 @@ def plotGTC(chains, **kwargs):
 
                 #Now monkey patch the label's set_x method to force it to
                 #shift the x labels when it gets called during render
-                xLabel.set_x = types.MethodType(lambda self, x: mpl.text.Text.set_x(self, x+self.custom_shift),
-                                            xLabel, mpl.text.Text )
+                if PYVER >= 3:
+                    xLabel.set_x = types.MethodType(lambda self, x: mpl.text.Text.set_x(self, x+self.custom_shift),
+                                                xLabel)
+                else:
+                    xLabel.set_x = types.MethodType(lambda self, x: mpl.text.Text.set_x(self, x+self.custom_shift),
+                                                xLabel, mpl.text.Text )
 
                 #Update the font if needed
                 xLabel.set_fontproperties(tickFontProps)
@@ -1116,7 +1133,7 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
         if plotData[nChains-1-k] is not None:
             for l in range(nContourLevels):
                 ax.contour(plotData[nChains-1-k], [chainLevels[k][nContourLevels-1-l]], extent=extents[k], origin='lower', linewidths=1, colors=colors[k][l])
-            
+
     ##### Truth lines
     if truths2d is not None:
         for k in range(len(truths2d)):

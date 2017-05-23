@@ -1,3 +1,6 @@
+Version 0.2.4
+  * Fixed bug that was causing a crash in Python 3.5
+
 Version 0.2.3:
   * It is now possible to omit a parameter from a chain by using None as a
     placeholder. Demo notebook and documentation updated appropriately.
