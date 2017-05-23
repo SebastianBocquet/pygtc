@@ -1,6 +1,6 @@
 #####Stricter version requirements than setup.py#####
 numpy >= 1.5
-matplotlib >=1.5.3, <2.0
+matplotlib >=1.5.3
 
 #####Packages that provide some extra utility, but aren't required#####
 #nose
