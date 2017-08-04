@@ -226,12 +226,26 @@ def plotGTC(chains, **kwargs):
     #Set up some colors
     truthsDefaultColors = ['#4d4d4d', '#4d4d4d', '#4d4d4d']
     truthsDefaultLS = ['--',':','dashdot']
-    colorsDict = { 'blues' : ('#4c72b0','#7fa5e3','#b2d8ff'),
-                    'greens' : ('#55a868','#88db9b','#bbffce'),
-                    'yellows' : ('#f5964f','#ffc982','#fffcb5'),
-                    'reds' : ('#c44e52','#f78185','#ffb4b8'),
-                    'purples' : ('#8172b2','#b4a5e5','#37d8ff')}
-    colorsOrder = ['blues', 'greens', 'yellows', 'reds', 'purples']
+    colorsDict = {
+                  # Match pygtc up to v0.2.4
+                  'blues_old' : ('#4c72b0','#7fa5e3','#b2d8ff'),
+                  'greens_old' : ('#55a868','#88db9b','#bbffce'),
+                  'yellows_old' : ('#f5964f','#ffc982','#fffcb5'),
+                  'reds_old' : ('#c44e52','#f78185','#ffb4b8'),
+                  'purples_old' : ('#8172b2','#b4a5e5','#37d8ff'),
+                  # New color scheme, dark colors match matplotlib v2
+                  'blues' : ('#1f77b4','#52aae7','#85ddff'),
+                  'oranges' : ('#ff7f0e','#ffb241','#ffe574'),
+                  'greens' : ('#2ca02c','#5fd35f','#92ff92'),
+                  'reds' : ('#d62728','#ff5a5b','#ff8d8e'),
+                  'purples' : ('#9467bd','#c79af0','#facdff'),
+                  'browns' : ('#8c564b','#bf897e','#f2bcb1'),
+                  'pinks' : ('#e377c2','#ffaaf5','#ffddff'),
+                  'grays' : ('#7f7f7f','#b2b2b2','#e5e5e5'),
+                  'yellows' : ('#bcbd22','#eff055','#ffff88'),
+                  'cyans' : ('#17becf','#4af1ff','#7dffff'),
+              }
+    colorsOrder = ['blues', 'oranges','greens', 'reds', 'purples', 'browns', 'pinks', 'grays', 'yellows', 'cyans']
     colors = [colorsDict[cs] for cs in colorsOrder]
     priorColor = '#333333'
 
@@ -583,7 +597,7 @@ def plotGTC(chains, **kwargs):
 
                     ##### Panel layout
                     ax.grid(False)
-                    #ax.set_axis_bgcolor('none')
+                    ax.set_axis_bgcolor('w')
                     for axis in ['top','bottom','left','right']:
                         ax.spines[axis].set_color(axisColor)
                         ax.spines[axis].set_linewidth(1)
