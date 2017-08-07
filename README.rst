@@ -49,6 +49,8 @@ Documentation is hosted at `ReadTheDocs <http://pygtc.readthedocs.io/>`_,
 or check out `demo.ipynp <https://github.com/SebastianBocquet/pygtc/blob/master/demo.ipynb>`_,
 in this repository, for a working example.
 
+To build your own local copy of the documentation you'll need to install sphinx. Then you can run ``make html`` from within the ``docs`` folder.
+
 Citation
 --------
 If you use pygtc to generate plots for a publication, please cite as::
