@@ -148,10 +148,12 @@ def plotGTC(chains, **kwargs):
         set to zero.
 
     colorsOrder : list-like[nDims]
-        The color order for chains passed to `chains`. Default is
-        ``['blues', 'greens', 'yellows', 'reds', 'purples']``. Currently,
-        ``pygtc`` is limited to these color values, so you can reorder them,
-        but can't yet define your own colors.
+        The color order for chains passed to `chains`. Default is ``['blues',
+        'oranges','greens', 'reds', 'purples', 'browns', 'pinks', 'grays',
+        'yellows', 'cyans']``. Currently, ``pygtc`` is limited to these color
+        values, so you can reorder them, but can't yet define your own colors.
+        If you really love the old colors, you can get at them by calling:
+        ``['blues_old', 'greens_old', ...]``.
 
     do1dPlots : bool
         Whether or not 1d histrograms are plotted on the diagonal. Default
@@ -245,8 +247,8 @@ def plotGTC(chains, **kwargs):
                   'yellows' : ('#bcbd22','#eff055','#ffff88'),
                   'cyans' : ('#17becf','#4af1ff','#7dffff'),
               }
-    colorsOrder = ['blues', 'oranges','greens', 'reds', 'purples', 'browns', 'pinks', 'grays', 'yellows', 'cyans']
-    colors = [colorsDict[cs] for cs in colorsOrder]
+    defaultColorsOrder = ['blues', 'oranges','greens', 'reds', 'purples', 'browns', 'pinks', 'grays', 'yellows', 'cyans']
+
     priorColor = '#333333'
 
     #Angle of tick labels
@@ -343,16 +345,15 @@ def plotGTC(chains, **kwargs):
         shiftY = 0
 
     # User-defined color ordering
-    customColorsOrder = kwargs.pop('colorsOrder', None) #Labels for multiple chains, goes in plot legend
-    if customColorsOrder is not None:
-        # Convert to list if only one entry
-        if __isstr(customColorsOrder):
-            customColorsOrder = [customColorsOrder]
-        lencustomColorsOrder = len(customColorsOrder)
-        if not all(color in colorsDict.keys() for color in customColorsOrder):
-            raise ValueError("Bad color name in colorsOrder=%s, pick from %s"%(customColorsOrder,colorsDict.keys()))
-        colorsOrder[:lencustomColorsOrder] = customColorsOrder[:lencustomColorsOrder]
-        colors = [colorsDict[cs] for cs in colorsOrder]
+    colorsOrder = kwargs.pop('colorsOrder', defaultColorsOrder) #Labels for multiple chains, goes in plot legend
+
+    # Convert to list if only one entry
+    if __isstr(colorsOrder):
+        colorsOrder = [colorsOrder]
+    if not all(color in colorsDict.keys() for color in colorsOrder):
+        raise ValueError("Bad color name in colorsOrder=%s, pick from %s"%(colorsOrder,colorsDict.keys()))
+
+    colors = [colorsDict[cs] for cs in colorsOrder]
 
     # Highlight a point (or several) in parameter space by lines
     truthColors = kwargs.pop('truthColors', truthsDefaultColors) #Default supports up to three truths
