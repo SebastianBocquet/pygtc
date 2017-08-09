@@ -1,3 +1,9 @@
+Version next
+  * Fixed bug due to changes in the OSX backend for matplotlib 2.0.
+  * Addressed deprecation warnings due to changes in matplotlib 2.0 in a
+    backwards compatible way with matplotlib 1.5.
+  * Updated color scheme to align with new matplotlib 2.0 defaults.
+
 Version 0.2.4
   * Fixed bug that was causing a crash in Python 3.5
 
