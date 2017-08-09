@@ -738,7 +738,14 @@ def plotGTC(chains, **kwargs):
 
             ##### Panel layout
             ax.grid(False)
-            ax.set_axis_bgcolor('w')
+
+            try:
+                #This is the matplotlib 2.0 way of doing things
+                ax.set_facecolor('w')
+            except AttributeError:
+                #Fallback to matplotlib 1.5
+                ax.set_axis_bgcolor('w')
+
             for axis in ['top','bottom','left','right']:
                 ax.spines[axis].set_color(axisColor)
                 ax.spines[axis].set_linewidth(1)
@@ -832,10 +839,22 @@ def plotGTC(chains, **kwargs):
         fig.canvas.draw()
         bboxSize = np.empty(len(axH))
 
+        try:
+            #This is the canonical way to get the renderer, which the OSX
+            #backend started supporting in mpl 2.0. Older versions of the OSX
+            #backend don't implement the method though, and access the renderer
+            #obect directly. This should do it right, but fall through to the
+            #"wrong" way for older versions or backends that have yet to implement.
+            renderer = fig.canvas.get_renderer()
+        except AttributeError:
+            #If the get_renderer method doesn't exist, then try accessing the
+            #renderer directly.
+            renderer = fig.canvas.renderer
+
         ##### x labels
         # Get label length of the bottom row
         for i in range(len(axH)):
-            bboxTickLabel = axH[i].xaxis.get_ticklabel_extents(fig.canvas.renderer)[0].get_points()
+            bboxTickLabel = axH[i].xaxis.get_ticklabel_extents(renderer)[0].get_points()
             bboxSize[i] = bboxTickLabel[1,1]-bboxTickLabel[0,1]
             panelWidth = axH[i].get_window_extent().transformed(fig.dpi_scale_trans.inverted()).width
         # Apply longest spacing to all panels in last row
@@ -848,7 +867,7 @@ def plotGTC(chains, **kwargs):
         ##### y labels
         # Get label length of the left column
         for i in range(len(axV)):
-            bboxTickLabel = axV[i].yaxis.get_ticklabel_extents(fig.canvas.renderer)[0].get_points()
+            bboxTickLabel = axV[i].yaxis.get_ticklabel_extents(renderer)[0].get_points()
             bboxSize[i] = bboxTickLabel[1,0]-bboxTickLabel[0,0]
             panelHeight = axV[i].get_window_extent().transformed(fig.dpi_scale_trans.inverted()).height
         # Apply longest spacing to all panels in first column

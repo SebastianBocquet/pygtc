@@ -21,3 +21,6 @@ dist
 # Test images
 result_images
 pygtc/result_images
+
+#Build files for docs
+/docs/_build

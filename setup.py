@@ -7,7 +7,7 @@ version_number = version_file.read().strip()
 version_file.close()
 
 setup(
-    name = 'pygtc',
+    name = 'pyGTC',
     description = 'Make an awesome giant triangle confusogram (gtc)!',
     version = version_number,
     author = 'Sebastian Bocquet and Faustin Carter',
