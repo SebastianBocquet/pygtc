@@ -598,7 +598,14 @@ def plotGTC(chains, **kwargs):
 
                     ##### Panel layout
                     ax.grid(False)
-                    ax.set_axis_bgcolor('w')
+                    
+                    try:
+                        #This is the matplotlib 2.0 way of doing things
+                        ax.set_facecolor('w')
+                    except AttributeError:
+                        #Fallback to matplotlib 1.5
+                        ax.set_axis_bgcolor('w')
+
                     for axis in ['top','bottom','left','right']:
                         ax.spines[axis].set_color(axisColor)
                         ax.spines[axis].set_linewidth(1)
