@@ -8,8 +8,9 @@ Required packages
 pygtc is written in Python 2.7 and requires the following packages:
 
 * numpy >= 1.5
-* matplotlib >= 1.5 and < 2.0
+* matplotlib >= 1.5.3 (preferably >= 2.0)
 * scipy (optional)
+* nose (optional -- only needed for running unit tests)
 
 
 Downloading and installing
@@ -48,15 +49,13 @@ or from source::
 
 Running tests
 ~~~~~~~~~~~~~
-For tests to *for sure* run properly, you'll want to have matplotlib v1.5.3
-installed, as they fixed a bug in their ``image_comparison`` decorator. You'll
-need ``nose`` installed to run the tests, although pygtc functions fine without
-it. You also should have the Arial font installed, as that is pygtc's default
-font and tests will "fail" if matplotlib falls back on Bitstream Vera Sans (even
-though the images produced might look perfectly fine). Test base images were
-produced on Mac OSX and if you are on another system there is no guarantee that
-you will get a pixel-perfect copy of what the OSX backend produces. However, the
-images produced by the tests should still look great!
+You'll need ``nose`` installed to run the tests, although pygtc functions fine
+without it. You also should have the Arial font installed, as that is pygtc's
+default font and tests will "fail" if matplotlib falls back on Bitstream Vera
+Sans (even though the images produced might look perfectly fine). Test base
+images were produced on Mac OSX and if you are on another system there is no
+guarantee that you will get a pixel-perfect copy of what the OSX backend
+produces. However, the images produced by the tests should still look great!
 
 There are two ways to run the test suite. You can use the nosetests utility::
 
