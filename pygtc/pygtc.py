@@ -291,7 +291,7 @@ def plotGTC(chains, **kwargs):
 
     # Get number of chains
     nChains = len(chains)
-    assert nChains<=len(colorsOrder), "currently only supports up to "+str(len(colorsOrder))+" chains"
+    assert nChains<=len(defaultColorsOrder), "currently only supports up to "+str(len(defaultColorsOrder))+" chains"
 
     # Check that each chain looks reasonable (2d shape)
     for i in range(nChains):
