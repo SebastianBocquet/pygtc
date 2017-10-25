@@ -589,7 +589,8 @@ def plotGTC(chains, **kwargs):
                         ax.spines[axis].set_linewidth(1)
 
                     ##### Global tick properties
-                    ax.tick_params(direction='in', pad=4, colors=axisColor, size=4, width=.5, labelsize=6)
+                    ax.tick_params(direction='in', top=True, right=True, pad=4,
+                        colors=axisColor, size=4, width=.5, labelsize=6)
 
                     ##### get x limits
                     panelXrange[j] = ax.get_xlim()
@@ -736,7 +737,8 @@ def plotGTC(chains, **kwargs):
                 ax.spines[axis].set_linewidth(1)
 
             ##### Global tick properties
-            ax.tick_params(direction='in', pad=4, colors=axisColor, size=4, width=.5, labelsize=6)
+            ax.tick_params(direction='in', top=True, right=True, pad=4,
+                colors=axisColor, size=4, width=.5, labelsize=6)
 
             ##### Tick labels without offset and scientific notation
             ax.get_xaxis().get_major_formatter().set_useOffset(False)
