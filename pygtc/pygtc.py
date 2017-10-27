@@ -806,13 +806,6 @@ def plotGTC(chains, **kwargs):
                 #Update the font if needed
                 xLabel.set_fontproperties(tickFontProps)
 
-            ##### y label for top-left panel
-            if i==0:
-                if doOnly1dPlot:
-                    ax.set_ylabel('Probability', fontdict=customLabelFont)
-                elif paramNames is not None:
-                    ax.set_ylabel(paramNames[i], fontdict=customLabelFont)
-
             ##### First column and last row are needed to align labels
             if i==0:
                 axV.append(ax)
