@@ -611,7 +611,8 @@ def plotGTC(chains, **kwargs):
                         ax.spines[axis].set_linewidth(1)
 
                     ##### Global tick properties
-                    ax.tick_params(direction='in', pad=4, colors=axisColor, size=4, width=.5, labelsize=6)
+                    ax.tick_params(direction='in', top=True, right=True, pad=4,
+                        colors=axisColor, size=4, width=.5, labelsize=6)
 
                     ##### get x limits
                     panelXrange[j] = ax.get_xlim()
@@ -758,7 +759,8 @@ def plotGTC(chains, **kwargs):
                 ax.spines[axis].set_linewidth(1)
 
             ##### Global tick properties
-            ax.tick_params(direction='in', pad=4, colors=axisColor, size=4, width=.5, labelsize=6)
+            ax.tick_params(direction='in', top=True, right=True, pad=4,
+                colors=axisColor, size=4, width=.5, labelsize=6)
 
             ##### Tick labels without offset and scientific notation
             ax.get_xaxis().get_major_formatter().set_useOffset(False)
@@ -825,13 +827,6 @@ def plotGTC(chains, **kwargs):
 
                 #Update the font if needed
                 xLabel.set_fontproperties(tickFontProps)
-
-            ##### y label for top-left panel
-            if i==0:
-                if doOnly1dPlot:
-                    ax.set_ylabel('Probability', fontdict=customLabelFont)
-                elif paramNames is not None:
-                    ax.set_ylabel(paramNames[i], fontdict=customLabelFont)
 
             ##### First column and last row are needed to align labels
             if i==0:
