@@ -5,13 +5,13 @@ Installation
 Required packages
 ~~~~~~~~~~~~~~~~~
 
-pygtc is written in Python, is compatible with both versions 2.7 and 3.6, and
-requires the following packages at a minimum:
+pygtc is compatible with Python 2.7 and 3.6 and requires the following packages:
 
 * numpy >= 1.5
-* matplotlib >= 1.5.3, preferably >= 2.0
+* matplotlib >= 1.5.3 (preferably >= 2.0)
 * scipy (optional)
-* pandas (optional)
+* nose (optional -- only needed for running unit tests)
+* nose-exclude (optional -- only needed for running unit tests)
 
 Downloading and installing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
