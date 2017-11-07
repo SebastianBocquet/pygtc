@@ -22,10 +22,10 @@ __all__ = ['plotGTC']
 #################### Create a full GTC
 
 def plotGTC(chains, **kwargs):
-    r"""Make a great looking Giant Triangle Confusogram (GTC) with one line of code!
-    A GTC is a lot like a triangle (or corner) plot, but you get to put as many
-    sets of data, and overlay as many truths as you like. That's what can make
-    it so *confusing*!
+    r"""Make a great looking Giant Triangle Confusogram (GTC) with one line of
+    code! A GTC is a lot like a triangle (or corner) plot, but you get to put as
+    many sets of data, and overlay as many truths as you like. That's what can
+    make it so *confusing*!
 
     Parameters
     ----------
@@ -247,7 +247,8 @@ def plotGTC(chains, **kwargs):
                   'yellows' : ('#bcbd22','#eff055','#ffff88'),
                   'cyans' : ('#17becf','#4af1ff','#7dffff'),
               }
-    defaultColorsOrder = ['blues', 'oranges','greens', 'reds', 'purples', 'browns', 'pinks', 'grays', 'yellows', 'cyans']
+    defaultColorsOrder = ['blues', 'oranges','greens', 'reds', 'purples',
+                        'browns', 'pinks', 'grays', 'yellows', 'cyans']
 
     priorColor = '#333333'
 
@@ -291,7 +292,8 @@ def plotGTC(chains, **kwargs):
 
     # Get number of chains
     nChains = len(chains)
-    assert nChains<=len(defaultColorsOrder), "currently only supports up to "+str(len(defaultColorsOrder))+" chains"
+    assert nChains<=len(defaultColorsOrder), \
+        "currently only supports up to "+str(len(defaultColorsOrder))+" chains"
 
     # Check that each chain looks reasonable (2d shape)
     for i in range(nChains):
@@ -345,7 +347,7 @@ def plotGTC(chains, **kwargs):
         shiftY = 0
 
     # User-defined color ordering
-    colorsOrder = kwargs.pop('colorsOrder', defaultColorsOrder) #Labels for multiple chains, goes in plot legend
+    colorsOrder = kwargs.pop('colorsOrder', defaultColorsOrder)
 
     # Convert to list if only one entry
     if __isstr(colorsOrder):
@@ -364,9 +366,12 @@ def plotGTC(chains, **kwargs):
         if len(np.shape(truths))==1:
             truths = [truths]
         truths = np.array(truths)
-        assert np.shape(truths)[0]<=len(truthColors), "More truths than available colors. Set colors with truthColors = [colors...]"
-        assert np.shape(truths)[0]<=len(truthLineStyles), "More truths than available line styles. Set line styles with truthLineStyles = [ls...]"
-        assert np.shape(truths)[1]==nDim, "Each list of truths must match number of parameters"
+        assert np.shape(truths)[0]<=len(truthColors), \
+            "More truths than available colors. Set colors with truthColors = [colors...]"
+        assert np.shape(truths)[0]<=len(truthLineStyles), \
+            "More truths than available line styles. Set line styles with truthLineStyles = [ls...]"
+        assert np.shape(truths)[1]==nDim, \
+            "Each list of truths must match number of parameters"
 
     # Labels for the different truth lines
     truthLabels = kwargs.pop('truthLabels', None) #Labels for multiple truths, goes in plot legend
@@ -399,7 +404,8 @@ def plotGTC(chains, **kwargs):
         if len(weights)==len(chains[0]):
             weights = [weights]
         for i in range(nChains):
-            assert len(weights[i])==len(chains[i]), "missmatch in chain/weights #%d: len(chain) %d, len(weights) %d"%(i,len(chains[i]),len(weights[i]))
+            assert len(weights[i])==len(chains[i]), \
+                "missmatch in chain/weights #%d: len(chain) %d, len(weights) %d"%(i,len(chains[i]),len(weights[i]))
 
     # Set plotName to save the plot to plotName
     plotName = kwargs.pop('plotName', None) #Um... the name of the plot?!
@@ -440,7 +446,9 @@ def plotGTC(chains, **kwargs):
         warnings.warn("Warning: You don't have Scipy installed. Your curves will not be smoothed.", UserWarning)
         smoothingKernel = 0
     if smoothingKernel>=nBins/10:
-        warnings.warn("Wow, that's a huge smoothing kernel! You sure you want its scale to be %.1f percent of the plot?!"%(100.*float(smoothingKernel)/float(nBins)), UserWarning)
+        warnings.warn("Wow, that's a huge smoothing kernel! You sure you want"
+            "its scale to be %.1f percent of the plot?!"
+            %(100.*float(smoothingKernel)/float(nBins)), UserWarning)
 
     # Filled contours and histograms
     filledPlots = kwargs.pop('filledPlots', True)
@@ -470,7 +478,8 @@ def plotGTC(chains, **kwargs):
     # Marker lines in legend
     showLegendMarker = False
     legendMarker = kwargs.pop('legendMarker', 'Auto')
-    assert legendMarker in ('All','None','Auto'), "legendMarker must be one of 'All', 'None', 'Auto'"
+    assert legendMarker in ('All','None','Auto'), \
+        "legendMarker must be one of 'All', 'None', 'Auto'"
     if legendMarker=='Auto':
         if truthLabels is not None:
             if len(truthLabels)>1: showLegendMarker = True
@@ -483,13 +492,15 @@ def plotGTC(chains, **kwargs):
     doOnly1dPlot = kwargs.pop('doOnly1dPlot', False)
     if doOnly1dPlot:
         for i in range(nChains):
-            assert chains[i].shape[1]==1, "Provide chains of shape(Npoints,1) if you only want the 1d histogram"
+            assert chains[i].shape[1]==1, \
+                "Provide chains of shape(Npoints,1) if you only want the 1d histogram"
         do1dPlots = True
 
     # Set font in rcParams (Not in the default file, but just in the running kernel)
     mathtextTypes = ['cm', 'stix', 'custom', 'stixsans', None]
     mathTextFontSet = kwargs.pop('mathTextFontSet', 'stixsans')
-    assert mathTextFontSet in mathtextTypes, "mathTextFont set must be one of 'cm', 'stix', 'custom', 'stixsans', None."
+    assert mathTextFontSet in mathtextTypes, \
+        "mathTextFont set must be one of 'cm', 'stix', 'custom', 'stixsans', None."
     oldMathTextFontSet = plt.rcParams['mathtext.fontset']
     if mathTextFontSet is not None:
         plt.rcParams['mathtext.fontset'] = mathTextFontSet
@@ -598,7 +609,7 @@ def plotGTC(chains, **kwargs):
 
                     ##### Panel layout
                     ax.grid(False)
-                    
+
                     try:
                         #This is the matplotlib 2.0 way of doing things
                         ax.set_facecolor('w')
@@ -672,11 +683,13 @@ def plotGTC(chains, **kwargs):
 
                         #Python 3 changes how this gets called
                         if PYVER >= 3:
-                            xLabel.set_x = types.MethodType(lambda self, x: mpl.text.Text.set_x(self, x+self.custom_shift),
-                                        xLabel)
+                            xLabel.set_x = types.MethodType(lambda self,
+                                x: mpl.text.Text.set_x(self, x+self.custom_shift),
+                                xLabel)
                         else:
-                            xLabel.set_x = types.MethodType(lambda self, x: mpl.text.Text.set_x(self, x+self.custom_shift),
-                                        xLabel, mpl.text.Text)
+                            xLabel.set_x = types.MethodType(lambda self,
+                                x: mpl.text.Text.set_x(self, x+self.custom_shift),
+                                xLabel, mpl.text.Text)
 
                         #Update the font if needed
                         xLabel.set_fontproperties(tickFontProps)
@@ -702,11 +715,13 @@ def plotGTC(chains, **kwargs):
                         #Now monkey patch the label's set_x method to force it to
                         #shift the x labels when it gets called during render
                         if PYVER >= 3:
-                            yLabel.set_y = types.MethodType(lambda self, y: mpl.text.Text.set_y(self, y+self.custom_shift),
-                                                        yLabel)
+                            yLabel.set_y = types.MethodType(lambda self,
+                                y: mpl.text.Text.set_y(self, y+self.custom_shift),
+                                yLabel)
                         else:
-                            yLabel.set_y = types.MethodType(lambda self, y: mpl.text.Text.set_y(self, y+self.custom_shift),
-                                                        yLabel, mpl.text.Text)
+                            yLabel.set_y = types.MethodType(lambda self,
+                                y: mpl.text.Text.set_y(self, y+self.custom_shift),
+                                yLabel, mpl.text.Text)
 
                         #Update the font if needed
                         yLabel.set_fontproperties(tickFontProps)
@@ -819,11 +834,13 @@ def plotGTC(chains, **kwargs):
                 #Now monkey patch the label's set_x method to force it to
                 #shift the x labels when it gets called during render
                 if PYVER >= 3:
-                    xLabel.set_x = types.MethodType(lambda self, x: mpl.text.Text.set_x(self, x+self.custom_shift),
-                                                xLabel)
+                    xLabel.set_x = types.MethodType(lambda self,
+                        x: mpl.text.Text.set_x(self, x+self.custom_shift),
+                        xLabel)
                 else:
-                    xLabel.set_x = types.MethodType(lambda self, x: mpl.text.Text.set_x(self, x+self.custom_shift),
-                                                xLabel, mpl.text.Text )
+                    xLabel.set_x = types.MethodType(lambda self,
+                        x: mpl.text.Text.set_x(self, x+self.custom_shift),
+                        xLabel, mpl.text.Text )
 
                 #Update the font if needed
                 xLabel.set_fontproperties(tickFontProps)
@@ -902,7 +919,8 @@ def plotGTC(chains, **kwargs):
         if truthLabels is not None:
             # Label for each truth
             for k in range(len(truthLabels)):
-                ax.plot(0, 0, lw=1, color=truthColors[k], label=truthLabels[k], ls=truthsDefaultLS[k])
+                ax.plot(0, 0, lw=1, color=truthColors[k], label=truthLabels[k],
+                    ls=truthsDefaultLS[k])
                 labelColors.append(truthColors[k])
 
         ##### Set xlim back to what the data wanted
@@ -911,7 +929,8 @@ def plotGTC(chains, **kwargs):
 
 
         ##### Legend and label colors according to plot
-        leg = plt.legend(loc='upper right', fancybox=True, handlelength=3, prop=customLegendFont)
+        leg = plt.legend(loc='upper right', fancybox=True, handlelength=3,
+            prop=customLegendFont)
         leg.get_frame().set_alpha(0.)
         for color,text in zip(labelColors,leg.get_texts()):
             text.set_color(color)
@@ -1008,18 +1027,22 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
                 plotData.append(None)
             else:
                 # create 1d histogram
-                hist1d, edges = np.histogram(chains1d[k], weights=weights[k], normed=True, bins=nBins)
+                hist1d, edges = np.histogram(chains1d[k], weights=weights[k],
+                    normed=True, bins=nBins)
                 # Bin center between histogram edges
                 centers = (edges[1:]+edges[:-1])/2
                 # Filter data
-                plotData.append( scipy.ndimage.gaussian_filter1d((centers,hist1d), sigma=smoothingKernel) )
+                plotData.append( scipy.ndimage.gaussian_filter1d((centers,hist1d),
+                    sigma=smoothingKernel) )
                 if filledPlots:
                     # Filled smooth histogram
-                    plt.fill_between(plotData[-1][0], plotData[-1][1], 0, color=colors[k][1])
+                    plt.fill_between(plotData[-1][0], plotData[-1][1], 0,
+                        color=colors[k][1])
         # Line for hidden histogram
         for k in reversed(range(nChains)):
             if plotData[nChains-1-k] is not None:
-                plt.plot(plotData[nChains-1-k][0], plotData[nChains-1-k][1], lw=1, ls='-', color=colors[k][1])
+                plt.plot(plotData[nChains-1-k][0], plotData[nChains-1-k][1],
+                    lw=1, ls='-', color=colors[k][1])
 
     # No smoothing
     else:
@@ -1028,18 +1051,22 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
                 # Is there a chain to plot?
                 if not np.isnan(chains1d[k]).all():
                     # Filled stepfilled histograms
-                    plt.hist(chains1d[k], weights=weights[k], normed=True, bins=nBins, histtype='stepfilled', edgecolor='None', color=colors[k][1])
+                    plt.hist(chains1d[k], weights=weights[k], normed=True,
+                        bins=nBins, histtype='stepfilled', edgecolor='None',
+                        color=colors[k][1])
         for k in reversed(range(nChains)):
             # Is there a chain to plot?
             if not np.isnan(chains1d[k]).all():
                 # Step curves for hidden histogram(s)
-                plt.hist(chains1d[k], weights=weights[k], normed=True, bins=nBins, histtype='step', color=colors[k][1])
+                plt.hist(chains1d[k], weights=weights[k], normed=True,
+                    bins=nBins, histtype='step', color=colors[k][1])
 
     ##### Truth line
     if truths1d is not None:
         for k in range(len(truths1d)):
             if truths1d[k] is not None:
-                ax.axvline(truths1d[k], lw=1, color=truthColors[k], ls=truthLineStyles[k])
+                ax.axvline(truths1d[k], lw=1, color=truthColors[k],
+                    ls=truthLineStyles[k])
 
     ##### Gaussian prior
     if prior1d is not None:
@@ -1130,7 +1157,8 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
             plotData.append(None)
         else:
             # Create 2d histogram
-            hist2d, xedges, yedges = np.histogram2d(chains2d[k][0], chains2d[k][1], weights=weights[k], bins=nBins)
+            hist2d, xedges, yedges = np.histogram2d(
+                chains2d[k][0], chains2d[k][1], weights=weights[k], bins=nBins)
             # image extent, needed below for contour lines
             extents[k] = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
             # Normalize
@@ -1154,21 +1182,25 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
             if filledPlots:
                 xbins = (xedges[1:]+xedges[:-1])/2
                 ybins = (yedges[1:]+yedges[:-1])/2
-                ax.contourf(xbins, ybins, plotData[-1], levels=chainLevels[k], colors=colors[k][:nContourLevels][::-1])
+                ax.contourf(xbins, ybins, plotData[-1], levels=chainLevels[k],
+                    colors=colors[k][:nContourLevels][::-1])
 
             # Plot density
             if plotDensity:
                 if filledPlots:
-                    ax.imshow(hist2d.T, extent=extents[k], origin='lower', cmap=myColorMap[k], aspect='auto', clim=(0,chainLevels[k][0]))
+                    ax.imshow(hist2d.T, extent=extents[k], origin='lower',
+                        cmap=myColorMap[k], aspect='auto', clim=(0,chainLevels[k][0]))
                 else:
-                    ax.imshow(hist2d.T, extent=extents[k], origin='lower', cmap=myColorMap[k], aspect='auto')
+                    ax.imshow(hist2d.T, extent=extents[k], origin='lower',
+                        cmap=myColorMap[k], aspect='auto')
 
 
     ###### Draw contour lines in order to see contours lying on top of each other
     for k in range(nChains):
         if plotData[nChains-1-k] is not None:
             for l in range(nContourLevels):
-                ax.contour(plotData[nChains-1-k], [chainLevels[k][nContourLevels-1-l]], extent=extents[k], origin='lower', linewidths=1, colors=colors[k][l])
+                ax.contour(plotData[nChains-1-k], [chainLevels[k][nContourLevels-1-l]],
+                    extent=extents[k], origin='lower', linewidths=1, colors=colors[k][l])
 
     ##### Truth lines
     if truths2d is not None:
