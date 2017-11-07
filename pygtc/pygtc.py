@@ -148,10 +148,12 @@ def plotGTC(chains, **kwargs):
         set to zero.
 
     colorsOrder : list-like[nDims]
-        The color order for chains passed to `chains`. Default is
-        ``['blues', 'greens', 'yellows', 'reds', 'purples']``. Currently,
-        ``pygtc`` is limited to these color values, so you can reorder them,
-        but can't yet define your own colors.
+        The color order for chains passed to `chains`. Default is ``['blues',
+        'oranges','greens', 'reds', 'purples', 'browns', 'pinks', 'grays',
+        'yellows', 'cyans']``. Currently, ``pygtc`` is limited to these color
+        values, so you can reorder them, but can't yet define your own colors.
+        If you really love the old colors, you can get at them by calling:
+        ``['blues_old', 'greens_old', ...]``.
 
     do1dPlots : bool
         Whether or not 1d histrograms are plotted on the diagonal. Default
@@ -226,13 +228,27 @@ def plotGTC(chains, **kwargs):
     #Set up some colors
     truthsDefaultColors = ['#4d4d4d', '#4d4d4d', '#4d4d4d']
     truthsDefaultLS = ['--',':','dashdot']
-    colorsDict = { 'blues' : ('#4c72b0','#7fa5e3','#b2d8ff'),
-                    'greens' : ('#55a868','#88db9b','#bbffce'),
-                    'yellows' : ('#f5964f','#ffc982','#fffcb5'),
-                    'reds' : ('#c44e52','#f78185','#ffb4b8'),
-                    'purples' : ('#8172b2','#b4a5e5','#37d8ff')}
-    colorsOrder = ['blues', 'greens', 'yellows', 'reds', 'purples']
-    colors = [colorsDict[cs] for cs in colorsOrder]
+    colorsDict = {
+                  # Match pygtc up to v0.2.4
+                  'blues_old' : ('#4c72b0','#7fa5e3','#b2d8ff'),
+                  'greens_old' : ('#55a868','#88db9b','#bbffce'),
+                  'yellows_old' : ('#f5964f','#ffc982','#fffcb5'),
+                  'reds_old' : ('#c44e52','#f78185','#ffb4b8'),
+                  'purples_old' : ('#8172b2','#b4a5e5','#37d8ff'),
+                  # New color scheme, dark colors match matplotlib v2
+                  'blues' : ('#1f77b4','#52aae7','#85ddff'),
+                  'oranges' : ('#ff7f0e','#ffb241','#ffe574'),
+                  'greens' : ('#2ca02c','#5fd35f','#92ff92'),
+                  'reds' : ('#d62728','#ff5a5b','#ff8d8e'),
+                  'purples' : ('#9467bd','#c79af0','#facdff'),
+                  'browns' : ('#8c564b','#bf897e','#f2bcb1'),
+                  'pinks' : ('#e377c2','#ffaaf5','#ffddff'),
+                  'grays' : ('#7f7f7f','#b2b2b2','#e5e5e5'),
+                  'yellows' : ('#bcbd22','#eff055','#ffff88'),
+                  'cyans' : ('#17becf','#4af1ff','#7dffff'),
+              }
+    defaultColorsOrder = ['blues', 'oranges','greens', 'reds', 'purples', 'browns', 'pinks', 'grays', 'yellows', 'cyans']
+
     priorColor = '#333333'
 
     #Angle of tick labels
@@ -275,7 +291,7 @@ def plotGTC(chains, **kwargs):
 
     # Get number of chains
     nChains = len(chains)
-    assert nChains<=len(colorsOrder), "currently only supports up to "+str(len(colorsOrder))+" chains"
+    assert nChains<=len(defaultColorsOrder), "currently only supports up to "+str(len(defaultColorsOrder))+" chains"
 
     # Check that each chain looks reasonable (2d shape)
     for i in range(nChains):
@@ -329,16 +345,15 @@ def plotGTC(chains, **kwargs):
         shiftY = 0
 
     # User-defined color ordering
-    customColorsOrder = kwargs.pop('colorsOrder', None) #Labels for multiple chains, goes in plot legend
-    if customColorsOrder is not None:
-        # Convert to list if only one entry
-        if __isstr(customColorsOrder):
-            customColorsOrder = [customColorsOrder]
-        lencustomColorsOrder = len(customColorsOrder)
-        if not all(color in colorsDict.keys() for color in customColorsOrder):
-            raise ValueError("Bad color name in colorsOrder=%s, pick from %s"%(customColorsOrder,colorsDict.keys()))
-        colorsOrder[:lencustomColorsOrder] = customColorsOrder[:lencustomColorsOrder]
-        colors = [colorsDict[cs] for cs in colorsOrder]
+    colorsOrder = kwargs.pop('colorsOrder', defaultColorsOrder) #Labels for multiple chains, goes in plot legend
+
+    # Convert to list if only one entry
+    if __isstr(colorsOrder):
+        colorsOrder = [colorsOrder]
+    if not all(color in colorsDict.keys() for color in colorsOrder):
+        raise ValueError("Bad color name in colorsOrder=%s, pick from %s"%(colorsOrder,colorsDict.keys()))
+
+    colors = [colorsDict[cs] for cs in colorsOrder]
 
     # Highlight a point (or several) in parameter space by lines
     truthColors = kwargs.pop('truthColors', truthsDefaultColors) #Default supports up to three truths
@@ -583,7 +598,14 @@ def plotGTC(chains, **kwargs):
 
                     ##### Panel layout
                     ax.grid(False)
-                    #ax.set_axis_bgcolor('none')
+                    
+                    try:
+                        #This is the matplotlib 2.0 way of doing things
+                        ax.set_facecolor('w')
+                    except AttributeError:
+                        #Fallback to matplotlib 1.5
+                        ax.set_axis_bgcolor('w')
+
                     for axis in ['top','bottom','left','right']:
                         ax.spines[axis].set_color(axisColor)
                         ax.spines[axis].set_linewidth(1)
