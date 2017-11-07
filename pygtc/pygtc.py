@@ -552,8 +552,20 @@ def plotGTC(chains, **kwargs):
     fig = plt.figure(figsize=(figureWidth,figureWidth))
     axV, axH = [], []
 
+    # Minimum and maximum sample for each dimension
+    samplesMin = np.nanmin(np.array([np.nanmin(chains[k], axis=0)
+        for k in range(nChains)]), axis=0)
+    samplesMax = np.nanmax(np.array([np.nanmax(chains[k], axis=0)
+        for k in range(nChains)]), axis=0)
+
     # Left and right panel boundaries
-    panelXrange = np.empty((nDim,2))
+    # Use data limits and override if user-defined
+    panelAxRange = np.vstack((samplesMin, samplesMax)).T
+    for i in range(nDim):
+        if paramRanges is not None:
+            if paramRanges[i]:
+                panelAxRange[i] = paramRanges[i]
+
     xTicks, yTicks = nDim*[None], nDim*[None]
 
     ########## 2D contour plots
@@ -581,11 +593,8 @@ def plotGTC(chains, **kwargs):
                                 plotDensity, myColorMap)
 
                     ##### Range
-                    if paramRanges is not None:
-                        if paramRanges[j]:
-                            ax.set_xlim(paramRanges[j][0],paramRanges[j][1])
-                        if paramRanges[i]:
-                            ax.set_ylim(paramRanges[i][0],paramRanges[i][1])
+                    ax.set_xlim(panelAxRange[j][0],panelAxRange[j][1])
+                    ax.set_ylim(panelAxRange[i][0],panelAxRange[i][1])
 
                     ##### Tick labels without offset and scientific notation
                     ax.get_xaxis().get_major_formatter().set_useOffset(False)
@@ -626,15 +635,14 @@ def plotGTC(chains, **kwargs):
                         colors=axisColor, size=4, width=.5, labelsize=6)
 
                     ##### get x limits
-                    panelXrange[j] = ax.get_xlim()
-                    deltaX = panelXrange[j,1]-panelXrange[j,0]
+                    deltaX = panelAxRange[j,1]-panelAxRange[j,0]
 
                     ##### Ticks x axis
                     if xTicks[j] is None:
                         # 5 ticks max
                         ax.xaxis.set_major_locator(mtik.MaxNLocator(5))
                         # Remove xticks that are too close (5% of panel size) to panel edge
-                        LoHi = (panelXrange[j,0]+.05*deltaX, panelXrange[j,1]-.05*deltaX)
+                        LoHi = (panelAxRange[j,0]+.05*deltaX, panelAxRange[j,1]-.05*deltaX)
                         tickLocs = ax.xaxis.get_ticklocs()
                         idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0]
                         xTicks[j] = tickLocs[idx]
@@ -642,15 +650,14 @@ def plotGTC(chains, **kwargs):
                     ax.xaxis.set_ticks(xTicks[j])
 
                     ##### get y limits
-                    panelYrange = ax.get_ylim()
-                    deltaY = panelYrange[1]-panelYrange[0]
+                    deltaY = panelAxRange[i,1]-panelAxRange[i,0]
 
                     ##### Ticks y axis
                     if yTicks[i] is None:
                         # 5 ticks max
                         ax.yaxis.set_major_locator(mtik.MaxNLocator(5))
                         # Remove xticks that are too close (5% of panel size) to panel edge
-                        LoHi = (panelYrange[0]+.05*deltaY, panelYrange[1]-.05*deltaY)
+                        LoHi = (panelAxRange[i,0]+.05*deltaY, panelAxRange[i,1]-.05*deltaY)
                         tickLocs = ax.yaxis.get_ticklocs()
                         idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0]
                         yTicks[i] = tickLocs[idx]
@@ -791,19 +798,20 @@ def plotGTC(chains, **kwargs):
                 if paramNames is not None:
                     ax.set_xlabel(paramNames[i], fontdict=customLabelFont)
             else:
-                ax.set_xlim(panelXrange[i])
                 ax.get_xaxis().set_ticklabels([])
 
+            #### Set x range
+            ax.set_xlim(panelAxRange[i])
+
             #### Calculate limits and tick spacing
-            panelXrange[i] = ax.get_xlim()
-            deltaX = panelXrange[i,1]-panelXrange[i,0]
+            deltaX = panelAxRange[i,1]-panelAxRange[i,0]
 
             ##### Ticks x axis
             if i==nDim-1:
                 # 5 ticks max
                 ax.xaxis.set_major_locator(mtik.MaxNLocator(5))
                 # Remove xticks that are too close (5% of panel size) to panel edge
-                LoHi = (panelXrange[i,0]+.05*deltaX, panelXrange[i,1]-.05*deltaX)
+                LoHi = (panelAxRange[i,0]+.05*deltaX, panelAxRange[i,1]-.05*deltaX)
                 tickLocs = ax.xaxis.get_ticklocs()
                 idx = np.where((tickLocs>LoHi[0])&(tickLocs<LoHi[1]))[0]
                 xTicks[i] = tickLocs[idx]
