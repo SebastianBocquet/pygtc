@@ -5,12 +5,13 @@ Installation
 Required packages
 ~~~~~~~~~~~~~~~~~
 
-pygtc is written in Python 2.7 and requires the following packages:
+pygtc is written in Python, is compatible with both versions 2.7 and 3.6, and
+requires the following packages at a minimum:
 
 * numpy >= 1.5
-* matplotlib >= 1.5 and < 2.0
+* matplotlib >= 1.5.3, preferably >= 2.0
 * scipy (optional)
-
+* pandas (optional)
 
 Downloading and installing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,7 +26,7 @@ If you like pip, you can install with::
 Or, alternatively, download and extract the tarball from the above link and then
 install from source with::
 
-  cd directory_you_unpacked_ptgtc_into
+  cd /path/to/pygtc
   python setup.py install
 
 
@@ -39,33 +40,40 @@ clone the repo with::
 
 And you can install it in developer mode with pip::
 
-  pip install -e directory_where_you_cloned_pygtc
+  pip install -e /path/to/pygtc
 
 or from source::
 
-  cd directory_cloned_pygtc_into
+  cd /path/to/pygtc
   python setup.py develop
 
 Running tests
 ~~~~~~~~~~~~~
-For tests to *for sure* run properly, you'll want to have matplotlib v1.5.3
-installed, as they fixed a bug in their ``image_comparison`` decorator. You'll
-need ``nose`` installed to run the tests, although pygtc functions fine without
-it. You also should have the Arial font installed, as that is pygtc's default
-font and tests will "fail" if matplotlib falls back on Bitstream Vera Sans (even
-though the images produced might look perfectly fine). Test base images were
-produced on Mac OSX and if you are on another system there is no guarantee that
-you will get a pixel-perfect copy of what the OSX backend produces. However, the
-images produced by the tests should still look great!
+For tests to *for sure* run properly, you'll want to have matplotlib v2 or
+greater installed. If you are using an earlier version you'll need at least
+matplotlib v1.5.3, as they fixed a bug in their ``image_comparison`` decorator,
+but several tests will fail anyhow due to slightly different image sizes (v1.5
+adds 5 pixels in the x-dimension for some reason). You'll need ``nose``
+installed to run the tests, although pygtc functions fine without it. You should
+also install ``nose-exclude`` to make sure that the right matplotlib backend
+gets loaded with the tests. You also should have the Arial font installed, as
+that is pygtc's default font and tests will "fail" if matplotlib falls back on
+Bitstream Vera Sans (even though the images produced might look perfectly fine).
+Test base images were produced on Mac OSX using the ``Agg`` backend and if you
+are on another system there is no guarantee that you will get a pixel-perfect
+copy of what the Agg backend produces. However, the images produced by the tests
+should still look great! They are saved to a folder called ``result_images`` in
+whatever directory you ran the tests from.
 
-There are two ways to run the test suite. You can use the nosetests utility::
+There are two ways to run the test suite. You can use the nosetests utility from
+within the pygtc package directory::
 
-  nosetests directory_cloned_pygtc_into
+  cd /path/to/pygtc
+  nosetests
 
 Or, you can run the tests as a script::
 
-  cd directory_cloned_pygtc_into/pygtc/tests
-  python test_plotGTC.py
+  python /path/to/pygtc/tests/test_plotGTC.py
 
 In either case, there are 25 tests to run, and it should take between 20-30
 seconds to run them all. If the first test fails, there may be something wrong

@@ -1,8 +1,11 @@
 import warnings
 import numpy as np
+
+#Make sure we always use the same backend for image comparison tests
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.testing.decorators import image_comparison
-import nose
 
 try:
     import pandas as pd
