@@ -5,6 +5,7 @@ Version next
   * Updated color scheme to align with new matplotlib 2.0 defaults.
   * Fixed bug that can mess up axis limits when one column doesn't have data
   * Changed some calls to axis plot methods to explicityly call the axis method instead of relying on pyplot to get it right.
+  * Add a hack to fix the scaling of the lower-right 1D panel for matplotlib versions < 2.0.
 
 Version 0.2.4
   * Fixed bug that was causing a crash in Python 3.5

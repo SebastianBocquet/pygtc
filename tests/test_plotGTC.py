@@ -19,6 +19,10 @@ try:
     HAS_SCIPY = True
 except ImportError:
     HAS_SCIPY = False
+    
+MPLVER = int(matplotlib.__version__.split('.')[0])
+if MPLVER < 2:
+    warnings.warn('Several tests are known to fail under matplotlib versions less than 2.0. The plots should still look good!', UserWarning)
 
 import pygtc
 

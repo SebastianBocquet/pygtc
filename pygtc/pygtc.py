@@ -15,6 +15,7 @@ except ImportError:
     haveScipy = False
 
 PYVER = sys.version_info[0]
+MPLVER = int(mpl.__version__.split('.')[0])
 
 __all__ = ['plotGTC']
 
@@ -793,10 +794,25 @@ def plotGTC(chains, **kwargs):
             ax.set_ylim(bottom=0)
             ax.xaxis.set_ticks_position('bottom')
 
-            ##### x-label for bottom-right panel only
+            ##### x-label for bottom-right panel only and a scaling hack
             if i==nDim-1:
                 if paramNames is not None:
                     ax.set_xlabel(paramNames[i], fontdict=customLabelFont)
+                    
+                #Hack to get scaling to work for final 1D plot under MPL < 2.0
+                if (MPLVER < 2) and (smoothingKernel == 0):
+                    max_y = 0
+                    #Loop through the children, find the polygons
+                    #and extract the maximum y-value
+                    for child in ax.get_children():
+                        if type(child) == plt.Polygon:
+                            child_max_y = child.get_xy()[:,1].max()
+                            if child_max_y > max_y:
+                                max_y = child_max_y
+                    
+                    #Set upper limit to be 5% above maximum y-value
+                    ax.set_ylim(0, max_y*1.05)
+                
             else:
                 ax.get_xaxis().set_ticklabels([])
 
@@ -946,6 +962,8 @@ def plotGTC(chains, **kwargs):
         if showLegendMarker is not True:
             for item in leg.legendHandles:
                 item.set_visible(False)
+                
+    
 
 
 
