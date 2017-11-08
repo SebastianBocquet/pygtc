@@ -1,10 +1,9 @@
-================================================================
+
 Example 2: Making a GTC/triangle plot with Planck and WMAP data!
 ================================================================
-This example was generated from an IPython notebook!
 
 Download the data
-=================
+-----------------
 
 The full set of chains from the Planck 2015 release is available at
 http://pla.esac.esa.int/pla/#cosmology. You will want to download
@@ -14,43 +13,43 @@ to download (3.6 GB)!
 Extract everything into a directory, cd into that directory, and run
 this notebook.
 
-.. code:: python
-    #If not using a JuPyter notebook, comment out the next two lines
+.. code:: ipython3
+
     %matplotlib inline
     %config InlineBackend.figure_format = 'retina' # For mac users with Retina display
-
+    
     import numpy as np
     from matplotlib import pyplot as plt
     import pygtc
 
 Read in and format the data
-===========================
+---------------------------
 
-.. code:: python
+.. code:: ipython3
 
     WMAP, Planck = [],[]
     for i in range(1,5):
         WMAP.append(np.loadtxt('./base/WMAP/base_WMAP_'+str(i)+'.txt'))
         Planck.append(np.loadtxt('./base/plikHM_TT_lowTEB/base_plikHM_TT_lowTEB_'+str(i)+'.txt'))
 
-.. code:: python
+.. code:: ipython3
 
     # Copy all four chains into a single array
     WMAPall = np.concatenate((WMAP[0],WMAP[1],WMAP[2],WMAP[3]))
     Planckall = np.concatenate((Planck[0],Planck[1],Planck[2],Planck[3]))
 
 Select the parameters and make labels
-=====================================
+-------------------------------------
 
 In the chain directories, there are ``.paramnames`` files that allow you
 to find the parameters you are interested in.
 
-.. code:: python
+.. code:: ipython3
 
     WMAPplot = WMAPall[:,[2,3,4,5,6,7,9,15]]
     Planckplot = Planckall[:,[2,3,4,5,6,7,23,29]]
 
-.. code:: python
+.. code:: ipython3
 
     # Labels, pyGTC supports Tex enclosed in $..$
     params = ('$\Omega_\mathrm{b}h^2$',
@@ -60,15 +59,15 @@ to find the parameters you are interested in.
               '$\ln(10^{10}A_s)$',
               '$n_s$','$H_0$',
               '$\\sigma_8$')
-
+    
     chainLabels = ('$Planck$ (TT+lowTEB)','WMAP')
 
 Make the GTC!
-=============
+-------------
 
 Produce the plot and save it as ``Planck-vs-WMAP.pdf``.
 
-.. code:: python
+.. code:: ipython3
 
     GTC = pygtc.plotGTC(chains=[Planckplot,WMAPplot],
                         weights=[Planckall[:,0],
@@ -81,4 +80,7 @@ Produce the plot and save it as ``Planck-vs-WMAP.pdf``.
 
 
 
-.. image:: _static/demo2_files/demo2_9_0.png
+.. image:: _static/Planck-vs-WMAP_files/Planck-vs-WMAP_10_0.png
+   :width: 414px
+   :height: 409px
+

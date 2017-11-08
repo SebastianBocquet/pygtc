@@ -32,6 +32,8 @@ MOCK_MODULES = ['numpy',
 
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
+    if mod_name == 'matplotlib':
+        sys.modules[mod_name].__version__ = '2.0.0'
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the

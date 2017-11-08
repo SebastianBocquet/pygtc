@@ -45,13 +45,14 @@ switch to displaying sigma levels by setting `sigmaContourLevels` to
 
 Contents:
 ---------
+
 .. toctree::
    :maxdepth: 2
 
-   installation.rst
-   demo.rst
-   demo2.rst
-   api.rst
+   installation
+   demo
+   Planck-vs-WMAP
+   api
 
 Citation
 --------
