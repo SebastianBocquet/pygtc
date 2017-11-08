@@ -960,7 +960,7 @@ def plotGTC(chains, **kwargs):
 
     # Save figure
     if plotName is not None:
-        plt.savefig(plotName, bbox_inches='tight')
+        fig.savefig(plotName, bbox_inches='tight')
 
     if not holdRC:
         plt.rcParams['mathtext.fontset'] = oldMathTextFontSet
@@ -1044,12 +1044,12 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
                     sigma=smoothingKernel) )
                 if filledPlots:
                     # Filled smooth histogram
-                    plt.fill_between(plotData[-1][0], plotData[-1][1], 0,
+                    ax.fill_between(plotData[-1][0], plotData[-1][1], 0,
                         color=colors[k][1])
         # Line for hidden histogram
         for k in reversed(range(nChains)):
             if plotData[nChains-1-k] is not None:
-                plt.plot(plotData[nChains-1-k][0], plotData[nChains-1-k][1],
+                ax.plot(plotData[nChains-1-k][0], plotData[nChains-1-k][1],
                     lw=1, ls='-', color=colors[k][1])
 
     # No smoothing
@@ -1059,14 +1059,14 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
                 # Is there a chain to plot?
                 if not np.isnan(chains1d[k]).all():
                     # Filled stepfilled histograms
-                    plt.hist(chains1d[k], weights=weights[k], normed=True,
+                    ax.hist(chains1d[k], weights=weights[k], normed=True,
                         bins=nBins, histtype='stepfilled', edgecolor='None',
                         color=colors[k][1])
         for k in reversed(range(nChains)):
             # Is there a chain to plot?
             if not np.isnan(chains1d[k]).all():
                 # Step curves for hidden histogram(s)
-                plt.hist(chains1d[k], weights=weights[k], normed=True,
+                ax.hist(chains1d[k], weights=weights[k], normed=True,
                     bins=nBins, histtype='step', color=colors[k][1])
 
     ##### Truth line
@@ -1080,7 +1080,7 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
     if prior1d is not None:
         # Plot prior in -4 to +4 sigma range
         arr = np.linspace(prior1d[0]-4*prior1d[1], prior1d[0]+4*prior1d[1], 40)
-        plt.plot(arr,norm.pdf(arr,prior1d[0],prior1d[1]), lw=1, color=priorColor)
+        ax.plot(arr,norm.pdf(arr,prior1d[0],prior1d[1]), lw=1, color=priorColor)
 
     return ax
 

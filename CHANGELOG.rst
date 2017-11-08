@@ -3,6 +3,8 @@ Version next
   * Addressed deprecation warnings due to changes in matplotlib 2.0 in a
     backwards compatible way with matplotlib 1.5.
   * Updated color scheme to align with new matplotlib 2.0 defaults.
+  * Fixed bug that can mess up axis limits when one column doesn't have data
+  * Changed some calls to axis plot methods to explicityly call the axis method instead of relying on pyplot to get it right.
 
 Version 0.2.4
   * Fixed bug that was causing a crash in Python 3.5
