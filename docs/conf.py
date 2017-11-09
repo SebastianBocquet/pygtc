@@ -104,7 +104,7 @@ language = None
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -297,8 +297,8 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'pygtc', u'pygtc Documentation',
-     author, 'pygtc', 'One line description of project.',
-     'Miscellaneous'),
+     author, 'pygtc', 'Easily create paramater covariance (corner or triangle) plots.',
+     'Scientific data visualization.'),
 ]
 
 # Documents to append as an appendix to all manuals.
