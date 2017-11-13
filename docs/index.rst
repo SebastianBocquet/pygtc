@@ -27,7 +27,7 @@ publication-ready on the first try!
 
 Here's an example of a GTC (generated from Planck and WMAP data):
 
-.. image:: _static/demo2_files/demo2_9_0.png
+.. image:: _static/Planck-vs-WMAP_files/Planck-vs-WMAP_10_0.png
 
 **Note about contour levels**
 In the above example, you see two sets of contour levels at 68% and

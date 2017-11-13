@@ -5,7 +5,7 @@ Example 1: Making a GTC/triangle plot with pygtc
 Import dependencies
 -------------------
 
-.. code:: ipython3
+.. code:: ipython2
 
     %matplotlib inline
     %config InlineBackend.figure_format = 'retina' # For mac users with Retina display
@@ -19,7 +19,7 @@ Generate fake data
 Let's create two sets of fake sample points with 8 dimensions each. Note
 that chains are allowed to have different lengths.
 
-.. code:: ipython3
+.. code:: ipython2
 
     # Create Npoints samples from random multivariate, nDim-dimensional Gaussian
     def create_random_samples(nDim, Npoints):
@@ -43,30 +43,34 @@ Let's assume the samples1 does not include the second to last parameter.
 In the figure, we only want to show this parameter for samples2. pygtc
 will omit parameters that only contain nan.
 
-.. code:: ipython3
+.. code:: ipython2
 
     samples1[:,6] = None
 
 Minimal example
 ---------------
 
-.. code:: ipython3
+Note that numpy throws a ``RuntimeWarning`` because we set one of the
+axes of ``samples1`` to ``None`` just above. As we understand the
+warning, let's move on!
+
+.. code:: ipython2
 
     GTC = pygtc.plotGTC(chains=[samples1,samples2])
 
 
 .. parsed-literal::
 
-    /Users/fcarter/Documents/Code/Python/pygtc/pygtc/pygtc.py:558: RuntimeWarning: All-NaN axis encountered
+    pygtc/pygtc.py:558: RuntimeWarning: All-NaN axis encountered
       for k in range(nChains)]), axis=0)
-    /Users/fcarter/Documents/Code/Python/pygtc/pygtc/pygtc.py:560: RuntimeWarning: All-NaN slice encountered
+    pygtc/pygtc.py:560: RuntimeWarning: All-NaN slice encountered
       for k in range(nChains)]), axis=0)
 
 
 
 .. image:: _static/demo_files/demo_8_1.png
-   :width: 465px
-   :height: 454px
+   :width: 343px
+   :height: 335px
 
 
 Complete the figure
@@ -78,7 +82,7 @@ that could indicate Gaussian priors we assumed
 
 Note that all these must match number of parameters!
 
-.. code:: ipython3
+.. code:: ipython2
 
     # List of parameter names, supports latex
     # NOTE: For capital greek letters in latex mode, use \mathsf{}
@@ -125,18 +129,10 @@ Note that all these must match number of parameters!
                         priors=priors)
 
 
-.. parsed-literal::
 
-    /Users/fcarter/Documents/Code/Python/pygtc/pygtc/pygtc.py:558: RuntimeWarning: All-NaN axis encountered
-      for k in range(nChains)]), axis=0)
-    /Users/fcarter/Documents/Code/Python/pygtc/pygtc/pygtc.py:560: RuntimeWarning: All-NaN slice encountered
-      for k in range(nChains)]), axis=0)
-
-
-
-.. image:: _static/demo_files/demo_10_1.png
-   :width: 482px
-   :height: 464px
+.. image:: _static/demo_files/demo_10_0.png
+   :width: 362px
+   :height: 346px
 
 
 Make figure publication ready
@@ -153,7 +149,7 @@ Make figure publication ready
 -  Save the figure as ``fullGTC.pdf`` and paste it into your
    publication!
 
-.. code:: ipython3
+.. code:: ipython2
 
     # List of parameter ranges to show,
     # empty () or None to let pyGTC decide
@@ -178,18 +174,10 @@ Make figure publication ready
                         plotName='fullGTC.pdf')
 
 
-.. parsed-literal::
 
-    /Users/fcarter/Documents/Code/Python/pygtc/pygtc/pygtc.py:558: RuntimeWarning: All-NaN axis encountered
-      for k in range(nChains)]), axis=0)
-    /Users/fcarter/Documents/Code/Python/pygtc/pygtc/pygtc.py:560: RuntimeWarning: All-NaN slice encountered
-      for k in range(nChains)]), axis=0)
-
-
-
-.. image:: _static/demo_files/demo_12_1.png
-   :width: 439px
-   :height: 422px
+.. image:: _static/demo_files/demo_12_0.png
+   :width: 331px
+   :height: 316px
 
 
 Single 2d panel
@@ -198,7 +186,7 @@ Single 2d panel
 See how the covariance between C and D is a ground-breaking result?
 Let's look in more detail! Here, we'll want single-column figures.
 
-.. code:: ipython3
+.. code:: ipython2
 
     # Redefine priors and truths
     priors2d = (None,(1,1))
@@ -229,14 +217,14 @@ Let's look in more detail! Here, we'll want single-column figures.
 
 
 .. image:: _static/demo_files/demo_14_0.png
-   :width: 227px
-   :height: 221px
+   :width: 177px
+   :height: 171px
 
 
 
 .. image:: _static/demo_files/demo_14_1.png
-   :width: 232px
-   :height: 222px
+   :width: 181px
+   :height: 172px
 
 
 Single 1d panel
@@ -244,7 +232,7 @@ Single 1d panel
 
 Finally, let's just plot the posterior on C
 
-.. code:: ipython3
+.. code:: ipython2
 
     # Bit tricky, but remember each data set needs shape of (Npoints, nDim)
     inputarr = [np.array([samples1[:,4]]).T,
@@ -261,7 +249,7 @@ Finally, let's just plot the posterior on C
 
 
 .. image:: _static/demo_files/demo_16_0.png
-   :width: 202px
-   :height: 225px
+   :width: 150px
+   :height: 174px
 
 

@@ -13,7 +13,7 @@ to download (3.6 GB)!
 Extract everything into a directory, cd into that directory, and run
 this notebook.
 
-.. code:: ipython3
+.. code:: ipython2
 
     %matplotlib inline
     %config InlineBackend.figure_format = 'retina' # For mac users with Retina display
@@ -25,14 +25,14 @@ this notebook.
 Read in and format the data
 ---------------------------
 
-.. code:: ipython3
+.. code:: ipython2
 
     WMAP, Planck = [],[]
     for i in range(1,5):
         WMAP.append(np.loadtxt('./base/WMAP/base_WMAP_'+str(i)+'.txt'))
         Planck.append(np.loadtxt('./base/plikHM_TT_lowTEB/base_plikHM_TT_lowTEB_'+str(i)+'.txt'))
 
-.. code:: ipython3
+.. code:: ipython2
 
     # Copy all four chains into a single array
     WMAPall = np.concatenate((WMAP[0],WMAP[1],WMAP[2],WMAP[3]))
@@ -44,12 +44,12 @@ Select the parameters and make labels
 In the chain directories, there are ``.paramnames`` files that allow you
 to find the parameters you are interested in.
 
-.. code:: ipython3
+.. code:: ipython2
 
     WMAPplot = WMAPall[:,[2,3,4,5,6,7,9,15]]
     Planckplot = Planckall[:,[2,3,4,5,6,7,23,29]]
 
-.. code:: ipython3
+.. code:: ipython2
 
     # Labels, pyGTC supports Tex enclosed in $..$
     params = ('$\Omega_\mathrm{b}h^2$',
@@ -67,7 +67,7 @@ Make the GTC!
 
 Produce the plot and save it as ``Planck-vs-WMAP.pdf``.
 
-.. code:: ipython3
+.. code:: ipython2
 
     GTC = pygtc.plotGTC(chains=[Planckplot,WMAPplot],
                         weights=[Planckall[:,0],
@@ -81,6 +81,7 @@ Produce the plot and save it as ``Planck-vs-WMAP.pdf``.
 
 
 .. image:: _static/Planck-vs-WMAP_files/Planck-vs-WMAP_10_0.png
-   :width: 414px
-   :height: 409px
+   :width: 340px
+   :height: 325px
+
 
