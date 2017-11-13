@@ -1,29 +1,25 @@
-==============================================
-Example 1: Making a GTC/triangle plot with pygtc
-==============================================
-This example was generated from an IPython notebook!
 
+Example 1: Making a GTC/triangle plot with pygtc
+================================================
 
 Import dependencies
-===================
+-------------------
 
-.. code:: python
+.. code:: ipython2
 
-    #If not using a JuPyter notebook, comment out the next two lines
     %matplotlib inline
     %config InlineBackend.figure_format = 'retina' # For mac users with Retina display
-
     from matplotlib import pyplot as plt
     import numpy as np
     import pygtc
 
 Generate fake data
-==================
+------------------
 
 Let's create two sets of fake sample points with 8 dimensions each. Note
 that chains are allowed to have different lengths.
 
-.. code:: python
+.. code:: ipython2
 
     # Create Npoints samples from random multivariate, nDim-dimensional Gaussian
     def create_random_samples(nDim, Npoints):
@@ -34,37 +30,51 @@ that chains are allowed to have different lengths.
         cov = np.dot(cov,cov)
         samples =  np.random.multivariate_normal(means, cov, Npoints)
         return samples
-
+    
     # Create two sets of fake data with 8 parameters
     np.random.seed(0) # To be able to create the same fake data over and over again
     samples1 = create_random_samples(8, 50000)
     samples2 = 1+create_random_samples(8, 70000)
 
 Omit one parameter for one chain
-================================
+--------------------------------
 
 Let's assume the samples1 does not include the second to last parameter.
 In the figure, we only want to show this parameter for samples2. pygtc
 will omit parameters that only contain nan.
 
-.. code:: python
+.. code:: ipython2
 
     samples1[:,6] = None
 
 Minimal example
-===============
+---------------
 
-.. code:: python
+Note that numpy throws a ``RuntimeWarning`` because we set one of the
+axes of ``samples1`` to ``None`` just above. As we understand the
+warning, let's move on!
+
+.. code:: ipython2
 
     GTC = pygtc.plotGTC(chains=[samples1,samples2])
 
 
+.. parsed-literal::
 
-.. image:: _static/demo_files/demo_7_0.png
+    pygtc/pygtc.py:558: RuntimeWarning: All-NaN axis encountered
+      for k in range(nChains)]), axis=0)
+    pygtc/pygtc.py:560: RuntimeWarning: All-NaN slice encountered
+      for k in range(nChains)]), axis=0)
+
+
+
+.. image:: _static/demo_files/demo_8_1.png
+   :width: 343px
+   :height: 335px
 
 
 Complete the figure
-===================
+-------------------
 
 Now let's add: \* axis and data labels \* lines marking some important
 points in parameter space \* Gaussian distributions on the 1d histograms
@@ -72,22 +82,22 @@ that could indicate Gaussian priors we assumed
 
 Note that all these must match number of parameters!
 
-.. code:: python
+.. code:: ipython2
 
     # List of parameter names, supports latex
     # NOTE: For capital greek letters in latex mode, use \mathsf{}
     names = ['param name',
              '$B_\mathrm{\lambda}$',
-             '$E$', '$\\lambda$',
+             '$E$', '$\\lambda$', 
              'C',
              'D',
              '$\mathsf{\Omega}$',
              '$\\gamma$']
-
+    
     # Labels for the different chains
     chainLabels = ["data1 $\lambda$",
                    "data 2"]
-
+    
     # List of Gaussian curves to plot
     #(to represent priors): mean, width
     # Empty () or None if no prior to plot
@@ -99,17 +109,17 @@ Note that all these must match number of parameters!
               (1,1),
               None,
               None)
-
+    
     # List of truth values, to mark best-fit or input values
     # NOT a python array because of different lengths
     # Here we choose two sets of truth values
     truths = ((4, .5, None, .1, 0, None, None, 0),
               (None, None, .3, 1, None, None, None, None))
-
+    
     # Labels for the different truths
     truthLabels = ( 'the truth',
                    'also true')
-
+    
     # Do the magic
     GTC = pygtc.plotGTC(chains=[samples1,samples2],
                         paramNames=names,
@@ -120,11 +130,13 @@ Note that all these must match number of parameters!
 
 
 
-.. image:: _static/demo_files/demo_9_0.png
+.. image:: _static/demo_files/demo_10_0.png
+   :width: 362px
+   :height: 346px
 
 
 Make figure publication ready
-=============================
+-----------------------------
 
 -  See how the prior for :math:`B_{\lambda}` is cut off on the left?
    Let's display :math:`B_\lambda` in the range (-5,4). Also, we could
@@ -137,7 +149,7 @@ Make figure publication ready
 -  Save the figure as ``fullGTC.pdf`` and paste it into your
    publication!
 
-.. code:: python
+.. code:: ipython2
 
     # List of parameter ranges to show,
     # empty () or None to let pyGTC decide
@@ -149,7 +161,7 @@ Make figure publication ready
                    None,
                    None,
                    None)
-
+    
     # Do the magic
     GTC = pygtc.plotGTC(chains=[samples1,samples2],
                         paramNames=names,
@@ -163,21 +175,23 @@ Make figure publication ready
 
 
 
-.. image:: _static/demo_files/demo_11_0.png
+.. image:: _static/demo_files/demo_12_0.png
+   :width: 331px
+   :height: 316px
 
 
 Single 2d panel
-===============
+---------------
 
 See how the covariance between C and D is a ground-breaking result?
 Let's look in more detail! Here, we'll want single-column figures.
 
-.. code:: python
+.. code:: ipython2
 
     # Redefine priors and truths
     priors2d = (None,(1,1))
     truths2d = (0,None)
-
+    
     # The 2d panel and the 1d histograms
     GTC = pygtc.plotGTC(chains=[samples1[:,4:6], samples2[:,4:6]],
                         paramNames=names[4:6],
@@ -186,10 +200,10 @@ Let's look in more detail! Here, we'll want single-column figures.
                         truthLabels=truthLabels[0],
                         priors=priors2d,
                         figureSize='MNRAS_column')
-
+    
     # Only the 2d panel
     Range2d = ((-3,5),(-3,7)) # To make sure there's enough space for the legend
-
+    
     GTC = pygtc.plotGTC(chains=[samples1[:,4:6],samples2[:,4:6]],
                         paramNames=names[4:6],
                         chainLabels=chainLabels,
@@ -202,19 +216,23 @@ Let's look in more detail! Here, we'll want single-column figures.
 
 
 
-.. image:: _static/demo_files/demo_13_0.png
+.. image:: _static/demo_files/demo_14_0.png
+   :width: 177px
+   :height: 171px
 
 
 
-.. image:: _static/demo_files/demo_13_1.png
+.. image:: _static/demo_files/demo_14_1.png
+   :width: 181px
+   :height: 172px
 
 
 Single 1d panel
-===============
+---------------
 
 Finally, let's just plot the posterior on C
 
-.. code:: python
+.. code:: ipython2
 
     # Bit tricky, but remember each data set needs shape of (Npoints, nDim)
     inputarr = [np.array([samples1[:,4]]).T,
@@ -230,4 +248,8 @@ Finally, let's just plot the posterior on C
 
 
 
-.. image:: _static/demo_files/demo_15_0.png
+.. image:: _static/demo_files/demo_16_0.png
+   :width: 150px
+   :height: 174px
+
+
