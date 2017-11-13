@@ -40,30 +40,29 @@ def plotGTC(chains, **kwargs):
     Keyword Arguments
     -----------------
     weights : array-like[nSamples] or a list[[nSamples1], ...]
-        Weights for the sample points. The number of 1d arrays passed
-        must correspond to the number of `chains`, and each `weights` array
-        must have the same length nSamples as its corresponding chain.
+        Weights for the sample points. The number of 1d arrays passed must
+        correspond to the number of `chains`, and each `weights` array must have
+        the same length nSamples as its corresponding chain.
 
     chainLabels : array-like[nChains]
         A list of text labels describing each chain passed to chains.
         len(chainLabels) must equal len(chains). chainLabels supports LaTex
-        commands enclosed in $..$. Additionally, you can pass None as a
-        label. Default is ``None``.
+        commands enclosed in $..$. Additionally, you can pass None as a label.
+        Default is ``None``.
 
     paramNames : list-like[nDims]
         A list of text labels describing each dimension of chains.
-        len(paramNames) must equal nDims=chains[0].shape[1].
-        paramNames supports LaTex commands enclosed in $..$.
-        Additionally, you can pass None as a label. Default is None,
-        however if you pass a ``pandas.DataFrame`` object, `paramNames`
-        defaults to the ``DataFrame`` column names.
+        len(paramNames) must equal nDims=chains[0].shape[1]. paramNames supports
+        LaTex commands enclosed in $..$. Additionally, you can pass None as a
+        label. Default is None, however if you pass a ``pandas.DataFrame``
+        object, `paramNames` defaults to the ``DataFrame`` column names.
 
     truths : list-like[nDims] or [[nDims], ...]
         A list of parameter values, one for each parameter in `chains` to
         highlight in the GTC parameter space, or a list of lists of values to
-        highlight in the parameter space. For each set of truths passed to `truths`,
-        there must be a value corresponding to every dimension in `chains`, although
-        any value may be ``None``. Default is ``None``.
+        highlight in the parameter space. For each set of truths passed to
+        `truths`, there must be a value corresponding to every dimension in
+        `chains`, although any value may be ``None``. Default is ``None``.
 
     truthLabels : list-like[nTruths]
         A list of labels, one for each list passed to truths. truthLabels
@@ -71,19 +70,19 @@ def plotGTC(chains, **kwargs):
         ``None`` as a label. Default is ``None``.
 
     truthColors : list-like[nTruths]
-        User-defined colors for the truth lines, must be one per set of
-        truths passed to `truths`. Default color is gray ``#4d4d4d``
-        for up to three lines.
+        User-defined colors for the truth lines, must be one per set of truths
+        passed to `truths`. Default color is gray ``#4d4d4d`` for up to three
+        lines.
 
     truthLineStyles : list-like[nTruths]
         User-defined line styles for the truth lines, must be one per set of
-        truths passed to `truths`. Default line styles
-        are ``['--',':','dashdot']``.
+        truths passed to `truths`. Default line styles are
+        ``['--',':','dashdot']``.
 
     priors : list of tuples [(mu1, sigma1), ...]
         Each tuple describes a Gaussian to be plotted over that parameter's
-        histogram. The number of priors must equal the number of dimensions
-        in `chains`. Default is ``None``.
+        histogram. The number of priors must equal the number of dimensions in
+        `chains`. Default is ``None``.
 
     plotName : string
         A path to save the GTC to in pdf form. Default is ``None``.
@@ -93,36 +92,35 @@ def plotGTC(chains, **kwargs):
         or 3. Default is 2.
 
     sigmaContourLevels : bool
-        Whether you want 2d "sigma" contour levels (39%, 86%, 99%) instead
-        of the standard contour levels (68%, 95%, 99%). Default is ``False``.
+        Whether you want 2d "sigma" contour levels (39%, 86%, 99%) instead of
+        the standard contour levels (68%, 95%, 99%). Default is ``False``.
 
     nBins : int
-        An integer describing the number of bins used to compute the
-        histograms. Default is 30.
+        An integer describing the number of bins used to compute the histograms.
+        Default is 30.
 
     smoothingKernel : float
-        Size of the Gaussian smoothing kernel in bins. Default is 1.
-        Set to 0 for no smoothing.
+        Size of the Gaussian smoothing kernel in bins. Default is 1. Set to 0
+        for no smoothing.
 
     filledPlots : bool
-        Whether you want the 2d contours and the 1d histograms to be
-        filled. Default is ``True``.
+        Whether you want the 2d contours and the 1d histograms to be filled.
+        Default is ``True``.
 
     plotDensity : bool
         Whether you want to see the 2d density of points. Default is ``False``.
 
     figureSize : float or string
-        A number in inches describing the length = width of the GTC, or a
-        string indicating a predefined journal setting and whether the
-        figure will span one column or the full page width. Default is 70/dpi
-        where ``dpi = plt.rcParams['figure.dpi']``. Options to choose from
-        are ``'APJ_column'``, ``'APJ_page'``, ``'MNRAS_column'``,
-         ``'MNRAS_page'``, ``'AandA_column'``, ``'AandA_page'``.
+        A number in inches describing the length = width of the GTC, or a string
+        indicating a predefined journal setting and whether the figure will span
+        one column or the full page width. Default is 70/dpi where ``dpi =
+        plt.rcParams['figure.dpi']``. Options to choose from are
+        ``'APJ_column'``, ``'APJ_page'``, ``'MNRAS_column'``, ``'MNRAS_page'``,
+        ``'AandA_column'``, ``'AandA_page'``.
 
     panelSpacing : string
-        Options are ``'loose'`` or ``'tight'``. Determines whether there is
-        some space between the subplots of the GTC or not. Default is
-        ``'tight'``.
+        Options are ``'loose'`` or ``'tight'``. Determines whether there is some
+        space between the subplots of the GTC or not. Default is ``'tight'``.
 
     legendMarker : string
         Options are ``'All'``, ``'None'``, ``'Auto'``. ``'All'`` and ``'None'``
@@ -131,14 +129,14 @@ def plotGTC(chains, **kwargs):
 
     paramRanges : list of tuples [nDim]
         Set the boundaries of each parameter range. Must provide a tuple for
-        each dimension of `chains`. If ``None`` is provided for a
-        parameter, the range defaults to the width of the histogram.
+        each dimension of `chains`. If ``None`` is provided for a parameter, the
+        range defaults to the width of the histogram.
 
     labelRotation : tuple [2]
-        Rotate the tick labels by 45 degrees for less overlap. Sets
-        the x- and y-axis separately. Options are ``(True,True)``,
-        ``(True,False)``, ``(False,True)``, ``(False,False)``, ``None``.
-        Using ``None`` sets to default ``(True,True)``.
+        Rotate the tick labels by 45 degrees for less overlap. Sets the x- and
+        y-axis separately. Options are ``(True,True)``, ``(True,False)``,
+        ``(False,True)``, ``(False,False)``, ``None``. Using ``None`` sets to
+        default ``(True,True)``.
 
     tickShifts : tuple [2]
         Shift the x/y tick labels horizontally/vertically by a fraction of the
@@ -157,17 +155,17 @@ def plotGTC(chains, **kwargs):
         ``['blues_old', 'greens_old', ...]``.
 
     do1dPlots : bool
-        Whether or not 1d histrograms are plotted on the diagonal. Default
-        is ``True``.
+        Whether or not 1d histrograms are plotted on the diagonal. Default is
+        ``True``.
 
     doOnly1dPlot : bool
-        Plot only ONE 1d histogram. If this is True, then chains must have
-        shape ``(samples,1)``. Default is ``False``.
+        Plot only ONE 1d histogram. If this is True, then chains must have shape
+        ``(samples,1)``. Default is ``False``.
 
     mathTextFontSet : string
-        Set font family for rendering LaTex. Default is ``'stixsans'``. Set
-        to ``None`` to use the default setting in your matplotlib rc. See Notes
-        for known issues regarding this keyword.
+        Set font family for rendering LaTex. Default is ``'stixsans'``. Set to
+        ``None`` to use the default setting in your matplotlib rc. See Notes for
+        known issues regarding this keyword.
 
     customLabelFont : ``matplotlib.fontdict``
         Full customization of label fonts. See matplotlib for full
@@ -184,18 +182,18 @@ def plotGTC(chains, **kwargs):
 
     holdRC : bool
         Whether or not to reset rcParams back to default. You may wish to set
-        this to ``True`` if you are working in interactive mode (ie with
-        IPython or in a JuPyter notebook) and you want the plots that display to
-        be identical to the plots that save in the pdf. See Notes below for more
+        this to ``True`` if you are working in interactive mode (ie with IPython
+        or in a JuPyter notebook) and you want the plots that display to be
+        identical to the plots that save in the pdf. See Notes below for more
         information. Default is ``False``.
 
     Returns
     -------
     fig : ``matplotlib.figure`` object
-        You can do all sorts of fun things with this in terms of
-        customization after it gets returned. If you are using a ``JuPyter``
-        notebook with inline plotting enabled, you should assign a variable
-        to catch the return or else the figure will plot twice.
+        You can do all sorts of fun things with this in terms of customization
+        after it gets returned. If you are using a ``JuPyter`` notebook with
+        inline plotting enabled, you should assign a variable to catch the
+        return or else the figure will plot twice.
 
     Note
     ----
@@ -220,9 +218,7 @@ def plotGTC(chains, **kwargs):
     will.
 
     This is all due to a bug in matplotlib that is slated to be fixed in the
-    upcoming 2.0 release.
-
-    """
+    upcoming 2.0 release."""
 
     ##### Figure setting
 
