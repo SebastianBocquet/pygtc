@@ -23,7 +23,7 @@ Here's an example of a GTC with some random data and arbitrary labels::
                 paramRanges=paramRanges,
                 figureSize='MNRAS_page')
 
-.. image:: ./docs/_static/demo_files/demo_9_0.png
+.. image:: https://raw.githubusercontent.com/SebastianBocquet/pygtc/master/docs/_static/demo_files/demo_9_1.png
 
 **But doesn't this already exist in corner.py, distUtils, etc...?**
 
