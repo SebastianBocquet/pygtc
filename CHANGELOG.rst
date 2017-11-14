@@ -1,3 +1,6 @@
+Version 0.3.1
+  * Hardlink the readme image to github so PyPI can see it
+
 Version 0.3.0
   * Fixed bug due to changes in the OSX backend for matplotlib 2.0.
   * Addressed deprecation warnings due to changes in matplotlib 2.0 in a
