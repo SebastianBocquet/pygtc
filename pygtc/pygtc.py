@@ -394,7 +394,7 @@ def plotGTC(chains, **kwargs):
 
     # Manage the sample point weights
     weights = kwargs.pop('weights', None)
-    if weights==None:
+    if weights is None:
         # Set unit weights if no weights are provided
         weights = [np.ones(len(chains[i])) for i in range(nChains)]
     else:
