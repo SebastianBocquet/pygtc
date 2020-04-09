@@ -13,7 +13,9 @@ setup(
     license = 'MIT',
     url = 'http://github.com/sebastianbocquet/pygtc',
     packages = ['pygtc'],
-    package_data = {'pygtc': ['VERSION.txt',]},
+    package_data = {'pygtc': ['VERSION.txt',
+                              'tests/*.py',
+                              'tests/baseline_images/test_plotGTC/*.png']},
     long_description = open('README.rst').read(),
     install_requires = [
         'numpy',
