@@ -794,7 +794,7 @@ def plotGTC(chains, **kwargs):
             if i==nDim-1:
                 if paramNames is not None:
                     ax.set_xlabel(paramNames[i], fontdict=customLabelFont)
-                    
+
                 #Hack to get scaling to work for final 1D plot under MPL < 2.0
                 if (MPLVER < 2) and (smoothingKernel == 0):
                     max_y = 0
@@ -805,10 +805,10 @@ def plotGTC(chains, **kwargs):
                             child_max_y = child.get_xy()[:,1].max()
                             if child_max_y > max_y:
                                 max_y = child_max_y
-                    
+
                     #Set upper limit to be 5% above maximum y-value
                     ax.set_ylim(0, max_y*1.05)
-                
+
             else:
                 ax.get_xaxis().set_ticklabels([])
 
@@ -958,8 +958,8 @@ def plotGTC(chains, **kwargs):
         if showLegendMarker is not True:
             for item in leg.legendHandles:
                 item.set_visible(False)
-                
-    
+
+
 
 
 
@@ -1050,7 +1050,7 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
             else:
                 # create 1d histogram
                 hist1d, edges = np.histogram(chains1d[k], weights=weights[k],
-                    normed=True, bins=nBins)
+                    density=True, bins=nBins)
                 # Bin center between histogram edges
                 centers = (edges[1:]+edges[:-1])/2
                 # Filter data
@@ -1073,14 +1073,14 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
                 # Is there a chain to plot?
                 if not np.isnan(chains1d[k]).all():
                     # Filled stepfilled histograms
-                    ax.hist(chains1d[k], weights=weights[k], normed=True,
+                    ax.hist(chains1d[k], weights=weights[k], density=True,
                         bins=nBins, histtype='stepfilled', edgecolor='None',
                         color=colors[k][1])
         for k in reversed(range(nChains)):
             # Is there a chain to plot?
             if not np.isnan(chains1d[k]).all():
                 # Step curves for hidden histogram(s)
-                ax.hist(chains1d[k], weights=weights[k], normed=True,
+                ax.hist(chains1d[k], weights=weights[k], density=True,
                     bins=nBins, histtype='step', color=colors[k][1])
 
     ##### Truth line
