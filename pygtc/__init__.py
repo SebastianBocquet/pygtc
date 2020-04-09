@@ -1,6 +1,7 @@
 import inspect
 import os
 
+__url__ = "https://pygtc.readthedocs.io/"
 __author__ = "Sebastian Bocquet and Faustin W. Carter"
 __contributors__ = [
     'Samuel Flender',
