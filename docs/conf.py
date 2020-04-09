@@ -79,9 +79,8 @@ author = u'Sebastian Bocquet and Faustin W. Carter'
 # built documents.
 #
 
-version_file = open(os.path.join('..', 'VERSION.txt'))
-version_number = version_file.read().strip()
-version_file.close()
+with open(os.path.join('..', 'pygtc', 'VERSION.txt')) as version_file:
+    version_number = version_file.read().strip()
 
 # The short X.Y version.
 v_main, v_sub, v_release = version_number.split('.')
