@@ -1,5 +1,0 @@
-include README.rst
-include LICENSE.txt
-include VERSION.txt
-include CHANGELOG.rst
-include requirements.txt
