@@ -1,10 +1,8 @@
 from setuptools import setup
 import os
-import pygtc
 
-version_file = open(os.path.join('.', 'VERSION.txt'))
-version_number = version_file.read().strip()
-version_file.close()
+with open(os.path.join('pygtc', 'VERSION.txt')) as version_file:
+    version_number = version_file.read().strip()
 
 setup(
     name = 'pyGTC',
@@ -15,6 +13,7 @@ setup(
     license = 'MIT',
     url = 'http://github.com/sebastianbocquet/pygtc',
     packages = ['pygtc'],
+    package_data = {'pygtc': ['VERSION.txt',]},
     long_description = open('README.rst').read(),
     install_requires = [
         'numpy',
