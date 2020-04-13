@@ -254,7 +254,3 @@ def test_GTC_mathTextFontSet():
                     smoothingKernel = 0)
 
 #TODO: Could add a few more tests to deal with label font customization...
-
-if __name__ == '__main__':
-    import nose
-    nose.runmodule()
