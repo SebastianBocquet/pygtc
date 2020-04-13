@@ -1,11 +1,12 @@
 import warnings
-import numpy as np
+
 
 #Make sure we always use the same backend for image comparison tests
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from matplotlib.testing.decorators import image_comparison
+import numpy as np
+import pytest
 
 try:
     import pandas as pd
@@ -57,19 +58,19 @@ SFKWARGS = {'bbox_inches':'tight',
 
 
 #If this one fails, something is really wrong with matplotlib
-@image_comparison(baseline_images=['img'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['img.png'], savefig_kwarg=SFKWARGS)
 def test_img():
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.plot(1,1)
 
 #A test for (almost) every keyword argument
-@image_comparison(baseline_images=['bare'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['bare.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_bare():
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['pandas'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['pandas.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_pandas():
     namesNoTex = ['param name', 'B_labmda', 'C', 'lambda']
 
@@ -84,35 +85,35 @@ def test_GTC_pandas():
     pygtc.plotGTC(chains=[samples1_pd,samples2_pd],
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['paramNames_noTex'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['paramNames_noTex.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_paramNames_noTex():
     namesNoTex = ['param name', 'B_labmda', 'C', 'lambda']
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     paramNames = namesNoTex,
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['paramNames_withTex'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['paramNames_withTex.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_paramNames_withTex():
     namesWithTex = ['param name', '$B_\mathrm{\lambda}$', '$Q^a$', '$\\lambda$']
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     paramNames = namesWithTex,
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['chainLabels_noTex'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['chainLabels_noTex.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_chainLabels_noTex():
     chainLabelsNoTex = ['data1', 'data 2']
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     chainLabels = chainLabelsNoTex,
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['chainLabels_withTex'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['chainLabels_withTex.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_chainLabels_withTex():
     chainLabelsWithTex = ['data1 $\lambda$', 'data 2']
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     chainLabels = chainLabelsWithTex,
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['truthLabels_noTex'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['truthLabels_noTex.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_truthLabels_noTex():
     truths = ((4, .5, None, .1),
                 (None, None, .3, 1))
@@ -122,7 +123,7 @@ def test_GTC_truthLabels_noTex():
                     truthLabels = truthLabelsNoTex,
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['truthLabels_withTex'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['truthLabels_withTex.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_truthLabels_withTex():
     truths = ((4, .5, None, .1),
                 (None, None, .3, 1))
@@ -134,7 +135,7 @@ def test_GTC_truthLabels_withTex():
 
 #TODO: Add a test for truthColors
 
-@image_comparison(baseline_images=['truthLineStyles'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['truthLineStyles.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_truthLineStyles():
     truthLineStyles = ['-', '-']
     truths = ((4, .5, None, .1),
@@ -144,7 +145,7 @@ def test_GTC_truthLineStyles():
                     truthLineStyles = truthLineStyles,
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['priors'], extensions=['png'], tol=5e-3, savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['priors.png'], tol=5e-3, savefig_kwarg=SFKWARGS)
 def test_GTC_priors():
     if not HAS_SCIPY:
         warnings.warn("Can't test priors without scipy installed. Skipping test.", UserWarning)
@@ -158,25 +159,25 @@ def test_GTC_priors():
 
 #TODO: Think up a good way to test plotName
 
-@image_comparison(baseline_images=['nContourLevels'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['nContourLevels.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_nContourLevels():
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     nContourLevels = 3,
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['sigmaContourLevels'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['sigmaContourLevels.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_sigmaContourLevels():
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     sigmaContourLevels = True,
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['nBins'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['nBins.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_nBins():
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     nBins = 20,
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['smoothingKernel'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['smoothingKernel.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_smoothingKernel():
     if not HAS_SCIPY:
         warnings.warn("Can't test smoothing without scipy. Skipping test.", UserWarning)
@@ -185,25 +186,25 @@ def test_GTC_smoothingKernel():
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     smoothingKernel = 2)
 
-@image_comparison(baseline_images=['filledPlots'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['filledPlots.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_filledPlots():
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     filledPlots = False,
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['plotDensity'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['plotDensity.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_plotDensity():
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     plotDensity = True,
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['figureSize'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['figureSize.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_figureSize():
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     figureSize = 'APJ_page',
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['panelSpacing'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['panelSpacing.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_panelSpacing():
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     panelSpacing = 'loose',
@@ -213,38 +214,38 @@ def test_GTC_panelSpacing():
 
 #TODO: Add a test for paramRanges
 
-@image_comparison(baseline_images=['labelRotation'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['labelRotation.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_labelRotation():
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     labelRotation = (False, False),
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['tickShifts'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['tickShifts.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_tickShifts():
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     tickShifts = (0.2, 0.2),
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['colorsOrder'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['colorsOrder.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_colorsOrder():
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     colorsOrder = ['purples', 'yellows'],
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['do1dPlots'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['do1dPlots.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_do1dPlots():
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     do1dPlots = False,
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['doOnly1dPlot'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['doOnly1dPlot.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_doOnly1dPlot():
     input_chains = [np.array([SAMPLES_1[:,0]]).T, np.array([SAMPLES_2[:,0]]).T]
     pygtc.plotGTC(chains=input_chains,
                     doOnly1dPlot = True,
                     smoothingKernel = 0)
 
-@image_comparison(baseline_images=['mathTextFontSet'], extensions=['png'], savefig_kwarg=SFKWARGS)
+@pytest.mark.mpl_image_compare(filename=['mathTextFontSet.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_mathTextFontSet():
     namesWithTex = ['param name', '$B_\mathrm{\lambda}$', '$Q^a$', '$\\lambda$']
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],

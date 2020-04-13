@@ -3,7 +3,7 @@ numpy >= 1.5
 matplotlib >=1.5.3
 
 #####Packages that provide some extra utility, but aren't required#####
-#nose
-#nose-exclude
+#pytest
+#pytest-mpl
 #scipy
 #pandas
