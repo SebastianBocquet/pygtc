@@ -36,5 +36,5 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with nose
       run: |
-        pip install nose nose-exclude
+        pip install nose nose-exclude pytest
         nosetests tests
