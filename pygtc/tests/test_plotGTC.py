@@ -92,7 +92,7 @@ def test_GTC_paramNames_noTex():
 
 @pytest.mark.mpl_image_compare(filename=['paramNames_withTex.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_paramNames_withTex():
-    namesWithTex = ['param name', '$B_\mathrm{\lambda}$', '$Q^a$', '$\\lambda$']
+    namesWithTex = ['param name', '$B_\\mathrm{\\lambda}$', '$Q^a$', '$\\lambda$']
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     paramNames = namesWithTex,
                     smoothingKernel = 0)
@@ -106,7 +106,7 @@ def test_GTC_chainLabels_noTex():
 
 @pytest.mark.mpl_image_compare(filename=['chainLabels_withTex.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_chainLabels_withTex():
-    chainLabelsWithTex = ['data1 $\lambda$', 'data 2']
+    chainLabelsWithTex = ['data1 $\\lambda$', 'data 2']
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     chainLabels = chainLabelsWithTex,
                     smoothingKernel = 0)
@@ -243,7 +243,7 @@ def test_GTC_doOnly1dPlot():
 
 @pytest.mark.mpl_image_compare(filename=['mathTextFontSet.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_mathTextFontSet():
-    namesWithTex = ['param name', '$B_\mathrm{\lambda}$', '$Q^a$', '$\\lambda$']
+    namesWithTex = ['param name', '$B_\\mathrm{\\lambda}$', '$Q^a$', '$\\lambda$']
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     paramNames = namesWithTex,
                     mathTextFontSet = None,
