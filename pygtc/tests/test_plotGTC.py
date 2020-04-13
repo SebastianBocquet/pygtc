@@ -77,10 +77,8 @@ def test_GTC_pandas():
     if HAS_PANDAS:
         samples1_pd = pd.DataFrame(SAMPLES_1, columns=namesNoTex)
         samples2_pd = pd.DataFrame(SAMPLES_2, columns=namesNoTex)
-
     else:
-        warnings.warn("Can't test pandas auto-name without pandas. Skipping test.", UserWarning)
-        raise nose.SkipTest
+        pytest.skip("Can't test pandas auto-name without pandas.")
 
     pygtc.plotGTC(chains=[samples1_pd,samples2_pd],
                     smoothingKernel = 0)
@@ -148,8 +146,7 @@ def test_GTC_truthLineStyles():
 @pytest.mark.mpl_image_compare(filename=['priors.png'], tol=5e-3, savefig_kwarg=SFKWARGS)
 def test_GTC_priors():
     if not HAS_SCIPY:
-        warnings.warn("Can't test priors without scipy installed. Skipping test.", UserWarning)
-        raise nose.SkipTest
+        pytest.skip("Can't test priors without scipy installed.")
 
     priors = (None, (2, 1), (.5, 2), ())
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
@@ -180,8 +177,7 @@ def test_GTC_nBins():
 @pytest.mark.mpl_image_compare(filename=['smoothingKernel.png'], savefig_kwarg=SFKWARGS)
 def test_GTC_smoothingKernel():
     if not HAS_SCIPY:
-        warnings.warn("Can't test smoothing without scipy. Skipping test.", UserWarning)
-        raise nose.SkipTest
+        pytest.skip("Can't test smoothing without scipy.")
 
     pygtc.plotGTC(chains=[SAMPLES_1,SAMPLES_2],
                     smoothingKernel = 2)
