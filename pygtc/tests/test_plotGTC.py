@@ -1,6 +1,5 @@
 #Make sure we always use the same backend for image comparison tests
 import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
