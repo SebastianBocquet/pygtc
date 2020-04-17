@@ -24,3 +24,6 @@ pygtc/result_images
 
 #Build files for docs
 /docs/_build
+
+# pytest-coverage
+.coverage
