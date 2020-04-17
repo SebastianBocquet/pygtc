@@ -27,3 +27,6 @@ pygtc/result_images
 
 # pytest-coverage
 .coverage
+
+# local editor files
+.vscode/
