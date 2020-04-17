@@ -38,4 +38,4 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest pytest-mpl
-        pytest --mpl --mpl-baseline-path=pygtc\tests\new_baseline
+        pytest --mpl --mpl-baseline-path=pygtc/tests/new_baseline
