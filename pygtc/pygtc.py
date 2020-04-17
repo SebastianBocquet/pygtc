@@ -24,7 +24,7 @@ __all__ = ['plotGTC']
 
 def plotGTC(chains, **kwargs):
     r"""Make a great looking Giant Triangle Confusogram (GTC) with one line of
-    code! A GTC is a lot like a triangle (or corner) plot, but you get to put as
+    code! A GTC is like a triangle (or corner) plot, but you get to put as
     many sets of data, and overlay as many truths as you like. That's what can
     make it so *confusing*!
 
@@ -41,8 +41,8 @@ def plotGTC(chains, **kwargs):
     -----------------
     weights : array-like[nSamples] or a list[[nSamples1], ...]
         Weights for the sample points. The number of 1d arrays passed must
-        correspond to the number of `chains`, and each `weights` array must have
-        the same length nSamples as its corresponding chain.
+        correspond to the number of `chains`, and each `weights` array must
+        have the same length nSamples as its corresponding chain.
 
     chainLabels : array-like[nChains]
         A list of text labels describing each chain passed to chains.
