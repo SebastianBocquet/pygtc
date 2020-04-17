@@ -12,4 +12,4 @@ version_filename = os.path.join(os.path.dirname(os.path.abspath(inspect.stack()[
 with open(version_filename, 'r') as version_file:
     __version__ = version_file.read().strip()
 
-from .pygtc import plotGTC
+from .pygtc import plotGTC, haveScipy
