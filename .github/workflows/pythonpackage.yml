@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8]
-        os: [windows-latest]
+        os: [ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v2
@@ -29,7 +29,7 @@ jobs:
     - shell: bash -l {0}
       run: |
         pip install pytest-mpl
-        pytest --mpl --mpl-baseline-path=pygtc/tests/new_baseline
+        pytest --mpl --mpl-baseline-path=pygtc/tests/baseline
     # - name: Set up Python ${{ matrix.python-version }}
     #   uses: actions/setup-python@v1
     #   with:
