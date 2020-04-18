@@ -1,0 +1,8 @@
+name: test-env
+dependencies:
+  - freetype=2.9.1
+  - matplotlib
+  - numpy
+  - scipy
+  - pytest
+  - pandas
