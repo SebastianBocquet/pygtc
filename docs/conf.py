@@ -15,31 +15,10 @@
 import sys
 import os
 
-# All this mock stuff is just so I can import pygtc below without actually
-# having to load up any of the modules listed in MOCK_MODULES.
-# This is important because RTD doesn't support any c-based modules.
-import mock
-
-MOCK_MODULES = ['numpy',
-                'scipy',
-                'matplotlib',
-                'matplotlib.pyplot',
-                'matplotlib.ticker',
-                'matplotlib.colors',
-                'matplotlib.colors.LinearSegmentedColormap',
-                'scipy.ndimage',
-                'scipy.stats']
-
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = mock.Mock()
-    if mod_name == 'matplotlib':
-        sys.modules[mod_name].__version__ = '2.0.0'
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../'))
-import pygtc
 
 # -- General configuration ------------------------------------------------
 
