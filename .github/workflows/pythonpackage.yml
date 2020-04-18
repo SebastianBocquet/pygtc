@@ -21,15 +21,15 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: goanpeca/setup-miniconda@v1
-        with:
-           activate-environment: test-env
-           environment-file: test-environment.yml
-           python-version: ${{ matrix.python-version }}
-           auto-activate-base: false
-      - shell: bash -l {0}
-        run: |
-          pip install pytest-mpl
-          pytest --mpl --mpl-baseline-path=pygtc/tests/new_baseline
+      with:
+          activate-environment: test-env
+          environment-file: test-environment.yml
+          python-version: ${{ matrix.python-version }}
+          auto-activate-base: false
+    - shell: bash -l {0}
+      run: |
+        pip install pytest-mpl
+        pytest --mpl --mpl-baseline-path=pygtc/tests/new_baseline
     # - name: Set up Python ${{ matrix.python-version }}
     #   uses: actions/setup-python@v1
     #   with:
