@@ -70,6 +70,11 @@ directory::
   cd /path/to/pygtc
   pytest --mpl --mpl-results-path=results
 
+If you are running tests on OSX, you may have better results comparing against
+the legacy_baseline images like so::
+
+  pytest --mpl --mpl-baseline-path=pygtc/tests/legacy_baseline --mpl-results-path=result_images
+
 There are 25 tests to run, and it should take between 20-30
 seconds to run them all. If the first test fails, there may be something wrong
 with your matplotlib install in general (or maybe something weird in your
