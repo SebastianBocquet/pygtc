@@ -52,10 +52,11 @@ def plotGTC(chains, **kwargs):
 
     paramNames : list-like[nDims]
         A list of text labels describing each dimension of chains.
-        len(paramNames) must equal nDims=chains[0].shape[1]. paramNames supports
-        LaTex commands enclosed in $..$. Additionally, you can pass None as a
-        label. Default is None, however if you pass a ``pandas.DataFrame``
-        object, `paramNames` defaults to the ``DataFrame`` column names.
+        len(paramNames) must equal nDims=chains[0].shape[1]. paramNames
+        supports LaTex commands enclosed in $..$. Additionally, you can pass
+        None as a label. Default is None, however if you pass a
+        ``pandas.DataFrame`` object, `paramNames` defaults to the ``DataFrame``
+        column names.
 
     truths : list-like[nDims] or [[nDims], ...]
         A list of parameter values, one for each parameter in `chains` to
@@ -96,8 +97,8 @@ def plotGTC(chains, **kwargs):
         the standard contour levels (68%, 95%, 99%). Default is ``False``.
 
     nBins : int
-        An integer describing the number of bins used to compute the histograms.
-        Default is 30.
+        An integer describing the number of bins used to compute the
+        histograms. Default is 30.
 
     smoothingKernel : float
         Size of the Gaussian smoothing kernel in bins. Default is 1. Set to 0
@@ -111,16 +112,17 @@ def plotGTC(chains, **kwargs):
         Whether you want to see the 2d density of points. Default is ``False``.
 
     figureSize : float or string
-        A number in inches describing the length = width of the GTC, or a string
-        indicating a predefined journal setting and whether the figure will span
-        one column or the full page width. Default is 70/dpi where ``dpi =
-        plt.rcParams['figure.dpi']``. Options to choose from are
+        A number in inches describing the length = width of the GTC, or a
+        string indicating a predefined journal setting and whether the figure
+        will span one column or the full page width. Default is 70/dpi where
+        ``dpi = plt.rcParams['figure.dpi']``. Options to choose from are
         ``'APJ_column'``, ``'APJ_page'``, ``'MNRAS_column'``, ``'MNRAS_page'``,
         ``'AandA_column'``, ``'AandA_page'``.
 
     panelSpacing : string
-        Options are ``'loose'`` or ``'tight'``. Determines whether there is some
-        space between the subplots of the GTC or not. Default is ``'tight'``.
+        Options are ``'loose'`` or ``'tight'``. Determines whether there is
+        some space between the subplots of the GTC or not. Default is
+        ``'tight'``.
 
     legendMarker : string
         Options are ``'All'``, ``'None'``, ``'Auto'``. ``'All'`` and ``'None'``
@@ -129,8 +131,8 @@ def plotGTC(chains, **kwargs):
 
     paramRanges : list of tuples [nDim]
         Set the boundaries of each parameter range. Must provide a tuple for
-        each dimension of `chains`. If ``None`` is provided for a parameter, the
-        range defaults to the width of the histogram.
+        each dimension of `chains`. If ``None`` is provided for a parameter,
+        the range defaults to the width of the histogram.
 
     labelRotation : tuple [2]
         Rotate the tick labels by 45 degrees for less overlap. Sets the x- and
@@ -141,8 +143,8 @@ def plotGTC(chains, **kwargs):
     tickShifts : tuple [2]
         Shift the x/y tick labels horizontally/vertically by a fraction of the
         tick spacing. Example tickShifts = (0.1, 0.05) shifts the x-tick labels
-        right by ten percent of the tick spacing and shifts the y-tick labels up
-        by five percent of the tick spacing. Default is (0.1, 0.1). If tick
+        right by ten percent of the tick spacing and shifts the y-tick labels
+        up by five percent of the tick spacing. Default is (0.1, 0.1). If tick
         rotation is turned off for either axis, then the corresponding shift is
         set to zero.
 
@@ -159,13 +161,13 @@ def plotGTC(chains, **kwargs):
         ``True``.
 
     doOnly1dPlot : bool
-        Plot only ONE 1d histogram. If this is True, then chains must have shape
-        ``(samples,1)``. Default is ``False``.
+        Plot only ONE 1d histogram. If this is True, then chains must have
+        shape ``(samples,1)``. Default is ``False``.
 
     mathTextFontSet : string
         Set font family for rendering LaTex. Default is ``'stixsans'``. Set to
-        ``None`` to use the default setting in your matplotlib rc. See Notes for
-        known issues regarding this keyword.
+        ``None`` to use the default setting in your matplotlib rc. See Notes
+        for known issues regarding this keyword.
 
     customLabelFont : ``matplotlib.fontdict``
         Full customization of label fonts. See matplotlib for full
@@ -182,10 +184,10 @@ def plotGTC(chains, **kwargs):
 
     holdRC : bool
         Whether or not to reset rcParams back to default. You may wish to set
-        this to ``True`` if you are working in interactive mode (ie with IPython
-        or in a JuPyter notebook) and you want the plots that display to be
-        identical to the plots that save in the pdf. See Notes below for more
-        information. Default is ``False``.
+        this to ``True`` if you are working in interactive mode (ie with
+        IPython or in a JuPyter notebook) and you want the plots that display
+        to be identical to the plots that save in the pdf. See Notes below for
+        more information. Default is ``False``.
 
     Returns
     -------
@@ -197,21 +199,22 @@ def plotGTC(chains, **kwargs):
 
     Note
     ----
-    If you are calling ``plotGTC`` from within an interactive python session (ie
-    via IPython or in a JuPyter notebook), the label font in the saved pdf may
-    differ from the plot that appears when calling ``matplotlib.pyplot.show()``.
+    If you are calling ``plotGTC`` from within an interactive python session
+    (ie via IPython or in a JuPyter notebook), the label font in the saved pdf
+    may differ from the plot that appears when calling
+    ``matplotlib.pyplot.show()``.
 
     This will happen if the mathTextFontSet keyword sets a value that is
     different than the one stored in ``rcParams['mathtext.fontset']`` and you
-    are using equations in your labels by enclosing them in $..$. The output pdf
-    will display correctly, but the interactive plot will use whatever is stored
-    in the rcParams default to render the text that is inside the $..$.
+    are using equations in your labels by enclosing them in $..$. The output
+    pdf will display correctly, but the interactive plot will use whatever is
+    stored in the rcParams default to render the text that is inside the $..$.
     Unfortunately, this is an oversight in matplotlib's design, which only
-    allows one global location for specifying this setting. As a workaround, you
-    can set ``holdRC = True`` when calling ``plotGTC`` and it will *not* reset
-    your rcParams back to their default state. Thus, when the figure renders in
-    interactive mode, it will match the saved pdf. If you wish to reset your
-    rcParams back to default at any point, you can call
+    allows one global location for specifying this setting. As a workaround,
+    you can set ``holdRC = True`` when calling ``plotGTC`` and it will *not*
+    reset your rcParams back to their default state. Thus, when the figure
+    renders in interactive mode, it will match the saved pdf. If you wish to
+    reset your rcParams back to default at any point, you can call
     ``matplotlib.rcdefaults()``. However, if you are in a jupyter notebook and
     have set ``%matplotlib inline``,  then calling ``matplotlib.rcdefaults()``
     may not set things back the way they were, but rerunning the line magic
@@ -415,7 +418,8 @@ def plotGTC(chains, **kwargs):
             weights = [weights]
         for i in range(nChains):
             assert len(weights[i]) == len(chains[i]), \
-                ("Mismatch in chain/weights #%d: len(chain) %d, len(weights) %d"
+                ("Mismatch in chain/weights #%d: " +
+                 "len(chain) %d, len(weights) %d"
                  % (i, len(chains[i]), len(weights[i])))
 
     # Set plotName to save the plot to plotName
@@ -465,7 +469,8 @@ def plotGTC(chains, **kwargs):
     if smoothingKernel >= nBins/10:
         warnings.warn("Wow, that's a huge smoothing kernel! You sure you want"
                       "its scale to be %.1f percent of the plot?!"
-                      % (100.*float(smoothingKernel)/float(nBins)), UserWarning)
+                      % (100.*float(smoothingKernel)/float(nBins)),
+                      UserWarning)
 
     # Filled contours and histograms
     filledPlots = kwargs.pop('filledPlots', True)
@@ -477,7 +482,7 @@ def plotGTC(chains, **kwargs):
     # provide your own
     figureSize = kwargs.pop('figureSize', None)
     if figureSize is None:
-        # If no figure size is given, use resolution of 70 ppp (pixel per panel)
+        # If no figure size is given, use resolution of 70 pixel per panel
         figureWidth = nDim*70. / mplPPI
     else:
         # User-defined width=height in inches
@@ -693,9 +698,9 @@ def plotGTC(chains, **kwargs):
 
                     ax.yaxis.set_ticks(yTicks[i])
 
-                    # Calculate the position for shifting the x-axis tick labels
-                    # Bump all the labels over just a tiny bit so
-                    # it looks good! Default is 0.1 * tick spacing
+                    # Calculate the position for shifting the x-axis tick
+                    # labels Bump all the labels over just a tiny bit so it
+                    # looks good! Default is 0.1 * tick spacing
 
                     # Get the number of ticks to convert
                     # to coordinates of fraction of tick separation
@@ -731,9 +736,9 @@ def plotGTC(chains, **kwargs):
                         # Update the font if needed
                         xLabel.set_fontproperties(tickFontProps)
 
-                    # Calculate the position for shifting the y-axis tick labels
-                    # Bump all the labels over just a tiny bit so
-                    # it looks good! Default is 0.1 * tick spacing
+                    # Calculate the position for shifting the y-axis tick
+                    # labels Bump all the labels over just a tiny bit so it
+                    # looks good! Default is 0.1 * tick spacing
 
                     # Get the number of ticks to convert
                     # to coordinates of fraction of tick separation
@@ -790,8 +795,9 @@ def plotGTC(chains, **kwargs):
                     prior1d = priors[i]
             # Plot!
             ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins,
-                          smoothingKernel, filledPlots, colors, truthsForPlot1D,
-                          truthColors, truthLineStyles, prior1d, priorColor)
+                          smoothingKernel, filledPlots, colors,
+                          truthsForPlot1D, truthColors, truthLineStyles,
+                          prior1d, priorColor)
 
             # Panel layout
             ax.grid(False)
@@ -1093,8 +1099,8 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
                 if not np.isnan(chains1d[k]).all():
                     # Filled stepfilled histograms
                     ax.hist(chains1d[k], weights=weights[k], density=True,
-                            bins=nBins, histtype='stepfilled', edgecolor='None',
-                            color=colors[k][1])
+                            bins=nBins, histtype='stepfilled',
+                            edgecolor='None', color=colors[k][1])
         for k in reversed(range(nChains)):
             # Is there a chain to plot?
             if not np.isnan(chains1d[k]).all():
@@ -1175,7 +1181,8 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
         Whether to show points density in addition to contours.
 
     myColorMap : list-like
-        A list of `nChains` matplotlib colormap specifiers, or actual colormaps.
+        A list of `nChains` matplotlib colormap specifiers,
+        or actual colormaps.
 
     Note
     ----
