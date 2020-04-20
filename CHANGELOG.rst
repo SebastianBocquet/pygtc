@@ -3,6 +3,7 @@ Version 0.4.0
     `density`
   * Add version number to package itself
   * Add tests to the distribution
+  * Verified matplotlib 3.0 support
 
 Version 0.3.1
   * Hardlink the readme image to github so PyPI can see it
