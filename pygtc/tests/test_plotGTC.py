@@ -71,6 +71,7 @@ def test_GTC_bare():
 
 
 @image_comp(filename='pandas.png', savefig_kwargs=SFKWARGS)
+
 def test_GTC_pandas():
     namesNoTex = ['param name', 'B_labmda', 'C', 'lambda']
 
