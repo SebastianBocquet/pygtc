@@ -5,7 +5,7 @@ name: Python package
 
 on:
   push:
-    branches: [ master, add-github-actions ]
+    branches: [ master, dev ]
   pull_request:
     branches: [ master ]
 
