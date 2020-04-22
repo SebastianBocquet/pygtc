@@ -15,7 +15,7 @@ setup(
     packages=['pygtc'],
     package_data={'pygtc': ['VERSION.txt',
                             'tests/*.py',
-                            'tests/baseline_images/test_plotGTC/*.png']},
+                            'tests/baseline/*.png']},
     long_description=open('README.rst').read(),
     install_requires=[
         'numpy',
