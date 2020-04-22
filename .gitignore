@@ -19,7 +19,10 @@ dist
 /ExampleData
 
 # Test images
+.cache
+results
 result_images
+pygtc/results
 pygtc/result_images
 
 #Build files for docs
