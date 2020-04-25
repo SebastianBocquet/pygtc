@@ -1,3 +1,12 @@
+Version 0.4.0
+  * Update deprecated `normed` keyword for matplotlib and numpy histograms to
+    `density`
+  * Add version number to package itself
+  * Add tests to the distribution
+  * Verified matplotlib 3.0 support
+  * Migrated testing from `nose` to `pytest`
+  * Note: Version 0.5 and up will drop support for matplotlib < 2.1 and numpy < 1.7.1. Version 0.4 will still recieve minor version bumps to address bugs.
+
 Version 0.3.1
   * Hardlink the readme image to github so PyPI can see it
 

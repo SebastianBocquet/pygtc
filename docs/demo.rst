@@ -1,11 +1,14 @@
-
 Example 1: Making a GTC/triangle plot with pygtc
 ================================================
+
+This example is built from a jupyter notebook hosted on the `pyGTC
+GitHub
+repository <https://github.com/SebastianBocquet/pygtc/blob/master/demo.ipynb>`__.
 
 Import dependencies
 -------------------
 
-.. code:: ipython2
+.. code:: ipython3
 
     %matplotlib inline
     %config InlineBackend.figure_format = 'retina' # For mac users with Retina display
@@ -16,10 +19,10 @@ Import dependencies
 Generate fake data
 ------------------
 
-Let's create two sets of fake sample points with 8 dimensions each. Note
+Let’s create two sets of fake sample points with 8 dimensions each. Note
 that chains are allowed to have different lengths.
 
-.. code:: ipython2
+.. code:: ipython3
 
     # Create Npoints samples from random multivariate, nDim-dimensional Gaussian
     def create_random_samples(nDim, Npoints):
@@ -39,11 +42,11 @@ that chains are allowed to have different lengths.
 Omit one parameter for one chain
 --------------------------------
 
-Let's assume the samples1 does not include the second to last parameter.
+Let’s assume the samples1 does not include the second to last parameter.
 In the figure, we only want to show this parameter for samples2. pygtc
 will omit parameters that only contain nan.
 
-.. code:: ipython2
+.. code:: ipython3
 
     samples1[:,6] = None
 
@@ -52,9 +55,9 @@ Minimal example
 
 Note that numpy throws a ``RuntimeWarning`` because we set one of the
 axes of ``samples1`` to ``None`` just above. As we understand the
-warning, let's move on!
+warning, let’s move on!
 
-.. code:: ipython2
+.. code:: ipython3
 
     GTC = pygtc.plotGTC(chains=[samples1,samples2])
 
@@ -76,13 +79,13 @@ warning, let's move on!
 Complete the figure
 -------------------
 
-Now let's add: \* axis and data labels \* lines marking some important
+Now let’s add: \* axis and data labels \* lines marking some important
 points in parameter space \* Gaussian distributions on the 1d histograms
 that could indicate Gaussian priors we assumed
 
 Note that all these must match number of parameters!
 
-.. code:: ipython2
+.. code:: ipython3
 
     # List of parameter names, supports latex
     # NOTE: For capital greek letters in latex mode, use \mathsf{}
@@ -139,17 +142,17 @@ Make figure publication ready
 -----------------------------
 
 -  See how the prior for :math:`B_{\lambda}` is cut off on the left?
-   Let's display :math:`B_\lambda` in the range (-5,4). Also, we could
+   Let’s display :math:`B_\lambda` in the range (-5,4). Also, we could
    show a narrower range for :math:`\lambda` like (-3,3).
--  Given that we're showing two sets of truth lines, let's show the line
+-  Given that we’re showing two sets of truth lines, let’s show the line
    styles in the legend (``legendMarker=True``).
--  Finally, let's make the figure size publication ready for MNRAS.
-   Given that we're showing eight parameters, we'll want to choose
+-  Finally, let’s make the figure size publication ready for MNRAS.
+   Given that we’re showing eight parameters, we’ll want to choose
    ``figureSize='MNRAS_page'`` and show a full page-width figure.
 -  Save the figure as ``fullGTC.pdf`` and paste it into your
    publication!
 
-.. code:: ipython2
+.. code:: ipython3
 
     # List of parameter ranges to show,
     # empty () or None to let pyGTC decide
@@ -184,9 +187,9 @@ Single 2d panel
 ---------------
 
 See how the covariance between C and D is a ground-breaking result?
-Let's look in more detail! Here, we'll want single-column figures.
+Let’s look in more detail! Here, we’ll want single-column figures.
 
-.. code:: ipython2
+.. code:: ipython3
 
     # Redefine priors and truths
     priors2d = (None,(1,1))
@@ -230,9 +233,9 @@ Let's look in more detail! Here, we'll want single-column figures.
 Single 1d panel
 ---------------
 
-Finally, let's just plot the posterior on C
+Finally, let’s just plot the posterior on C
 
-.. code:: ipython2
+.. code:: ipython3
 
     # Bit tricky, but remember each data set needs shape of (Npoints, nDim)
     inputarr = [np.array([samples1[:,4]]).T,
