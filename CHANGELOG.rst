@@ -1,3 +1,6 @@
+Version 0.4.1
+  * Add `packaging` package to explicit list of deps to fix import bug.
+
 Version 0.4.0
   * Update deprecated `normed` keyword for matplotlib and numpy histograms to
     `density`
