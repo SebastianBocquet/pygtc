@@ -10,6 +10,7 @@ pygtc is compatible with Python 2.7 and 3.6 or greater and requires the followin
 * numpy >= 1.5
 * matplotlib >= 1.5.3 (preferably >= 2.0)
 * scipy (optional)
+* packaging
 * pandas (optional -- provides easy auto-naming of chains)
 * pytest (optional -- only needed for running unit tests)
 * pytest-mpl (optional -- only needed for running unit tests)
@@ -23,7 +24,11 @@ The latest stable version of pygtc is hosted at `PyPi
 
 If you like pip, you can install with::
 
-  pip install pygtc
+  $ pip install pygtc
+
+or, install the package hosted on conda-forge (may need to explicitly provide the channel with ``-c conda-forge``)::
+
+  $ conda install pygtc
 
 Or, alternatively, download and extract the tarball from the above link and then
 install from source with::
@@ -51,9 +56,9 @@ or from source::
 
 Running tests
 ~~~~~~~~~~~~~
-For tests to *for sure* run properly, you'll want to have matplotlib >= 3
-installed and be working on python >= 3.6. Additionally you'll need to ensure
-that you are using freetype 2.9.1. You'll need ``pytest`` and ``pytest-mpl``
+For tests to *for sure* run properly, you'll want to have ``matplotlib ==3.2.1``
+installed and be working on ``python >=3.6``. Additionally you'll need to ensure
+that you are using ``freetype ==2.9.1``. You'll need ``pytest`` and ``pytest-mpl``
 installed to run the tests, although pygtc functions fine without them. You
 also should have the Arial font installed, as that is pygtc's default font and
 tests will "fail" if matplotlib falls back on Deja Vu Sans (even though the
