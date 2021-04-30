@@ -117,6 +117,9 @@ def plotGTC(chains, **kwargs):
 
     plotDensity : bool
         Whether you want to see the 2d density of points. Default is ``False``.
+        
+    contourLinewidth: float
+        linewidth of contour lines, in points. Default is 1.
 
     figureSize : float or string
         A number in inches describing the length = width of the GTC, or a
@@ -485,6 +488,9 @@ def plotGTC(chains, **kwargs):
     # Filled contours and histograms
     plotDensity = kwargs.pop('plotDensity', False)
 
+    # Linewidth of contour lines
+    contourLinewidth = kwargs.pop('contourLinewidth', 1)
+    
     # Figure size: choose size to fit journal, use reasonable default, or
     # provide your own
     figureSize = kwargs.pop('figureSize', None)
@@ -622,7 +628,7 @@ def plotGTC(chains, **kwargs):
                     # Plot!
                     ax = __plot2d(ax, nChains, chainsForPlot2D, weights, nBins,
                                   smoothingKernel, filledPlots, colors,
-                                  nContourLevels, confLevels, truthsForPlot2D,
+                                  nContourLevels, confLevels, contourLinewidth, truthsForPlot2D,
                                   truthColors, truthLineStyles, plotDensity,
                                   myColorMap)
 
@@ -802,7 +808,7 @@ def plotGTC(chains, **kwargs):
                     prior1d = priors[i]
             # Plot!
             ax = __plot1d(ax, nChains, chainsForPlot1D, weights, nBins,
-                          smoothingKernel, filledPlots, colors,
+                          smoothingKernel, filledPlots, colors, linewidth,
                           truthsForPlot1D, truthColors, truthLineStyles,
                           prior1d, priorColor)
 
@@ -1019,8 +1025,8 @@ def plotGTC(chains, **kwargs):
 # Create single 1d panel
 
 def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
-             filledPlots, colors, truths1d, truthColors, truthLineStyles,
-             prior1d, priorColor):
+             filledPlots, colors, linewidth, truths1d, truthColors, 
+             truthLineStyles, prior1d, priorColor):
     r"""Plot the 1d histogram and optional prior.
 
     Parameters
@@ -1048,6 +1054,9 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
 
     colors : list-like
         List of `nChains` tuples. Each tuple must have at least two colors.
+        
+    linewidth: float
+        linewidth of the histogram edges. 
 
     truths1d : list-like
         List of truths to overplot on the histogram.
@@ -1095,7 +1104,11 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
         # Line for hidden histogram
         for k in reversed(range(nChains)):
             if plotData[nChains-1-k] is not None:
-                ax.plot(plotData[nChains-1-k][0], plotData[nChains-1-k][1],
+                if linewidth is not None:
+                    ax.plot(plotData[nChains-1-k][0], plotData[nChains-1-k][1],
+                        lw=linewidth, ls='-', color=colors[k][1])
+                    else:
+                        ax.plot(plotData[nChains-1-k][0], plotData[nChains-1-k][1],
                         lw=1, ls='-', color=colors[k][1])
 
     # No smoothing
@@ -1135,7 +1148,7 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
 # Create single 2d panel
 
 def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
-             filledPlots, colors, nContourLevels, confLevels, truths2d,
+             filledPlots, colors, nContourLevels, confLevels, contourLinewidth, truths2d,
              truthColors, truthLineStyles, plotDensity, myColorMap):
     r"""Plot a 2D histogram in a an axis object and return the axis with plot.
 
@@ -1174,6 +1187,9 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
 
     confLevels : list-like
         List of at least `nContourLevels` values for contour levels.
+        
+    contourLinewidth: float
+        linewidth of contour lines, in points
 
     truths2d : list-like
         A list of nChains tuples of the form: [(truth1_x, truth1_y), etc...].
@@ -1258,11 +1274,17 @@ def __plot2d(ax, nChains, chains2d, weights, nBins, smoothingKernel,
     for k in range(nChains):
         if plotData[nChains-1-k] is not None:
             for l in range(nContourLevels):
-                ax.contour(plotData[nChains-1-k],
+                if contourLinewidth is no None:
+                    ax.contour(plotData[nChains-1-k],
+                           [chainLevels[k][nContourLevels-1-l]],
+                           extent=extents[k], origin='lower',
+                           linewidths=contourLinewidth, colors=colors[k][l])
+                    else:
+                        ax.contour(plotData[nChains-1-k],
                            [chainLevels[k][nContourLevels-1-l]],
                            extent=extents[k], origin='lower',
                            linewidths=1, colors=colors[k][l])
-
+                        
     # Truth lines
     if truths2d is not None:
         for k in range(len(truths2d)):
