@@ -979,7 +979,7 @@ def plotGTC(chains, **kwargs):
             # Label for each truth
             for k in range(len(truthLabels)):
                 ax.plot(0, 0, lw=1, color=truthColors[k], label=truthLabels[k],
-                        ls=truthsDefaultLS[k])
+                        ls=truthLineStyles[k])
                 labelColors.append(truthColors[k])
 
         # Set xlim back to what the data wanted
