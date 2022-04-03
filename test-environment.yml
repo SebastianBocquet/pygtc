@@ -3,12 +3,12 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - freetype=2.9.1
-  - matplotlib=3.1.2
+  - freetype=2.10.4
+  - matplotlib=3.5.1
   - numpy
   - packaging
   - pandas
   - pytest
   - pytest-mpl
-  - python>=3.6,<4.0
+  - python
   - scipy

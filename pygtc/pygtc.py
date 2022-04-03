@@ -828,9 +828,9 @@ def plotGTC(chains, **kwargs):
             ax.get_xaxis().get_major_formatter().set_useOffset(False)
             ax.get_xaxis().get_major_formatter().set_scientific(False)
 
-            # No ticks or labels on y-axes, lower limit 0
+            # No ticks or labels on y-axes, lower limit 0, upper limit 5% above data max
             ax.yaxis.set_ticks([])
-            ax.set_ylim(bottom=0)
+            ax.set_ylim(bottom=0, top=ax.dataLim.ymax*1.05, auto=False)
             ax.xaxis.set_ticks_position('bottom')
 
             # x-label for bottom-right panel only and a scaling hack

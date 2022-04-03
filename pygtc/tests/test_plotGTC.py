@@ -144,7 +144,7 @@ def test_GTC_truthLabels_withTex():
 
 @image_comp(filename='truthLineStyles.png', savefig_kwargs=SFKWARGS)
 def test_GTC_truthLineStyles():
-    truthLineStyles = ['-', '-']
+    truthLineStyles = ['-', '-.']
     truths = ((4, .5, None, .1),
               (None, None, .3, 1))
     return pygtc.plotGTC(chains=[SAMPLES_1, SAMPLES_2],
@@ -152,6 +152,17 @@ def test_GTC_truthLineStyles():
                          truthLineStyles=truthLineStyles,
                          smoothingKernel=0)
 
+@image_comp(filename='truthLineStyles_withLegend.png', savefig_kwargs=SFKWARGS)
+def test_GTC_truthLineStyles_withLegend():
+    truthLineStyles = ['-', '-.']
+    truths = ((4, .5, None, .1),
+              (None, None, .3, 1))
+    truthLabelsNoTex = ('the truth', 'alternative truth')
+    return pygtc.plotGTC(chains=[SAMPLES_1, SAMPLES_2],
+                         truths=truths,
+                         truthLineStyles=truthLineStyles,
+                         truthLabels=truthLabelsNoTex,
+                         smoothingKernel=0)
 
 @image_comp(filename='priors.png', tol=5e-3, savefig_kwargs=SFKWARGS)
 def test_GTC_priors():

@@ -1,6 +1,8 @@
 Version 0.4.1
   * Add `packaging` package to explicit list of deps to fix import bug.
   * Fix bug where plot legend did not respect truthLineStyles
+  * 1-D plot scaling is now always 5% above the maximum datapoint (previously it was "auto-scaled")
+  * Removed legacy test baseline images from the codebase and regenerated new test images that incorporate the 1-D plot scaling fix
 
 Version 0.4.0
   * Update deprecated `normed` keyword for matplotlib and numpy histograms to
