@@ -1105,15 +1105,15 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
                 # Is there a chain to plot?
                 if not np.isnan(chains1d[k]).all():
                     # Filled stepfilled histograms
-                    ax.hist(chains1d[k], weights=weights[k], **density_kw,
+                    ax.hist(chains1d[k], weights=weights[k],
                             bins=nBins, histtype='stepfilled',
-                            edgecolor='None', color=colors[k][1])
+                            edgecolor='None', color=colors[k][1], **density_kw)
         for k in reversed(range(nChains)):
             # Is there a chain to plot?
             if not np.isnan(chains1d[k]).all():
                 # Step curves for hidden histogram(s)
-                ax.hist(chains1d[k], weights=weights[k], **density_kw,
-                        bins=nBins, histtype='step', color=colors[k][1])
+                ax.hist(chains1d[k], weights=weights[k],
+                        bins=nBins, histtype='step', color=colors[k][1], **density_kw)
 
     # Truth line
     if truths1d is not None:
