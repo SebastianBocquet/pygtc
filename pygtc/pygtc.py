@@ -828,9 +828,9 @@ def plotGTC(chains, **kwargs):
             ax.get_xaxis().get_major_formatter().set_useOffset(False)
             ax.get_xaxis().get_major_formatter().set_scientific(False)
 
-            # No ticks or labels on y-axes, lower limit 0
+            # No ticks or labels on y-axes, lower limit 0, upper limit 5% above data max
             ax.yaxis.set_ticks([])
-            ax.set_ylim(bottom=0)
+            ax.set_ylim(bottom=0, top=ax.dataLim.ymax*1.05, auto=False)
             ax.xaxis.set_ticks_position('bottom')
 
             # x-label for bottom-right panel only and a scaling hack
@@ -979,7 +979,7 @@ def plotGTC(chains, **kwargs):
             # Label for each truth
             for k in range(len(truthLabels)):
                 ax.plot(0, 0, lw=1, color=truthColors[k], label=truthLabels[k],
-                        ls=truthsDefaultLS[k])
+                        ls=truthLineStyles[k])
                 labelColors.append(truthColors[k])
 
         # Set xlim back to what the data wanted
@@ -1105,15 +1105,15 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
                 # Is there a chain to plot?
                 if not np.isnan(chains1d[k]).all():
                     # Filled stepfilled histograms
-                    ax.hist(chains1d[k], weights=weights[k], **density_kw,
+                    ax.hist(chains1d[k], weights=weights[k],
                             bins=nBins, histtype='stepfilled',
-                            edgecolor='None', color=colors[k][1])
+                            edgecolor='None', color=colors[k][1], **density_kw)
         for k in reversed(range(nChains)):
             # Is there a chain to plot?
             if not np.isnan(chains1d[k]).all():
                 # Step curves for hidden histogram(s)
-                ax.hist(chains1d[k], weights=weights[k], **density_kw,
-                        bins=nBins, histtype='step', color=colors[k][1])
+                ax.hist(chains1d[k], weights=weights[k],
+                        bins=nBins, histtype='step', color=colors[k][1], **density_kw)
 
     # Truth line
     if truths1d is not None:

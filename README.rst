@@ -36,10 +36,14 @@ most; for us, that is ``pygtc``!
 
 Installation
 ------------
-For a quick start, you can just use ``pip``. It will install the required
-dependencies for you (``numpy`` and ``matplotlib``)::
+For a quick start, you can install with either ``pip`` or ``conda``. Either will install the required
+dependencies for you (``packaging``, ``numpy``, and ``matplotlib``)::
 
-  pip install pygtc
+  $ pip install pygtc
+
+or, if you use ``conda``::
+
+  $ conda install pygtc -c conda-forge
 
 For more installation details, see the `documentation <http://pygtc.readthedocs.io/>`_.
 

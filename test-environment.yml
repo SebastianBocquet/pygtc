@@ -1,8 +1,14 @@
-name: test-env
+name: pygtc-test
+channels:
+  - defaults
+  - conda-forge
 dependencies:
-  - freetype=2.9.1
-  - matplotlib
+  - freetype=2.10.4
+  - matplotlib=3.5.1
   - numpy
-  - scipy
-  - pytest
+  - packaging
   - pandas
+  - pytest
+  - pytest-mpl
+  - python
+  - scipy
