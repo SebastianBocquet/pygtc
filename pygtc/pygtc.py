@@ -932,23 +932,24 @@ def plotGTC(chains, **kwargs):
         # x labels
         # Get label length of the bottom row
         for i in range(len(axH)):
-            bboxTickLabel = (axH[i].xaxis.get_ticklabel_extents(renderer)[0]
-                             .get_points())
-            bboxSize[i] = bboxTickLabel[1, 1]-bboxTickLabel[0, 1]
+            bboxTickLabel = axH[i].xaxis.get_tightbbox(renderer)
+            bboxSize[i] = bboxTickLabel.x1 - bboxTickLabel.x0
             panelWidth = (axH[i].get_window_extent()
                           .transformed(fig.dpi_scale_trans.inverted()).width)
         # Apply longest spacing to all panels in last row
-        longestTickLabel = 3+np.amax(bboxSize)
-        loc = (longestTickLabel/mplPPI/panelWidth)
+        longestTickLabel = 3 + np.amax(bboxSize)
+        loc = (longestTickLabel / mplPPI / panelWidth)
         for i in range(len(axH)):
             axH[i].get_xaxis().set_label_coords(.5, -loc)
 
         # y labels
         # Get label length of the left column
         for i in range(len(axV)):
-            bboxTickLabel = (axV[i].yaxis.get_ticklabel_extents(renderer)[0]
-                             .get_points())
-            bboxSize[i] = bboxTickLabel[1, 0]-bboxTickLabel[0, 0]
+            bboxTickLabel = axV[i].yaxis.get_tightbbox(renderer)
+            try:
+                bboxSize[i] = bboxTickLabel.y1 - bboxTickLabel.y0
+            except AttributeError:
+                bboxSize[i] = 0
             panelHeight = (axV[i].get_window_extent()
                            .transformed(fig.dpi_scale_trans.inverted()).height)
         # Apply longest spacing to all panels in first column
