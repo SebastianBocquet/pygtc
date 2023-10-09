@@ -913,50 +913,8 @@ def plotGTC(chains, **kwargs):
 
     # Align labels if there is more than one panel
     if len(axH) > 1:
-        fig.canvas.draw()
-        bboxSize = np.empty(len(axH))
-
-        try:
-            # This is the canonical way to get the renderer, which the OSX
-            # backend started supporting in mpl 2.0. Older versions of the OSX
-            # backend don't implement the method though, and access the
-            # renderer obect directly. This should do it right, but fall
-            # through to the "wrong" way for older versions or backends that
-            # have yet to implement.
-            renderer = fig.canvas.get_renderer()
-        except AttributeError:
-            # If the get_renderer method doesn't exist, then try accessing the
-            # renderer directly.
-            renderer = fig.canvas.renderer
-
-        # x labels
-        # Get label length of the bottom row
-        for i in range(len(axH)):
-            bboxTickLabel = axH[i].xaxis.get_tightbbox(renderer)
-            bboxSize[i] = bboxTickLabel.x1 - bboxTickLabel.x0
-            panelWidth = (axH[i].get_window_extent()
-                          .transformed(fig.dpi_scale_trans.inverted()).width)
-        # Apply longest spacing to all panels in last row
-        longestTickLabel = 3 + np.amax(bboxSize)
-        loc = (longestTickLabel / mplPPI / panelWidth)
-        for i in range(len(axH)):
-            axH[i].get_xaxis().set_label_coords(.5, -loc)
-
-        # y labels
-        # Get label length of the left column
-        for i in range(len(axV)):
-            bboxTickLabel = axV[i].yaxis.get_tightbbox(renderer)
-            try:
-                bboxSize[i] = bboxTickLabel.y1 - bboxTickLabel.y0
-            except AttributeError:
-                bboxSize[i] = 0
-            panelHeight = (axV[i].get_window_extent()
-                           .transformed(fig.dpi_scale_trans.inverted()).height)
-        # Apply longest spacing to all panels in first column
-        longestTickLabel = 2+np.amax(bboxSize)
-        loc = (longestTickLabel/mplPPI/panelHeight)
-        for i in range(len(axV)):
-            axV[i].get_yaxis().set_label_coords(-loc, .5)
+        fig.align_ylabels(axV)
+        fig.align_xlabels(axH)
 
     # Legend
     if (chainLabels is not None) or (truthLabels is not None):
