@@ -22,7 +22,11 @@ setup(
         ]
     },
     long_description=open("README.rst").read(),
-    install_requires=["packaging", "numpy", "matplotlib"],
+    install_requires=[
+        "packaging",
+        "numpy>=1.7.1",
+        "matplotlib>=2.2",
+    ],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Science/Research",

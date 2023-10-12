@@ -3,8 +3,8 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - freetype=2.10.4
-  - matplotlib=3.5.1
+  - freetype=2.12.1
+  - matplotlib=3.7.2
   - numpy
   - packaging
   - pandas

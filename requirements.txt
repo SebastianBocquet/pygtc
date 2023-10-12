@@ -1,7 +1,7 @@
 #####Stricter version requirements than setup.py#####
 packaging
-numpy >= 1.5
-matplotlib >=1.5.3
+numpy >= 1.7.1
+matplotlib >=2.2.0
 
 #####Packages that provide some extra utility, but aren't required#####
 #pytest
