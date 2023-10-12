@@ -7,7 +7,8 @@ __url__ = "https://pygtc.readthedocs.io/"
 __author__ = "Sebastian Bocquet and Faustin W. Carter"
 __contributors__ = [
     'Samuel Flender',
-    'Ben Hoyle'
+    'Ben Hoyle',
+    'Samuel D McDermott',
 ]
 __all__ = ['plotGTC', 'haveScipy']
 version_filename = os.path.join(os.path.dirname(

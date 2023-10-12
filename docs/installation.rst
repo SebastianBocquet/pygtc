@@ -7,10 +7,10 @@ Required packages
 
 pygtc is compatible with Python 2.7 and 3.6 or greater and requires the following packages:
 
-* numpy >= 1.5
-* matplotlib >= 1.5.3 (preferably >= 2.0)
+* numpy >= 1.7.1
+* matplotlib >= 2.2.0
 * scipy (optional)
-* packaging
+* packaging (typcally included with setuptools already)
 * pandas (optional -- provides easy auto-naming of chains)
 * pytest (optional -- only needed for running unit tests)
 * pytest-mpl (optional -- only needed for running unit tests)
@@ -57,15 +57,17 @@ or from source::
 Running tests
 ~~~~~~~~~~~~~
 For tests to *for sure* pass (i.e. reproduce pixel-perfect copies of our
-baseline images), you'll want to have ``matplotlib ==3.5.1`` installed and be
-working on ``python >=3.9``. Additionally you'll need to ensure that you are
-using ``freetype ==2.10.4``. You'll need ``pytest`` and ``pytest-mpl`` installed
-to run the tests, although pygtc functions fine without them. You also should
-have the Arial font installed, as that is pygtc's default font and tests will
-"fail" if matplotlib falls back on Deja Vu Sans (even though the images produced
-might look perfectly fine). Test base images were produced on Windows 10 using
-the ``Agg`` backend and if you are on another system there is no guarantee that
-you will get a pixel-perfect copy of what the Agg backend produces. However, the
+baseline images), you'll want to have ``matplotlib == 3.7.2`` installed and be
+working on ``python >= 3.9``. Additionally you'll need to ensure that you are
+using ``freetype ==2.12.1`` (although versions as low as ``2.10`` may work,
+too). You'll need ``pytest`` and ``pytest-mpl`` installed to run the tests,
+although pygtc functions fine without them. You also should have the Arial font
+installed, as that is pygtc's default font and tests will "fail" if matplotlib
+falls back on Deja Vu Sans (even though the images produced might look perfectly
+fine). Test base images were produced on Windows 10 using the ``Agg`` backend.
+If you are on another system there is no guarantee that you will get a
+pixel-perfect copy of what the Agg backend produces (although when we ran them
+on Ubuntu 20.04 with the above version pins they all passed). However, the
 images produced by the tests should still look great! They are saved to a folder
 called ``result_images`` in whatever directory you ran the tests from.
 
@@ -73,7 +75,7 @@ To run the test suite, use the pytest utility from within the pygtc package
 directory::
 
   cd /path/to/pygtc
-  pytest --mpl --mpl-results-path=results
+  pytest --mpl --mpl-results-path=./result_images
 
 There are 25 tests to run, and it should take between 20-30 seconds to run them
 all. If the first test fails, there may be something wrong with your matplotlib

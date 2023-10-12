@@ -15,14 +15,10 @@ try:
 except ImportError:
     haveScipy = False
 
-PYVER = sys.version_info[0]
-MPLVER = version.parse(mpl.__version__)
+_PYVER = sys.version_info[0]
+_MPLVER = version.parse(mpl.__version__)
 
-if MPLVER >= version.parse('2.1'):
-    density_kw = {'density':True}
-else:
-    warnings.warn("Future versions of pygtc will require matplotlib >= 2.1", DeprecationWarning)
-    density_kw = {'normed':True}
+_SNAKE_LEGEND_HANDLES = _MPLVER >= version.parse('3.6')
 
 __all__ = ['plotGTC']
 
@@ -173,8 +169,7 @@ def plotGTC(chains, **kwargs):
 
     mathTextFontSet : string
         Set font family for rendering LaTex. Default is ``'stixsans'``. Set to
-        ``None`` to use the default setting in your matplotlib rc. See Notes
-        for known issues regarding this keyword.
+        ``None`` to use the default setting in your matplotlib rc.
 
     customLabelFont : ``matplotlib.fontdict``
         Full customization of label fonts. See matplotlib for full
@@ -189,46 +184,13 @@ def plotGTC(chains, **kwargs):
         documentation. Default is ``{'family':'Arial', 'size':6}``. Attempting
         to set the color will result in an error.
 
-    holdRC : bool
-        Whether or not to reset rcParams back to default. You may wish to set
-        this to ``True`` if you are working in interactive mode (ie with
-        IPython or in a JuPyter notebook) and you want the plots that display
-        to be identical to the plots that save in the pdf. See Notes below for
-        more information. Default is ``False``.
-
     Returns
     -------
     fig : ``matplotlib.figure`` object
         You can do all sorts of fun things with this in terms of customization
         after it gets returned. If you are using a ``JuPyter`` notebook with
         inline plotting enabled, you should assign a variable to catch the
-        return or else the figure will plot twice.
-
-    Note
-    ----
-    If you are calling ``plotGTC`` from within an interactive python session
-    (ie via IPython or in a JuPyter notebook), the label font in the saved pdf
-    may differ from the plot that appears when calling
-    ``matplotlib.pyplot.show()``.
-
-    This will happen if the mathTextFontSet keyword sets a value that is
-    different than the one stored in ``rcParams['mathtext.fontset']`` and you
-    are using equations in your labels by enclosing them in $..$. The output
-    pdf will display correctly, but the interactive plot will use whatever is
-    stored in the rcParams default to render the text that is inside the $..$.
-    Unfortunately, this is an oversight in matplotlib's design, which only
-    allows one global location for specifying this setting. As a workaround,
-    you can set ``holdRC = True`` when calling ``plotGTC`` and it will *not*
-    reset your rcParams back to their default state. Thus, when the figure
-    renders in interactive mode, it will match the saved pdf. If you wish to
-    reset your rcParams back to default at any point, you can call
-    ``matplotlib.rcdefaults()``. However, if you are in a jupyter notebook and
-    have set ``%matplotlib inline``,  then calling ``matplotlib.rcdefaults()``
-    may not set things back the way they were, but rerunning the line magic
-    will.
-
-    This is all due to a bug in matplotlib that is slated to be fixed in the
-    upcoming 2.0 release."""
+        return or else the figure will plot twice."""
 
     # Figure setting
 
@@ -537,9 +499,6 @@ def plotGTC(chains, **kwargs):
     if mathTextFontSet is not None:
         plt.rcParams['mathtext.fontset'] = mathTextFontSet
 
-    holdRC = kwargs.pop('holdRC', False)
-    assert holdRC in [True, False], "holdRC must be True or False."
-
     # Grab the custom fontdicts
     # Default size is 9 for all labels.
     defaultFontFamily = 'Arial'
@@ -733,7 +692,7 @@ def plotGTC(chains, **kwargs):
                                                        x+self.custom_shift)
 
                         # Python 3 changes how this gets called
-                        if PYVER >= 3:
+                        if _PYVER >= 3:
 
                             xLabel.set_x = types.MethodType(_mpx, xLabel)
                         else:
@@ -767,7 +726,7 @@ def plotGTC(chains, **kwargs):
                         def _mpy(self, y):
                             return mpl.text.Text.set_y(self,
                                                        y+self.custom_shift)
-                        if PYVER >= 3:
+                        if _PYVER >= 3:
                             yLabel.set_y = types.MethodType(_mpy, yLabel)
                         else:
                             yLabel.set_y = types.MethodType(_mpy, yLabel,
@@ -838,20 +797,6 @@ def plotGTC(chains, **kwargs):
                 if paramNames is not None:
                     ax.set_xlabel(paramNames[i], fontdict=customLabelFont)
 
-                # Hack to get scaling to work for final 1D plot under MPL < 2.0
-                if (MPLVER < version.parse('2.0')) and (smoothingKernel == 0):
-                    max_y = 0
-                    # Loop through the children, find the polygons
-                    # and extract the maximum y-value
-                    for child in ax.get_children():
-                        if type(child) == plt.Polygon:
-                            child_max_y = child.get_xy()[:, 1].max()
-                            if child_max_y > max_y:
-                                max_y = child_max_y
-
-                    # Set upper limit to be 5% above maximum y-value
-                    ax.set_ylim(0, max_y*1.05)
-
             else:
                 ax.get_xaxis().set_ticklabels([])
 
@@ -896,7 +841,7 @@ def plotGTC(chains, **kwargs):
                 # shift the x labels when it gets called during render
                 def _mpx(self, x):
                     return mpl.text.Text.set_x(self, x+self.custom_shift)
-                if PYVER >= 3:
+                if _PYVER >= 3:
                     xLabel.set_x = types.MethodType(_mpx, xLabel)
                 else:
                     xLabel.set_x = types.MethodType(_mpx, xLabel,
@@ -913,49 +858,8 @@ def plotGTC(chains, **kwargs):
 
     # Align labels if there is more than one panel
     if len(axH) > 1:
-        fig.canvas.draw()
-        bboxSize = np.empty(len(axH))
-
-        try:
-            # This is the canonical way to get the renderer, which the OSX
-            # backend started supporting in mpl 2.0. Older versions of the OSX
-            # backend don't implement the method though, and access the
-            # renderer obect directly. This should do it right, but fall
-            # through to the "wrong" way for older versions or backends that
-            # have yet to implement.
-            renderer = fig.canvas.get_renderer()
-        except AttributeError:
-            # If the get_renderer method doesn't exist, then try accessing the
-            # renderer directly.
-            renderer = fig.canvas.renderer
-
-        # x labels
-        # Get label length of the bottom row
-        for i in range(len(axH)):
-            bboxTickLabel = (axH[i].xaxis.get_ticklabel_extents(renderer)[0]
-                             .get_points())
-            bboxSize[i] = bboxTickLabel[1, 1]-bboxTickLabel[0, 1]
-            panelWidth = (axH[i].get_window_extent()
-                          .transformed(fig.dpi_scale_trans.inverted()).width)
-        # Apply longest spacing to all panels in last row
-        longestTickLabel = 3+np.amax(bboxSize)
-        loc = (longestTickLabel/mplPPI/panelWidth)
-        for i in range(len(axH)):
-            axH[i].get_xaxis().set_label_coords(.5, -loc)
-
-        # y labels
-        # Get label length of the left column
-        for i in range(len(axV)):
-            bboxTickLabel = (axV[i].yaxis.get_ticklabel_extents(renderer)[0]
-                             .get_points())
-            bboxSize[i] = bboxTickLabel[1, 0]-bboxTickLabel[0, 0]
-            panelHeight = (axV[i].get_window_extent()
-                           .transformed(fig.dpi_scale_trans.inverted()).height)
-        # Apply longest spacing to all panels in first column
-        longestTickLabel = 2+np.amax(bboxSize)
-        loc = (longestTickLabel/mplPPI/panelHeight)
-        for i in range(len(axV)):
-            axV[i].get_yaxis().set_label_coords(-loc, .5)
+        fig.align_ylabels(axV)
+        fig.align_xlabels(axH)
 
     # Legend
     if (chainLabels is not None) or (truthLabels is not None):
@@ -994,8 +898,12 @@ def plotGTC(chains, **kwargs):
             text.set_color(color)
         # Remove markers in legend
         if showLegendMarker is not True:
-            for item in leg.legendHandles:
-                item.set_visible(False)
+            if _SNAKE_LEGEND_HANDLES:
+                for item in leg.legend_handles:
+                    item.set_visible(False)
+            else:
+                for item in leg.legendHandles:
+                    item.set_visible(False)
 
     # Panel spacing, save to file (optional) and return
 
@@ -1010,8 +918,7 @@ def plotGTC(chains, **kwargs):
     if plotName is not None:
         fig.savefig(plotName, bbox_inches='tight')
 
-    if not holdRC:
-        plt.rcParams['mathtext.fontset'] = oldMathTextFontSet
+    plt.rcParams['mathtext.fontset'] = oldMathTextFontSet
 
     return fig
 
@@ -1082,7 +989,7 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
             else:
                 # create 1d histogram
                 hist1d, edges = np.histogram(chains1d[k], weights=weights[k],
-                                             bins=nBins, **density_kw)
+                                             bins=nBins, density=True)
                 # Bin center between histogram edges
                 centers = (edges[1:]+edges[:-1])/2
                 # Filter data
@@ -1107,13 +1014,13 @@ def __plot1d(ax, nChains, chains1d, weights, nBins, smoothingKernel,
                     # Filled stepfilled histograms
                     ax.hist(chains1d[k], weights=weights[k],
                             bins=nBins, histtype='stepfilled',
-                            edgecolor='None', color=colors[k][1], **density_kw)
+                            edgecolor='None', color=colors[k][1], density=True)
         for k in reversed(range(nChains)):
             # Is there a chain to plot?
             if not np.isnan(chains1d[k]).all():
                 # Step curves for hidden histogram(s)
                 ax.hist(chains1d[k], weights=weights[k],
-                        bins=nBins, histtype='step', color=colors[k][1], **density_kw)
+                        bins=nBins, histtype='step', color=colors[k][1], density=True)
 
     # Truth line
     if truths1d is not None:
