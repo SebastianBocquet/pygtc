@@ -1,11 +1,12 @@
-name: py36
+name: rtd
 channels:
   - defaults
   - conda-forge
 dependencies:
   - packaging
-  - python>=3.6
+  - python=3.11
   - ipython>=6.2
   - matplotlib-base>=2.2
   - numpy>=1.7.1
   - scipy
+  - sphinx_rtd_theme
